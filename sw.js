@@ -1,7 +1,7 @@
 // Service Worker da Plataforma de Metas TRT-4
 // Estratégia: Network-First com Cache Fallback (Garante atualização online e funcionamento 100% offline)
 
-const CACHE_NAME = 'trt4-metas-pwa-v2.6.0';
+const CACHE_NAME = 'trt4-metas-pwa-v2.7.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -42,6 +42,12 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   // Ignora requisições não-GET
   if (event.request.method !== 'GET') return;
+
+  // Ignora requisições de autenticação e banco de dados do Firebase / Google APIs
+  const url = event.request.url;
+  if (url.includes('firebase') || url.includes('googleapis.com') || url.includes('gstatic.com/firebasejs')) {
+    return;
+  }
 
   event.respondWith(
     fetch(event.request)

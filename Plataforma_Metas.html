@@ -12,6 +12,10 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon-192.png">
+    <!-- Firebase SDK Compat (v10.8.0) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
             --bg-body: #090a0f;
@@ -370,6 +374,38 @@
         @keyframes pulse-pwa {
             0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
             50% { box-shadow: 0 0 0 5px rgba(59, 130, 246, 0); }
+        }
+        .btn-cloud-sync {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            color: #93c5fd;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-cloud-sync:hover {
+            background: rgba(59, 130, 246, 0.25);
+            border-color: #60a5fa;
+            color: #ffffff;
+        }
+        .btn-cloud-sync.synced {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #6ee7b7;
+        }
+        .btn-cloud-sync.syncing {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.5);
+            color: #fde047;
+        }
+        .btn-cloud-sync.offline {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
         }
         .theme-select {
             background: var(--bg-card); border: 1px solid var(--border); color: var(--text-body);
@@ -864,6 +900,12 @@
                     <option value="light">Claro</option>
                 </select>
 
+                <!-- SINCRONIZAÇÃO NUVEM COM GOOGLE -->
+                <button class="btn-cloud-sync" id="btn-cloud-sync" onclick="tratarCliqueNuvem()" title="Sincronização em Nuvem (Google Firebase)">
+                    <span id="cloud-sync-icon">☁️</span>
+                    <span id="cloud-sync-text">Conectar Google</span>
+                </button>
+
                 <button class="btn-tool btn-pwa-install" id="btn-pwa-install" onclick="instalarPwa()" style="display:none;" title="Instalar Aplicativo no Celular ou Computador">📲 Instalar App</button>
                 <button class="btn-tool" onclick="exportarBackup()" title="Exportar Backup">💾 Backup</button>
                 <button class="btn-tool" onclick="importarBackup()" title="Importar Backup">📂 Restaurar</button>
@@ -1275,6 +1317,7 @@
                 progressoMetas[metaId] = !progressoMetas[metaId];
             }
             localStorage.setItem('trt4_metas_concluidas', JSON.stringify(progressoMetas));
+            agendarSincronizacaoNuvem();
             if (metaAtivaId === metaId) {
                 atualizarBotaoStatusMeta();
             }
@@ -1650,6 +1693,7 @@
             const key = `${metaId}-sub-${subIdx}`;
             progressoSubtopicos[key] = checked;
             localStorage.setItem('trt4_subtopicos_concluidos', JSON.stringify(progressoSubtopicos));
+            agendarSincronizacaoNuvem();
 
             let metaAlvo = null;
             for (const d of PLATAFORMA_DATA) {
@@ -1728,6 +1772,7 @@
         function toggleTopicoPdf(key, checked) {
             progressoTopicosPdf[key] = checked;
             localStorage.setItem('trt4_topicos_pdf_checked', JSON.stringify(progressoTopicosPdf));
+            agendarSincronizacaoNuvem();
         }
 
         function atualizarBotaoStatusMeta() {
@@ -1778,6 +1823,7 @@
         function toggleChecklist(key, checked) {
             dadosChecklistRev[key] = checked;
             localStorage.setItem('trt4_checklist_revisao', JSON.stringify(dadosChecklistRev));
+            agendarSincronizacaoNuvem();
         }
 
         function salvarQuestoesMeta() {
@@ -1787,6 +1833,7 @@
 
             dadosQuestoes[metaAtivaId] = { feitas, acertos };
             localStorage.setItem('trt4_questoes_dados', JSON.stringify(dadosQuestoes));
+            agendarSincronizacaoNuvem();
             calcularPercentualQuestoes();
         }
 
@@ -1812,6 +1859,7 @@
             if (!metaAtivaId) return;
             dadosCadernoErros[metaAtivaId] = document.getElementById('input-caderno-erros').value;
             localStorage.setItem('trt4_caderno_erros', JSON.stringify(dadosCadernoErros));
+            agendarSincronizacaoNuvem();
         }
 
         // PRÓXIMA META DO CICLO
@@ -2067,6 +2115,7 @@
                     renderizarMatriz();
                     renderizarDisciplinas();
                     if (metaAtivaId) abrirMeta(metaAtivaId);
+                    agendarSincronizacaoNuvem();
                     mostrarToast('Backup restaurado com sucesso!');
                 } catch (err) {
                     alert('Erro ao processar arquivo de backup.');
@@ -2080,6 +2129,232 @@
             t.textContent = msg;
             t.style.display = 'flex';
             setTimeout(() => { t.style.display = 'none'; }, 2500);
+        }
+
+        // ==========================================
+        // FIREBASE SYNC & OFFLINE-FIRST ENGINE
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBu__5cQkrf_jFZK5rgnKYC6iL-cHIeZzI",
+            authDomain: "card-vendas.firebaseapp.com",
+            projectId: "card-vendas",
+            storageBucket: "card-vendas.firebasestorage.app",
+            messagingSenderId: "686732063995",
+            appId: "1:686732063995:web:c17e8cc2c0c15642432c5e"
+        };
+
+        let usuarioFirebase = null;
+        let unsubscribeDocNuvem = null;
+        let timerSincNuvem = null;
+
+        function atualizarStatusNuvem(estado, texto) {
+            const btn = document.getElementById('btn-cloud-sync');
+            const txt = document.getElementById('cloud-sync-text');
+            const ico = document.getElementById('cloud-sync-icon');
+            if (!btn || !txt) return;
+
+            btn.classList.remove('synced', 'syncing', 'offline');
+            if (estado === 'synced') {
+                btn.classList.add('synced');
+                ico.textContent = '🟢';
+            } else if (estado === 'syncing') {
+                btn.classList.add('syncing');
+                ico.textContent = '🔄';
+            } else if (estado === 'offline') {
+                btn.classList.add('offline');
+                ico.textContent = '🟡';
+            } else {
+                ico.textContent = '☁️';
+            }
+            txt.textContent = texto;
+        }
+
+        function inicializarFirebase() {
+            try {
+                if (typeof firebase === 'undefined') {
+                    console.warn('[Firebase] SDK offline ou indisponível.');
+                    atualizarStatusNuvem('offline', 'Modo Local');
+                    return;
+                }
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
+                }
+
+                const db = firebase.firestore();
+                db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
+                    console.log('[Firebase Persistence]', err.code);
+                });
+
+                firebase.auth().onAuthStateChanged((user) => {
+                    usuarioFirebase = user;
+                    if (user) {
+                        const primeiroNome = user.displayName ? user.displayName.split(' ')[0] : 'Conectado';
+                        atualizarStatusNuvem('synced', `${primeiroNome} • Sincronizado`);
+                        ouvirAlteracoesNuvem(user.uid);
+                    } else {
+                        if (unsubscribeDocNuvem) {
+                            unsubscribeDocNuvem();
+                            unsubscribeDocNuvem = null;
+                        }
+                        atualizarStatusNuvem('disconnected', 'Conectar Google');
+                    }
+                });
+
+                window.addEventListener('online', () => {
+                    if (usuarioFirebase) {
+                        const primeiroNome = usuarioFirebase.displayName ? usuarioFirebase.displayName.split(' ')[0] : 'Conectado';
+                        atualizarStatusNuvem('synced', `${primeiroNome} • Sincronizado`);
+                        salvarDadosNuvem();
+                    }
+                });
+
+                window.addEventListener('offline', () => {
+                    if (usuarioFirebase) {
+                        atualizarStatusNuvem('offline', 'Salvo Offline');
+                    }
+                });
+            } catch (err) {
+                console.warn('[Firebase Init Error]', err);
+                atualizarStatusNuvem('offline', 'Modo Local');
+            }
+        }
+
+        function ouvirAlteracoesNuvem(uid) {
+            try {
+                const db = firebase.firestore();
+                const docRef = db.collection('usuarios').doc(uid).collection('dados').doc('metas_progresso');
+
+                unsubscribeDocNuvem = docRef.onSnapshot((doc) => {
+                    if (doc.exists) {
+                        const dados = doc.data();
+                        let houveAtualizacao = false;
+
+                        if (dados.metasConcluidas && typeof dados.metasConcluidas === 'object') {
+                            Object.keys(dados.metasConcluidas).forEach(k => {
+                                if (dados.metasConcluidas[k] && !progressoMetas[k]) {
+                                    progressoMetas[k] = true;
+                                    houveAtualizacao = true;
+                                }
+                            });
+                            localStorage.setItem('trt4_metas_concluidas', JSON.stringify(progressoMetas));
+                        }
+
+                        if (dados.subtopicos && typeof dados.subtopicos === 'object') {
+                            Object.assign(progressoSubtopicos, dados.subtopicos);
+                            localStorage.setItem('trt4_subtopicos_concluidos', JSON.stringify(progressoSubtopicos));
+                            houveAtualizacao = true;
+                        }
+
+                        if (dados.topicosPdf && typeof dados.topicosPdf === 'object') {
+                            Object.assign(progressoTopicosPdf, dados.topicosPdf);
+                            localStorage.setItem('trt4_topicos_pdf_checked', JSON.stringify(progressoTopicosPdf));
+                            houveAtualizacao = true;
+                        }
+
+                        if (dados.questoes && typeof dados.questoes === 'object') {
+                            Object.assign(dadosQuestoes, dados.questoes);
+                            localStorage.setItem('trt4_questoes_dados', JSON.stringify(dadosQuestoes));
+                            houveAtualizacao = true;
+                        }
+
+                        if (dados.cadernoErros && typeof dados.cadernoErros === 'object') {
+                            Object.assign(dadosCadernoErros, dados.cadernoErros);
+                            localStorage.setItem('trt4_caderno_erros', JSON.stringify(dadosCadernoErros));
+                            houveAtualizacao = true;
+                        }
+
+                        if (dados.checklistRevisao && typeof dados.checklistRevisao === 'object') {
+                            Object.assign(dadosChecklistRev, dados.checklistRevisao);
+                            localStorage.setItem('trt4_checklist_revisao', JSON.stringify(dadosChecklistRev));
+                            houveAtualizacao = true;
+                        }
+
+                        if (houveAtualizacao) {
+                            atualizarProgressoGlobal();
+                            renderizarMatriz();
+                            renderizarDisciplinas();
+                            if (metaAtivaId) abrirMeta(metaAtivaId);
+                        }
+                    } else {
+                        salvarDadosNuvem();
+                    }
+                }, (err) => {
+                    console.warn('[Firestore Listen Error]', err);
+                });
+            } catch (err) {
+                console.warn('[Firestore Listen Setup Error]', err);
+            }
+        }
+
+        function agendarSincronizacaoNuvem() {
+            if (!usuarioFirebase) return;
+            atualizarStatusNuvem('syncing', 'Sincronizando...');
+            clearTimeout(timerSincNuvem);
+            timerSincNuvem = setTimeout(() => {
+                salvarDadosNuvem();
+            }, 700);
+        }
+
+        async function salvarDadosNuvem() {
+            if (!usuarioFirebase) return;
+            try {
+                const db = firebase.firestore();
+                const docRef = db.collection('usuarios').doc(usuarioFirebase.uid).collection('dados').doc('metas_progresso');
+                const payload = {
+                    metasConcluidas: progressoMetas,
+                    subtopicos: progressoSubtopicos,
+                    topicosPdf: progressoTopicosPdf,
+                    questoes: dadosQuestoes,
+                    cadernoErros: dadosCadernoErros,
+                    checklistRevisao: dadosChecklistRev,
+                    atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                await docRef.set(payload, { merge: true });
+                const primeiroNome = usuarioFirebase.displayName ? usuarioFirebase.displayName.split(' ')[0] : 'Conectado';
+                atualizarStatusNuvem('synced', `${primeiroNome} • Sincronizado`);
+            } catch (err) {
+                console.warn('[Firestore Save Error]', err);
+                if (!navigator.onLine) {
+                    atualizarStatusNuvem('offline', 'Salvo Offline');
+                } else {
+                    atualizarStatusNuvem('syncing', 'Pendente');
+                }
+            }
+        }
+
+        async function tratarCliqueNuvem() {
+            if (!usuarioFirebase) {
+                try {
+                    const provider = new firebase.auth.GoogleAuthProvider();
+                    atualizarStatusNuvem('syncing', 'Conectando...');
+                    await firebase.auth().signInWithPopup(provider);
+                    mostrarToast('Conta Google conectada!');
+                } catch (err) {
+                    if (err.code === 'auth/popup-blocked') {
+                        const provider = new firebase.auth.GoogleAuthProvider();
+                        firebase.auth().signInWithRedirect(provider);
+                    } else {
+                        alert('Erro ao conectar com Google: ' + (err.message || 'Verifique as permissões'));
+                        atualizarStatusNuvem('disconnected', 'Conectar Google');
+                    }
+                }
+            } else {
+                const info = `Conta conectada: ${usuarioFirebase.displayName || ''} (${usuarioFirebase.email || ''})
+
+Escolha uma opção:
+• Clique em OK para FORÇAR SINCRONIZAÇÃO NUVEM AGORA
+• Clique em CANCELAR se desejar desconectar da conta.`;
+                if (confirm(info)) {
+                    salvarDadosNuvem();
+                    mostrarToast('Sincronização na nuvem realizada!');
+                } else {
+                    if (confirm('Deseja realmente sair da sua conta Google nesta plataforma?')) {
+                        firebase.auth().signOut().then(() => {
+                            mostrarToast('Desconectado com sucesso.');
+                        });
+                    }
+                }
+            }
         }
 
         // ==========================================
@@ -2147,6 +2422,7 @@
         atualizarProgressoGlobal();
         renderizarMatriz();
         abrirVisaoQuadro();
+        inicializarFirebase();
     </script>
 </body>
 </html>
