@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direito Administrativo</title>
+    <style>
+        /* Variáveis de Tema (Light e Dark) */
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --text-strong: #000000;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --tabs-bg: #e2e8f0;
+            --primary: #2563eb;
+            --badge-border-alpha: 0.2;
+        }
+
+        html.dark {
+            --bg: #09090b;
+            --card: #18181b;
+            --text: #f4f4f5;
+            --text-strong: #ffffff;
+            --muted: #a1a1aa;
+            --border: #27272a;
+            --tabs-bg: #27272a;
+            --primary: #3b82f6;
+            --badge-border-alpha: 0.35;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.7;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 30px 20px;
+            transition: background 0.25s, color 0.25s;
+        }
+
+        .header { max-width: 960px; margin: 0 auto 30px auto; text-align: center; position: relative; }
+        .header h1 { font-size: 2.1rem; margin: 0 0 10px 0; color: var(--text-strong); }
+        
+        /* Botão Alternador de Modo Escuro */
+        .theme-toggle {
+            position: absolute; right: 0; top: 0;
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--text); padding: 8px 14px; border-radius: 20px;
+            cursor: pointer; font-size: 13px; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover { transform: scale(1.04); }
+
+        .tabs-nav { max-width: 960px; margin: 0 auto 24px auto; display: flex; gap: 8px; flex-wrap: wrap; background: var(--tabs-bg); padding: 6px; border-radius: 10px; }
+        .tab-btn { background: transparent; border: none; padding: 10px 18px; font-size: 0.95rem; font-weight: 600; color: var(--muted); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .tab-btn:hover { color: var(--text); background: rgba(125,125,125,0.15); }
+        .tab-btn.active { background: var(--card); color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        
+        .container { max-width: 960px; margin: 0 auto; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeIn 0.25s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        .aula-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 26px 30px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+        .aula-titulo { font-size: 1.35rem; color: var(--text-strong); margin-top: 0; border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; }
+        .aula-corpo p { margin: 12px 0; }
+        hr { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
+
+        /* Badges de links especiais adaptáveis ao Dark Mode */
+        .link-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; margin: 4px 2px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: transform 0.15s, opacity 0.15s; }
+        .link-badge:hover { transform: translateY(-1px); opacity: 0.9; text-decoration: none; }
+
+        .link-youtube { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, var(--badge-border-alpha)); }
+        .link-qc { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, var(--badge-border-alpha)); }
+        .link-tec { background: rgba(14, 165, 233, 0.15); color: #38bdf8; border: 1px solid rgba(14, 165, 233, var(--badge-border-alpha)); }
+        .link-geral { background: rgba(100, 116, 139, 0.15); color: var(--text); border: 1px solid var(--border); }
+
+        strong { color: var(--text-strong); }
+        u { text-decoration-color: var(--primary); text-underline-offset: 3px; }
+    </style>
+    <script>
+        function openTab(tabId, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('curso-theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-btn-label').innerText = isDark ? '☀️ Modo Claro' : '🌙 Modo Escuro';
+        }
+
+        (function() {
+            const saved = localStorage.getItem('curso-theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div class="header">
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span id="theme-btn-label">🌙 Alternar Tema</span>
+        </button>
+        <h1>Direito Administrativo</h1>
+        <p style="color:var(--muted); margin:0;">Material Compilado • Suporte a Modo Escuro</p>
+    </div>
+
+    <nav class="tabs-nav">
+        <button class="tab-btn active" onclick="openTab('mod-tab-0', this)">Princípios da Administração Pública</button>
+<button class="tab-btn " onclick="openTab('mod-tab-1', this)">Poderes e atos administrativos</button>
+<button class="tab-btn " onclick="openTab('mod-tab-2', this)">Controle da Administração Pública</button>
+<button class="tab-btn " onclick="openTab('mod-tab-3', this)">Outros assuntos doutrinários</button>
+<button class="tab-btn " onclick="openTab('mod-tab-4', this)">Regime dos servidores públicos</button>
+<button class="tab-btn " onclick="openTab('mod-tab-5', this)">Licitações e contratos</button>
+<button class="tab-btn " onclick="openTab('mod-tab-6', this)">Outras legislações</button>
+<button class="tab-btn " onclick="openTab('mod-tab-7', this)">BÔNUS - Materiais complementares</button>
+
+    </nav>
+
+    <main class="container">
+        
+                    <section id="mod-tab-0" class="tab-panel active">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Conceitos e princípios explícitos e implícitos</h2>
+                            <div class="aula-corpo"><p><img data-verified="redactor"></p>
+<p>O "regime jurídico administrativo" diz respeito ao conjunto de prerrogativas e sujeições às quais se sujeitam a Administração Pública, no âmbito do Direito Administrativo.</p>
+<p>Nesse sentido, estudamos os princípios que regem essas relações:</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Princípios explícitos </strong>(caput do art. 37) = Legalidade, Impessoalidade, Moralidade, Publicidade e Eficiência (LIMPE).</p>
+<p>Algumas repercussões:</p>
+<p>&nbsp;- <u data-redactor-tag="u">Legalidade ampla</u> (o particular faz tudo o que a lei não proíbe)</p>
+<p>x L<u data-redactor-tag="u">egalidade administrativa</u> (a Adm.Pública só faz o que a lei permite)</p>
+<p>- Vedação à promoção pessoal de agentes públicos</p>
+<p>- Vedação ao nepotismo - Súmula Vinculante nº 13 (lembre-se: <u data-redactor-tag="u">até 3º grau</u>)</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor"><span data-verified="redactor" data-redactor-tag="span">• </span><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Princípios implícitos / doutrinários:</strong></p>
+<p>- <u data-redactor-tag="u">Supremacia</u> do interesse público (prerrogativas) x <u data-redactor-tag="u">Indisponibilidade</u> do interesse público (sujeições)</p>
+<p>- <u data-redactor-tag="u">Tutela</u> (supervisão da Adm.Direta sobre a Adm. Indireta) x <u data-redactor-tag="u">Autotutela</u> (controle dos próprios atos - Súmula nº 473 do STF)</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=i4tDK2fCwNs" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=h4U3hI361_k" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/live/PIlpERHsuUA?si=e44OeSvjTe5E4JCb&amp;t=1032" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/live/JYxRJ1UuCow?feature=share&amp;t=734" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=pZu_Z8dHtvU" target="_blank" rel="noopener noreferrer">🎬 Questões em vídeo</a></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=15938" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></span></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=15938" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4uT3j" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></span></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=15938" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></span></span></span></span></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44sTM" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=15938" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FGV</a></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q48Jqc" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FGV</a></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=15938" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a> </p>
+<p><a href="https://www.tecconcursos.com.br/s/Q75ASO" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a> </p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-1" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Poderes administrativos</h2>
+                            <div class="aula-corpo"><p><strong data-redactor-tag="strong" data-verified="redactor">• Poderes e Deveres Administrativos</strong></p>
+<p><u data-redactor-tag="u">Poderes</u> = hierárquico, disciplinar, regulamentar, e poder de polícia<br><u data-redactor-tag="u">Deveres</u> = agir, eficiência, probidade, prestação de contas</p>
+<p>*Em razão do dever de agir, a omissão estatal pode gerar a responsabilidade</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">​• Poder Vinculado x Poder Discricionário</strong></p>
+<p><u data-redactor-tag="u">Vinculado</u> = sem liberdade de escolha, a lei só dá 1 opção<br><u data-redactor-tag="u">Discricionário</u> = liberdade de escolha entre as opções dadas pela lei</p>
+<p>*análise de conveniência e oportunidade<br>*a discricionariedade não se confunde com a arbitrariedade (a obediência a lei é mantida)</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">​• Poder Hierárquico = distribuir funções, dar ordens, fiscalizar e rever ações dos subordinados...</strong></p>
+<p>NÃO há hierarquia/subordinação:</p>
+<p>- entre pessoas jurídicas distintas /entre Adm.Direta e Indireta (há vinculação)<br>- em função típica não administrativa (ex: no Judiciário em sua função típica de julgar)</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">​• Poder Disciplinar = apurar infrações e aplicar sanções/penalidades</strong></p>
+<p>Tem que haver vínculo (ex: o servidor, o presidiário da penitenciária, a empresa contratada p/ fazer a obra)</p>
+<p>Se não houver = é manifestação do Poder de Polícia (ex: multa de trânsito - é uma sanção, mas como não há vínculo, não é Poder Disciplinar)</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Poder Regulamentar = edição de regulamentos para detalhar o cumprimento das leis</strong></p>
+<p>Atenção às hipóteses de decreto autônomo (ato normativo primário)</p>
+<p>​<strong data-redactor-tag="strong" data-verified="redactor">• Poder de Polícia = restringir liberdades individuais em prol da coletividade</strong></p>
+<p>Serve para limitar os direitos individuais em benefício da coletividade e do interesse público.</p>
+<p>- Engloba <u data-redactor-tag="u">atos normativos genéricos</u> + <u data-redactor-tag="u">atos materiais e concretos</u> (preventivos e repressivos)</p>
+<p>- <u data-redactor-tag="u">Polícia Administrativa</u> (+ preventiva e sobre bens) x <u data-redactor-tag="u">Polícia Judiciária</u> (+ repressiva e sobre pessoas)</p>
+<p>- <u data-redactor-tag="u">Atributos</u>:</p>
+<p>• Discricionariedade<br>•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Autoexecutoriedade (exigibilidade + executoriedade)<br>•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Imperatividade/Coercibilidade</p>
+<p>*Não confundir a Autoexecutoriedade (independe do Poder Judiciário)<br>com a Imperatividade (independe da vontade do particular).</p>
+<p>- <u data-redactor-tag="u">Abuso de poder</u></p>
+<p>•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Excesso de poder = extrapola a competência<br>•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>ou Desvio de poder = há competência, porém busca-se finalidade diversa do interesse público</p>
+<p>*A omissão também é uma forma de abuso de poder</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=vGVkLlD0pNI" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=2DX7fsRheDo" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=Wemqr57xQ3c" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16022" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16022" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4uT58" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16022" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16022" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44sVO" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span>​</span>​</span><br></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16022" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FGV</a></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q48Jtu" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FGV</a></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16022" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a> </p>
+<p><a href="https://www.tecconcursos.com.br/s/Q75AeY" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a> </p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Atos administrativos</h2>
+                            <div class="aula-corpo"><p>​Eu sei que esse tema assusta muitos concurseiros. Embora a maioria das questões sejam simples, sempre existem aquelas mais desafiadoras. Encare sempre como um aprendizado e um aviso (daquilo que você errou no treino e não pode errar na hora da prova).&nbsp;</p>
+<p>Você pode dividir o estudo desse assunto​ em 2 partes:</p>
+<p>​<strong data-redactor-tag="strong" data-verified="redactor">PARTE 1</strong></p>
+<p>A Administração Pública pratica vários atos, mas, <u data-redactor-tag="u">quando no exercício da função pública</u> (e sob regime de direito público), temos os atos ADMINISTRATIVOS.</p>
+<p>Para ser ato administrativo, precisa ter <strong data-redactor-tag="strong" data-verified="redactor">alguns elementos/requisitos de validade</strong>, que a banca adora cobrar:</p>
+<p>- <u data-redactor-tag="u">COM</u>petência = Quem?<br>- <u data-redactor-tag="u">FI</u>nalidade = Para quê? / Efeito mediato / Futuro<br>- <u data-redactor-tag="u">FOR</u>ma = Como?<br>- <u data-redactor-tag="u">M</u>otivo = Por quê?<br>- <u data-redactor-tag="u">OB</u>jeto = Efeito imediato / Presente / O ato em si</p>
+<p>Mnemônico: "<u data-redactor-tag="u">COM-FI-FOR-M-OB</u>"</p>
+<p>*Se a banca falar em "motivação", lembre-se que ela não faz parte do elemento "motivo", mas sim da "forma" do ato.</p>
+<p>Saiba que existe a figura da <strong data-redactor-tag="strong" data-verified="redactor">convalidação</strong>, quando nesses elementos existem vícios que podemos consertar. A doutrina majoritária defende que só são sanáveis os vícios nos elementos "competência" (desde que não exclusiva) e "forma" (desde que não essencial).</p>
+<p>Para finalizar, <strong data-redactor-tag="strong" data-verified="redactor">não confunda os Elementos/Requisitos com os ATRIBUTOS dos atos</strong>, que são 4: Presunção de legitimidade, Autoexecutoriedade, Tipicidade, Imperatividade (Mnemônico: "PATI"). São semelhantes aos atributos que estudamos acerca do Poder de Polícia, na meta anterior.</p>
+<p>​<strong data-redactor-tag="strong" data-verified="redactor">PARTE 2</strong></p>
+<p>​Existem diversas classificações doutrinárias para os atos, das quais posso destacar:</p>
+<p>- Quanto ao mérito = <strong data-redactor-tag="strong" data-verified="redactor">Ato Vinculado</strong> (sem margem de escolha) x <strong data-redactor-tag="strong" data-verified="redactor">Discricionário </strong>(com alguma margem).</p>
+<p>- Quanto aos destinatários = <strong data-redactor-tag="strong" data-verified="redactor">Atos Gerais/Genéricos/Abstratos x Atos Individuais/Concretos</strong></p>
+<p>- Quanto à formação da vontade = <strong data-redactor-tag="strong" data-verified="redactor">Ato Simples</strong> (1 órgão) x <strong data-redactor-tag="strong" data-verified="redactor">Composto </strong>(2 órgãos e 2 atos: um principal e um acessório) x <strong data-redactor-tag="strong" data-verified="redactor">Complexo </strong>(2 órgãos mas em 1 ato único)</p>
+<p>*Quanto à exiquibilidade, à formação e aos efeitos, existem os conceitos de <strong data-redactor-tag="strong" data-verified="redactor">Ato Perfeito, Válido e Eficaz</strong>. São esferas independentes, por exemplo: o ato pode ser perfeito, mas inválido e ineficaz.</p>
+<p>Formas de EXTINÇÃO dos atos:</p>
+<p>• <u data-redactor-tag="u">Anulação</u> = de atos ilegais/inválidos.</p>
+<p>• <u data-redactor-tag="u">Revogação</u> = de atos válidos, porém inconvenientes/inoportunos (análise de discricionariedade).</p>
+<p>• <u data-redactor-tag="u">Contraposição</u> = um novo ato administrativo com efeitos opostos ao anterior<br>(ex: ato de destituição do cargo em comissão vai de encontro ao ato de nomeação).</p>
+<p>• <u data-redactor-tag="u">Caducidade</u> = nova norma jurídica que torna ilegal uma situação antes autorizada<br>(ex: surge uma lei proibindo algo que antes era permitido).</p>
+<p>• <u data-redactor-tag="u">Cassação</u> = descumprimento por parte do destinatário (ex: cassação da CNH).</p>
+<p>Cuidado para não misturar esses 3 últimos conceitos.</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=0Rrk5t5nepQ&amp;pp=ygUfcmV2aXPDo28gZGlyZWl0byBhZG1pbmlzdHJhdGl2bw==" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=Kx1m2K6SMO4" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=iiFjeUc-Ygg" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=5" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=5" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4uT5J" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=5" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=5" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44sVV" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span>​</span>​</span><br></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=5" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FGV</a></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q48JuN" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FGV</a></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=5" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a> </p>
+<p><a href="https://www.tecconcursos.com.br/s/Q75AhC" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a> </p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-2" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Controle da Administração Pública</h2>
+                            <div class="aula-corpo"><p>“A administração pública, no exercício de suas funções, controla seus próprios atos (controle interno) e se sujeita ao controle dos outros Poderes ou Entes (controle externo)”.</p>
+<p>É uma tema que também pode ser estudado em Direito Constitucional (art. 70 e seguintes - porém nem sempre é cobrado), mas aqui no Direito Administrativo também existem várias classificações doutrinárias:</p>
+<p>• Controle<strong data-redactor-tag="strong" data-verified="redactor"> Externo e Interno</strong></p>
+<p>•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Controle <strong data-redactor-tag="strong" data-verified="redactor">Legislativo, Judicial e Administrativo/Interno/Executivo</strong></p>
+<p>•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Controle de <strong data-redactor-tag="strong" data-verified="redactor">Legalidade e Mérito</strong></p>
+<p>•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Controle <strong data-redactor-tag="strong" data-verified="redactor">Prévio, Concomitante e Posterior</strong></p>
+<p>•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Controle <strong data-redactor-tag="strong" data-verified="redactor">Hierárquico e Finalístico</strong></p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=Jm4pnxKZ8Og" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=-U-BLg52bZg" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span><br></p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=blvBPpoIumY" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=BiDRCZ2I3Qg" target="_blank" rel="noopener noreferrer">🎬 Questões em vídeo</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=11" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=11" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4uT5j" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=11" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></span></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44sVv" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=11" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FGV</a></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4HGPR" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FGV</a></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=11" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a> </p>
+<p><a href="https://www.tecconcursos.com.br/s/Q75AjE" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a> </p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Controle externo e procedimentos de tomada de contas</h2>
+                            <div class="aula-corpo"><p>Não há um filtro específico para questões desse tópico nos sites de questões.<span class="redactor-invisible-space">​</span>​</p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-3" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Agentes públicos</h2>
+                            <div class="aula-corpo"><p><strong data-redactor-tag="strong" data-verified="redactor">​• Conceitos DOUTRINÁRIOS</strong></p>
+<p>Não vá para a prova sem saber:</p>
+<p>- O conceito AMPLO de agente público:</p>
+<p>Segundo a Lei de Improbidade: “consideram-se agente público o agente político, o servidor público e todo aquele que exerce, <u data-redactor-tag="u">ainda que transitoriamente ou sem remuneração</u>, por eleição, nomeação, designação, contratação ou qualquer outra forma de investidura ou vínculo, mandato, cargo, emprego ou função nas entidades referidas no art. 1º desta Lei”.</p>
+<p>- As diferenças entre SERVIDOR público (estatutário, ocupante de cargo público, etc)<br>e EMPREGADO público (regido pela CLT, ocupante de emprego público, etc)</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Disposições CONSTITUCIONAIS</strong></p>
+<p>Revise especialmente os <u data-redactor-tag="u">artigos 39 a 41 da Constituição Federal</u>.</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/@papaconcursostribunais/search?query=agentes" rel="noopener noreferrer">🎬 Playlists de videoaulas</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=3&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16268" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=3&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16268" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4uT6G" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=3&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16268" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=3&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16268" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44sWq" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span><br></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=3&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16268" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FGV</a></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q48Jud" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FGV</a></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=3&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16268" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a> </p>
+<p><a href="https://www.tecconcursos.com.br/s/Q75Alt" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a> </p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-4" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Regime dos servidores públicos (Lei nº 8.112)</h2>
+                            <div class="aula-corpo"><p>​Trata-se de uma lei grande (com mais de 250 artigos), porém é tranquila de se estudar. Em razão do padrão de cobrança das provas anteriores, as questões serão importantes aliadas nos seus estudos dessa lei.</p>
+<p>Você pode dividir o estudo desse assunto​ em 5 partes:</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">​<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">PARTE 1</span></strong></p>
+<p>Nessa meta = Títulos I e II (até o artigo 39)</p>
+<p>• Conceito de CARGO público (não confundir com EMPREGO público) e a diferença entre cargo <u data-redactor-tag="u">efetivo</u> e <u data-redactor-tag="u">em comissão</u>.</p>
+<p>• Requisitos para investidura (não esqueça do gozo do direitos políticos).</p>
+<p>• Reserva de vagas PCD = <u data-redactor-tag="u">até 20%</u>.</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Formas de provimento</strong> = Mnemônico <u data-redactor-tag="u">PAN-R4</u> (Promoção, Aproveitamento, Nomeação e os "4 R's": Readaptação, Reversão, Reintegração e Recondução).</p>
+<p>Nessa parte inicial da lei, essa é a parte queridinha de qualquer banca de concurso: misturar os conceitos principalmente desses "4 R's".</p>
+<p>Em uma questão mais avançada, a banca pode cobrar uma pitada de doutrina, com essas classificações: provimento originário e derivado (vertical, horizontal e por reingresso).</p>
+<p>• Nomeação &gt;&gt;&gt; <u data-redactor-tag="u">30 dias</u> &gt;&gt;&gt; Posse &gt;&gt;&gt; <u data-redactor-tag="u">15 dias</u> &gt;&gt;&gt; Exercício &gt;&gt;&gt; Estágio Probatório &gt;&gt;&gt; <u data-redactor-tag="u">3 anos</u> &gt;&gt;&gt; Estabilidade</p>
+<p>*Estabilidade: embora a lei fale em "24 meses", essa parte não foi recepcionada pela CF, que prevê 3 anos.</p>
+<p>*<strong data-redactor-tag="strong" data-verified="redactor">Fatores avaliados durante o estágio probatório</strong>: Mnemônico <u data-redactor-tag="u">RAPID</u> (Responsabilidade, Assiduidade, Produtividade, Capacidade de iniciativa, Disciplina).</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Formas de vacância</strong> = Mnemônico <u data-redactor-tag="u">PADRE-PF</u> (Promoção, Aposentadoria, Demissão, Readaptação, Exoneração, Posse em cargo inacumulável e Falecimento).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">​<span class="redactor-invisible-space" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" data-verified="redactor">PARTE 2</span></strong></p>
+<p>Dando sequência ao estudo da Lei 8.112, que é uma verdadeira mãe para todos os servidores públicos federais, hoje vamos começar a ver todas as "coisas boas" que ela traz:</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Título III - Dos Direitos e Vantagens</strong></p>
+<p>• Vencimento e Remuneração</p>
+<p>Não confunda: a Remuneração é o "bolo" composto pelo Vencimento + Vantagens Permanentes.</p>
+<p>Súmulas Vinculantes do STF relacionadas à remuneração: 4, 15, 16 e 37.</p>
+<p>• Vantagens</p>
+<p>São 3 tipos de vantagens:</p>
+<p><u data-redactor-tag="u">Indenizações</u> = Ajuda de custo, Diárias, Transporte e Auxílio-moradia.</p>
+<p><u data-redactor-tag="u">Gratificações</u> = Função de confiança, Gratificação natalina (13º), Gratificação por encargo de curso ou concurso (1,2% ou 2,2%).</p>
+<p><u data-redactor-tag="u">Adicionais</u> = Insalubridade, Serviço extraordinário (50%), Adicional noturno (25%), Férias (1/3).</p>
+<p>*Add.Noturno = Atenção! Pois na CLT é 20%, e para o servidor federal é 25%.</p>
+<p>*MUITA ATENÇÃO ao grupo das Indenizações, pois são os conceitos semelhantes entre si, e portanto a banca gosta de fazer mais pegadinhas, por exemplo:</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">Ajuda de custo</strong> = mudança PERMANENTE de sede<br>- <strong data-redactor-tag="strong" data-verified="redactor">Diárias </strong>= afastamento TRANSITÓRIO<br>- <strong data-redactor-tag="strong" data-verified="redactor">Transporte </strong>= despesas com transporte PRÓPRIO<br>- <strong data-redactor-tag="strong" data-verified="redactor">Auxílio-moradia</strong> = apenas para cargos em comissão</p>
+<p>• Férias</p>
+<p>- Acumulação = <u data-redactor-tag="u">até 2 férias</u> (por necessidade do serviço)<br>- Parcelamento = <u data-redactor-tag="u">até 3 parcelas</u> (requisição do servidor)</p>
+<p>*Operadores de Raio-X/Radioativos = <u data-redactor-tag="u">20 dias</u> por semestre</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">​<span class="redactor-invisible-space" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" data-verified="redactor">PARTE 3</span></strong></p>
+<p>Dando sequência ao estudo das "coisas boas" que a Lei 8.112 traz no Título III - Dos Direitos e Vantagens.</p>
+<p>Não confundir o rol de licenças com o rol de afastamentos, bem como os detalhes de cada tipo, que podem ser explorados em prova.</p>
+<p>• LICENÇAS:</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">doença em pessoa da família</strong> (até <u data-redactor-tag="u">60 dias</u> com $, ou até <u data-redactor-tag="u">90 dias</u> sem $).</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">acompanhar cônjuge/companheiro </strong>(sem $).</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">serviço militar</strong> (após a conclusão = <u data-redactor-tag="u">30 dias</u> para reassumir o cargo).</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">atividade política</strong> (saiba diferenciar o momento antes e depois do registro na Justiça Eleitoral).</p>
+<p>*é o "período de campanha" - não confundir com o afastamento para mandado eletivo (para exercer o cargo).</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">capacitação </strong><u data-redactor-tag="u">(3 meses</u> a cada quinquênio, com $).</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">interesses particulares</strong> (até <u data-redactor-tag="u">3 anos</u>, sem $).</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">mandato classista</strong> (sem $).</p>
+<p>*não confundir com o mandato eletivo (que é hipótese de afastamento).</p>
+<p>• AFASTAMENTOS:</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">servir a outro órgão ou entidade </strong>(servidor cedido geralmente p/ exercer cargo em comissão).</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">mandato eletivo</strong></p>
+<p>*saiba diferenciar os casos de mandato federal, estadual e municipal (prefeito x vereador).<br>*também se estuda isso em Direito Constitucional (na parte de Administração Pública da CF).</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">estudo ou missão no exterior </strong>(máximo <u data-redactor-tag="u">4 anos</u>)</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">pós-graduação</strong> (com $, para servidores com no mínimo <u data-redactor-tag="u">3 ou 4 anos</u> no órgão, a depender do caso).</p>
+<p>• Concessões</p>
+<p>São hipóteses em que o servidor pode se ausentar, sem prejuízo da remuneração:</p>
+<p>- Doação de sangue = <u data-redactor-tag="u">1 dia</u><br>- Alistamento ou recadastramento eleitoral = período necessário (<u data-redactor-tag="u">até 2 dias</u>)<br>- Casamento = <u data-redactor-tag="u">8 dias</u><br>- Luto = <u data-redactor-tag="u">8 dias</u></p>
+<p>• Tempo de Serviço</p>
+<p>Saiba diferenciar as hipóteses em que o tempo é contado para todos os efeitos, das hipóteses em que se conta apenas para efeito de aposentadoria e disponibilidade.</p>
+<p>*Existem também algumas licenças que não contam para nenhum efeito: doença na família (quando não remunerada), para acompanhar cônjuge, para atividade política (relativo ao período não remunerado), e para tratar de interesses particulares (que é sempre sem remuneração).</p>
+<p>• Direito de Petição</p>
+<p>Direito do servidor de requerer perante ao poder público. Conheça como se dá o requerimento, o pedido de reconsideração e o recurso, bem como os prazos relativos.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">​<span class="redactor-invisible-space" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" data-verified="redactor">PARTE 4</span></strong></p>
+<p>Dando sequência ao estudo da Lei 8.112, já vimos tudo de bom que ela traz para o servidor público federal (remuneração, vantagens, licenças, etc) e agora veremos a "parte ruim", que prevê a responsabilização dos "maus servidores".</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Título IV - Do Regime Disciplinar</strong></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Deveres e Proibições</strong></p>
+<p>Os artigos 116 e 117 nos trazem 2 listas de importante leitura e releitura, pois são as condutas esperadas (deveres) e vedadas (proibições) que vão repercurtir na aplicação de sanções.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Acumulação</strong></p>
+<p>É vedada a acumulação de cargos públicos, exceto nas hipóteses previstas na CF (2 cargos de professor, 1 de professor + outro cargo técnico ou científico, 2 cargos de saúde).</p>
+<p>Verificada a acumulação = prazo de <u data-redactor-tag="u">10 dias</u> para optar entre 1 dos cargos.</p>
+<p>Omissão = instaura-se o Processo Administrativo Disciplina - PAD do tipo "Sumário" (mais simples e célere).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Responsabilidades</strong></p>
+<p>O servidor responde nas esferas CIVIL, PENAL e ADMINISTRATIVA.</p>
+<p>Essas esferas são independentes entre si. Ou seja, por uma mesma conduta o servidor pode reparar danos a terceiros, ser preso e ser demitido.</p>
+<p>• Penalidades disciplinares (via administrativa)</p>
+<p>- Advertência (inobservância dos deveres do art. 116 + algumas proibições do art. 117).</p>
+<p>- Suspensão (<u data-redactor-tag="u">até 90 dias</u> - reincidência de advertência + outras hipóteses que não geram demissão).</p>
+<p>- Demissão (hipóteses previstos no art. 132 + algumas proibições do art. 117).</p>
+<p>- Cassação de aposentadoria ou disponibilidade (infrações sujeitas a demissão).</p>
+<p>- Destituição de cargo em comissão ou de função comissionada (infrações sujeitas a demissão ou suspensão).</p>
+<p>*Saiba diferenciar:</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Abandono de cargo</strong> = falta por <u data-redactor-tag="u">+ de 30 dias</u> consecutivos<br><strong data-redactor-tag="strong" data-verified="redactor">Inassiduidade habitual </strong>= falta por <u data-redactor-tag="u">60 dias</u> durante 12 meses</p>
+<p>As 2 são hipóteses de demissão, e serão processadas via PAD Sumário.</p>
+<p>Na próxima meta, estudaremos sobre o PAD.</p>
+<p>*Além das HIPÓTESES de cada penalidade, precisamos atentar para: COMPETÊNCIA para aplicar cada penalidade, e principalmente o <strong data-redactor-tag="strong" data-verified="redactor">PRAZO PRESCRICIONAL de cada uma (5 anos, 2 anos e 180 dias).</strong></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">​<span class="redactor-invisible-space" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" data-verified="redactor">PARTE 5</span></strong></p>
+<p>Nessa meta, finalizaremos o estudo da Lei 8.112.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Título V - Do Processo Administrativo Disciplinar</strong></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Sindicância</strong></p>
+<p>Objetivo = investigar a infração<br>Prazo de conclusão = <u data-redactor-tag="u">30 + 30</u> (30 dias, prorrogáveis por mais 30)</p>
+<p>Resultados:</p>
+<p>- Arquivamento<br>- ou Advertência ou Suspensão até 30 dias<br>- ou Instauração de PAD (para penas maiores)</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Processo Administrativo Disciplinar - PAD</strong></p>
+<p>Objetivo = apurar a responsabilidade<br>Prazo de conclusão = <u data-redactor-tag="u">60 + 60</u><br>Comissão = 3 servidores estáveis<br>Fases = Instauração &gt;&gt;&gt; Inquérito administrativo &gt;&gt;&gt; Julgamento (prazo específico: 20 dias)</p>
+<p>*Afastamento preventivo do servidor (com $, prazo 60 + 60)</p>
+<p>*Súmula Vinculante 5 do STF: desnecessidade de advogado no PAD<br>*Súmula 591 do STJ: permite a "prova emprestada" no PAD</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• PAD Sumário</strong></p>
+<p>Em 3 hipóteses de demissão: abandono de cargo, inassiduidade habitual e acumulação de cargos</p>
+<p>Prazo de conclusão = <u data-redactor-tag="u">30 + 15</u></p>
+<p>Comissão = 2 servidores estáveis</p>
+<p>*Lembre-se também dos prazos de Defesa e de Julgamento no PAD Sumário = ambos são de 5 dias</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Revisão do processo</strong></p>
+<p>De ofício ou a pedido<br>A qualquer tempo<br>Mas só com fatos novos<br>Prazos = <u data-redactor-tag="u">60 dias</u> para os trabalhos da comissão + <u data-redactor-tag="u">20 dias</u> para o julgamento<br>Não pode gerar agravamento da pena</p>
+<p>Para finalizar, faça uma rápida leitura dos últimos títulos, de baixa incidência em provas: artigos 183 e seguintes, que tratam sobre a seguridade social do servidor, bem como disposições finais e transitórias.</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/playlist?list=PL70rxKg7qWNWhcUHFYl_VHPP-SFE-TTwf" target="_blank" rel="noopener noreferrer">🎬 Playlist de videoaulas</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=1269" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4uT93" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></span></span></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=1269" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44sbA" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a></span></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=1269" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a> </p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a href="https://www.tecconcursos.com.br/s/Q75Apq" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a> </span></p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-5" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Licitações e Contratos (Lei nº 14.133/2021)</h2>
+                            <div class="aula-corpo"><p>HISTÓRICO DE ATUALIZAÇÕES:</p>
+<p>25/11/2025 = De acordo com a Lei nº 15.266/2025.​</p>
+<p>27/07/2026 = De acordo com a Lei nº 15.471/2026.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p>​A Nova Lei de Licitações e Contratos - NLLC nasceu visando à revogação da antiga Lei nº 8.666/1993, portanto não há mais necessidade de se estudar a antiga lei, somente a Lei nº 14.133/2021.</p>
+<p>A lei é bem grande (cerca de 200 artigos). Portanto, eu sempre estudei de forma dividida, separando em 2 partes:</p>
+<p>Primeira parte = <u data-redactor-tag="u">Licitações (art. 1º a 88)</u>.<br>Segunda parte = <u data-redactor-tag="u">Contratos (art 89 e seguintes)</u>.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Como a NLLC pode ser cobrada?</strong></p>
+<p>- De forma mais leve = questões mais curtas e mais "direto ao ponto", com temáticas clássicas como MODALIDADES, CRITÉRIOS DE JULGAMENTO, e hipóteses de DISPENSA E INEXIGIBILIDADE, dentre outros assuntos.</p>
+<p>- Ou de forma mais pesada = questões "letra de lei", porém com alternativas mais longas ou questões com análise de casos ou situações hipotéticas (maior subjetividade), o que exige uma maior interpretação do candidato.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Portanto, precisamos fazer a nossa parte:</strong></p>
+<p>Se você está começando no tema "Licitações", foque inicialmente em ficar muito bom nesses assuntos mais cobrados. Você percorrerá toda a lei, mas nos primeiros contatos não se prenda tanto a "tenho que gravar tudo", pois é uma lei grande e o aprendizado ocorre em CAMADAS, ou seja, a cada vez que você for revisando, vai sedimentar melhor o conhecimento.</p>
+<p>Você pode dividir o estudo desse assunto​ em 5 partes:</p>
+<p>​<strong data-redactor-tag="strong" data-verified="redactor"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">PARTE 1​</span></strong></p>
+<p>TÍTULO I - DISPOSIÇÕES PRELIMINARES</p>
+<p>• Art 1º ao 3º = Âmbito de aplicação da lei (lembre-se: em regra, NÃO se aplica às empresas estatais, pois possuem legislação própria).</p>
+<p>• Art. 5º = Princípios (atenção para os princípios mais específicos: planejamento, SEGREGAÇÃO de funções, VINCULAÇÃO ao edital, julgamento OBJETIVO e desenvolvimento NACIONAL SUSTENTÁVEL).</p>
+<p>• Art. 6º = Definições</p>
+<p>São MUITOS conceitos importantes para o entendimento de toda a lei. Saiba diferenciar:</p>
+<p>- <u data-redactor-tag="u">Compra</u> (Bens) x <u data-redactor-tag="u">Serviço</u> x <u data-redactor-tag="u">Obra</u><br>- Bens e Serviços <u data-redactor-tag="u">Comuns</u> x <u data-redactor-tag="u">Especiais</u><br>- Obras e serviços de grande vulto<br>- Estudos Técnicos Preliminares - ETP x Termo de Referência - TR<br>- Tipos de empreitada<br>- Sobrepreço (orçado) x Superfaturamento (dano provocado)<br>- Modalidades de licitação (na próxima meta vamos aprofundar, mas os incisos XXXVIII a XLII já conceituam).</p>
+<p>*Muita atenção à definição de <strong data-redactor-tag="strong" data-verified="redactor">DIÁLOGO COMPETITIVO</strong>, pois é novidade e já é muito cobrado nas provas.</p>
+<p>• Art. 7º ao 10 = Agentes públicos</p>
+<p>- Agente de contratação x Comissão de contratação<br>- Muito importante: <u data-redactor-tag="u">Vedações do art. 9º</u></p>
+<p>Apesar de simples e introdutórios, esses 10 primeiros artigos CAEM MUITO!</p>
+<p>TÍTULO II - DAS LICITAÇÕES</p>
+<p>Nessa meta = artigos 11 a 17. Atenção para:</p>
+<p>Art. 11 = <u data-redactor-tag="u">Objetivos</u> da licitação<br>Art. 14 = <u data-redactor-tag="u">Participações proibidas</u><br>Art. 15 = Regras para as empresas em <u data-redactor-tag="u">consórcio</u></p>
+<p>Fases da licitação: Fase Preparatória &gt;&gt;&gt; Edital &gt;&gt;&gt; Propostas e Lances &gt;&gt;&gt; <strong data-redactor-tag="strong" data-verified="redactor">Julgamento </strong>&gt;&gt;&gt; <strong data-redactor-tag="strong" data-verified="redactor">Habilitação </strong>&gt;&gt;&gt; Recursos &gt;&gt;&gt; Homologação.</p>
+<p>*Pegadinha clássica de prova: inverter as fases de julgamento e habilitação (pois na lei antiga&nbsp;era ao contrário - hoje essa inversão pode ocorrer, mas apenas excepcionalmente).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">​<span data-verified="redactor" data-redactor-tag="span">PARTE 2</span></strong></p>
+<p>Nessa meta = artigos 18 a 71.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Foco: Modalidades de licitação (arts. 28 a 32).</strong></p>
+<p>• <u data-redactor-tag="u">Pregão</u> = Bens e serviços comuns + Serviços comuns de engenharia.<br>• <u data-redactor-tag="u">Concorrência</u> = Bens e serviços especiais + Obras + Serviços de engenharia (comuns ou especiais).<br>• <u data-redactor-tag="u">Concurso</u> = para escolha de trabalho técnico, científico ou artístico.<br>• <u data-redactor-tag="u">Leilão</u> = para venda de bens públicos.<br>• <u data-redactor-tag="u">Diálogo Competitivo</u> = é a novidade, e o mais diferentão (vale a pena estudar MUITO sobre essa nova modalidade).</p>
+<p>NÃO existe mais: Tomada de preços e Convite.</p>
+<p>*Além do diálogo competitivo, as bancas sempre gostaram de cobrar a diferença entre pregão e concorrência, bem como as demais especificidades de cada modalidade (como os <strong data-redactor-tag="strong" data-verified="redactor">prazos para as propostas</strong> - art. 55).</p>
+<p>Conheça também:</p>
+<p>- Fase preparatória (art. 18 a 27) = planejamento, criação de documentos, instrução processual...</p>
+<p>- Margem de preferência (art. 26) = <u data-redactor-tag="u">até 10% ou até 20%</u> (se resultantes de desenvolvimento e inovação tecnológica no País).</p>
+<p>- <strong data-redactor-tag="strong" data-verified="redactor">Critérios de julgamento (art. 33 a 39)</strong> = menor preço, maior desconto, melhor técnica ou conteúdo artístico, técnica e preço, maior lance (leilão), maior retorno econômico.</p>
+<p>*Não confundir: Modalidades x Critérios de julgamento.</p>
+<p>- Propostas desclassificadas e preços inexequíveis (art. 59).</p>
+<p>- Critérios de desempate (art. 60).</p>
+<p>- Revogação e anulação (art. 71)</p>
+<p><u data-redactor-tag="u">Revogação</u> = por motivo de interesse público / conveniência e oportunidade (só antes do contrato).</p>
+<p><u data-redactor-tag="u">Anulação</u> = por ilegalidade, vício insanável (a qualquer tempo, antes ou depois do contrato).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">​<span data-verified="redactor" data-redactor-tag="span">PARTE 3</span></strong></p>
+<p>Nessa meta = artigos 72 a 88.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Foco: Inexigibilidade e Dispensa.</strong></p>
+<p>• Licitação INEXIGÍVEL</p>
+<p>Quando há inviabilidade de competição (ex: fornecedor exclusivo).</p>
+<p>Rol exemplificativo (art. 74).</p>
+<p>Atenção sobretudo às hipóteses trazidas com a nova lei (muita chance de prova): credenciamento (inciso IV) e imóveis (inciso V).</p>
+<p>• Licitação DISPENSÁVEL</p>
+<p>Até há competição, mas a lei permite dispensar ou não (discricionariedade).</p>
+<p>Rol taxativo (art. 75).</p>
+<p>Muita atenção aos limites para a “dispensa de baixo valor”: <u data-redactor-tag="u">até 50 mil</u> (regra geral) ou <u data-redactor-tag="u">até 100 mil</u> (obras, engenharia e manutenção de veículos).</p>
+<p>O rol do artigo 75 é grande, mas após algumas leituras, você verá que faz sentido: são situações relativas a emergência, calamidade pública, segurança nacional ou outras situações específicas.</p>
+<p>• Licitação DISPENSADA</p>
+<p>A lei determina que não haja licitação (vinculação).<br>São alguns casos de alienação de bens (art. 76).</p>
+<p>Atenção também a:</p>
+<p>- Responsabilidade <u data-redactor-tag="u">solidária</u> do contratado e do agente público (dolo, fraude ou erro grosseiro).</p>
+<p>- Instrumentos auxiliares (art. 78) = são novidades da NLLC, portanto vale uma leitura cuidadosa.</p>
+<p>Um deles, porém, é figurinha carimbada em prova: “<strong data-redactor-tag="strong" data-verified="redactor">sistema de registro de preços</strong>”.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">​<span data-verified="redactor" data-redactor-tag="span">PARTE 4</span></strong></p>
+<p>TÍTULO III - DOS CONTRATOS (art. 89 a 154)</p>
+<p>Atenção para:</p>
+<p>- Contrato <u data-redactor-tag="u">escrito</u> (regra) e contrato <u data-redactor-tag="u">verbal</u> (exceção).</p>
+<p>- Cláusulas exorbitantes - posição de supremacia da Administração = modificação unilateral (art. 124), extinção unilateral (arts. 137 e 138, I), fiscalização (arts. 117 e 118), sanções (arts. 155 a 163), dentre outras.</p>
+<p>*As bancas adoram cobrar acerca das alterações que a contrada é obrigada a aceitar (ex: em regra, <u data-redactor-tag="u">até 25%</u> de acréscimos ou supressões).</p>
+<p>- Inadimplência de encargos pela contratada e responsabilização da Administração, salvo nos serviços contínuos com mão de obra exclusiva:</p>
+<p>Encargos PREVIDENCIÁRIOS = responsabilidade <u data-redactor-tag="u">solidária</u>.<br>Encargos TRABALHISTAS = responsabilidade <u data-redactor-tag="u">subsidiária</u> (em caso de falha na fiscalização).</p>
+<p>Não confunda:</p>
+<p>- <u data-redactor-tag="u">Reajuste em sentido estrito</u> = Índices específicos ou setoriais.<br>- <u data-redactor-tag="u">Repactuação</u> = Demonstração analítica da variação dos custos (quando há mão de obra exclusiva – ex: contrato de terceirização da limpeza).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">​<span data-verified="redactor" data-redactor-tag="span">PARTE 5</span></strong></p>
+<p>Na parte final da lei, ainda precisamos saber:</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Sanções e procedimento sancionatório (artigos 155 a 162).</strong></p>
+<p>Advertência, multa (0,5 a 30%), impedimento de licitar (até 3 anos) e contratar e declaração de inidoneidade para licitar ou contratar (de 3 a 6 anos).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Recursos administrativos (artigos 164 a 168).</strong></p>
+<p>Atenção às diferenças entre recurso e pedido de reconsiderção, como a aplicação e os prazos de cada um em cada situação.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Crimes em licitações e contratos administrativos.</strong></p>
+<p>A nova lei também promoveu alterações no Código Penal, prevendo os crimes dos artigos 337-E a 337-P.​</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/playlist?list=PL70rxKg7qWNWV9bGrCV74SS2-vv38m4sh" target="_blank" rel="noopener noreferrer">🎬 Playlist de videoaulas</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=27513&amp;subject_ids[]=27522" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=27513&amp;subject_ids[]=27522" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4uTBP" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=27513&amp;subject_ids[]=27522" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=27513&amp;subject_ids[]=27522" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44sjX" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span><br></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=27513&amp;subject_ids[]=27522" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FGV</a> </p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q48K4b" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FGV</a></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=27513&amp;subject_ids[]=27522" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a> </p>
+<p><a href="https://www.tecconcursos.com.br/questoes/cadernos/104670880" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a> </p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-6" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Processo administrativo federal (Lei nº 9.784)</h2>
+                            <div class="aula-corpo"><p>​A Lei nº 9.784/1999 regula o processo administrativo no âmbito da Administração Pública Federal.</p>
+<p>Além disso, ela nos traz importantes conceitos que são vistos em muitos pontos doutrinários da matéria de Direito Administrativo, por exemplo:</p>
+<p>- <u data-redactor-tag="u">Órgão</u> (sem Personalidade Jurídica) x <u data-redactor-tag="u">Entidade</u> (com PJ) - Conforme se estuda em "Organização da Administração Pública".</p>
+<p>- <u data-redactor-tag="u">Anulação</u> (vinculada) x <u data-redactor-tag="u">Revogação</u> (discricionária) - Conforme se estuda em "Atos Administrativos".</p>
+<p>- <u data-redactor-tag="u">Delegação</u> x <u data-redactor-tag="u">Avocação</u> - Conforme se estuda em "Poderes Administrativos".</p>
+<p>Ou seja, essa lei dá a base legislativa para muitos assuntos dentro da disciplina e, portanto, merece atenção redobrada. Por não ser tão longa (70 artigos), você conseguirá revisá-la várias vezes, e com isso garantirá as questões relativas.</p>
+<p>Também cai muito em prova:</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Competências indelegáveis </strong>(art. 13) = competência <u data-redactor-tag="u">EX</u>clusiva, atos <u data-redactor-tag="u">NO</u>rmativos e decisão de <u data-redactor-tag="u">R</u>ecursos <u data-redactor-tag="u">A</u>dm. (Mnemônico = "EX-NO-RA").</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Impedimentos</strong> (<u data-redactor-tag="u">até 3º grau</u>) e <strong data-redactor-tag="strong" data-verified="redactor">Suspeição </strong>- arts. 18 e 20.</p>
+<p>*MUITO cuidado para não confundir as regras processuais da seara administrativa com as outras searas.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Principais prazos:</strong></p>
+<p>- Intimação = <u data-redactor-tag="u">mínimo 3 dias</u> de antecedência.</p>
+<p>- Parecer = <u data-redactor-tag="u">15 dias</u>.</p>
+<p>- Decisão da Adm = <u data-redactor-tag="u">30 dias</u> (prorrogáveis + 30).</p>
+<p>- Recurso = <u data-redactor-tag="u">10 dias</u>.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Hipóteses de motivação obrigatória</strong> (art. 50).</p>
+<p>Dê também uma atenção especial ao capítulo sobre a "<strong data-redactor-tag="strong" data-verified="redactor">Decisão Coordenada</strong>" (arts. 49-A a 49-G). Trata-se de uma novidade desde 2021.</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=JvyuHXnHWZM" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=d4kvMzQ87xM" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/playlist?list=PLhTKk53U8pNnfufLLx87OeUQugM6w0uOV" target="_blank" rel="noopener noreferrer">🎬 Playlist de videoaulas</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=J7ySmC-Aq1Y&amp;pp=ygUTbGVpIDkuNzg0IHF1ZXN0w7Vlcw==" target="_blank" rel="noopener noreferrer">🎬 Questões em vídeo</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=12" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=12" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4uT7R" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=12" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span>​</span>​</span><br></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44saq" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=12" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FGV</a></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4HGR2" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FGV</a></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=12" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a> </p>
+<p><a href="https://www.tecconcursos.com.br/s/Q75B1o" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a> </p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Improbidade administrativa (Lei nº 8.429)</h2>
+                            <div class="aula-corpo"><p><span class="selectable-text copyable-text xkrh14z" data-redactor-tag="span" data-redactor-class="selectable-text copyable-text xkrh14z" data-verified="redactor">HISTÓRICO DE ATUALIZAÇÕES:</span></p>
+<p><span style="background-color:initial" rel="background-color: initial;" data-verified="redactor" data-redactor-tag="span" data-redactor-style="background-color: initial;">13/12/2025 = Atualização jurisprudencial.</span></p>
+<p>08/07/2026 = Atualização jurisprudencial.</p>
+<p><span style="background-color:initial" rel="background-color: initial;" data-verified="redactor" data-redactor-tag="span" data-redactor-style="background-color: initial;">​</span>O estudo do tema "Improbidade" começa, na verdade, lá no Direito Constitucional, no capítulo da Administração Pública (mais precisamente art. 37, § 4º). Lá descobrimos que, dentre outras coisas, a improbidade gera:</p>
+<p>- SUSPENSÃO dos direitos políticos</p>
+<p>- PERDA da função pública</p>
+<p>*Uma pegadinha clássica é a questão dizer que gera a perda dos direitos políticos (gera a suspensão).</p>
+<p>Acerca da legislação em si, muita gente acaba confundindo: a Lei de Improbidade Administrativa - LIA é e sempre foi a Lei nº 8.429/1992. A Lei nº 14.230/2021 <strong data-redactor-tag="strong" data-verified="redactor">apenas alterou</strong> a LIA. Você não precisa estudá-la sepadaramente também, pois todas as novidades estão contidas na versão mais atualizada da Lei 8.429.</p>
+<p>Como dito, houve mudanças relativamente recentes nessa Lei 8.429 (em 2021), e tudo o que é novidade a banca gosta de cobrar em prova. Portanto, os artigos que tiverem ao lado a informação de que foram adicionados ou modificados pela Lei 14.230 merecem ainda mais a sua atenção (uma das maiores novidades:&nbsp;a exigência de <strong data-redactor-tag="strong" data-verified="redactor">DOLO </strong>para caracterização do ato de improbidade).</p>
+<p>​Geralmente as questões versam sobre os "3 tipos de atos de improbidade":</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Enriquecimento ilícito</strong> (art. 9º)</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Prejuízo ao erário </strong>(art. 10)</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Violação dos princípios</strong> (art. 11)</p>
+<p>Cada um desses 3 grupos possui:</p>
+<p>- <u data-redactor-tag="u">requisitos</u> e <u data-redactor-tag="u">penas</u> diferentes (art. 12)</p>
+<p>- e principalmente: um <u data-redactor-tag="u">rol de hipóteses/condutas</u> distintas entre si (que a banca adora trocar)</p>
+<p>DICA: sempre olhe para os VERBOS que iniciam os incisos</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Receber/perceber</strong> = enriquecimento ilícito</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Permitir/facilitar/concorrer</strong> = prejuízo ao erário</p>
+<p>*Também muito cobrado nas provas: CAPÍTULO IV - Da Declaração de Bens (art. 13).</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=JffdIzhf_js" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=v75Uh95kq1k" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span><br></p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=4BMJzJyLi6Q" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=TnywC2Rb54c&amp;pp=ygUTbGVpIDguNDI5IHF1ZXN0w7Vlcw==" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=LvRdegIoTzQ&amp;pp=ygUTbGVpIDguNDI5IHF1ZXN0w7Vlcw==" target="_blank" rel="noopener noreferrer">🎬 Questões em vídeo</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16073" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16073" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a href="https://www.tecconcursos.com.br/s/Q4uT7h" target="_blank" class="link-badge link-tec" rel="noopener noreferrer">🎯 TEC - Questões</a></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16073" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16073" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44sax" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span>​</span>​</span><br></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16073" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FGV</a></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q48Jxq" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FGV</a></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16073" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a> </p>
+<p><a href="https://www.tecconcursos.com.br/s/Q76nJY" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a> </p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=2&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;scholarity_ids[]=2&amp;sort=newest&amp;subject_ids[]=16073" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp - Nível médio</a></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q568jb" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp - Nível médio</a></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Lei de Introdução às Normas do Direito Brasileiro - LINDB (Decreto-Lei nº 4.657)</h2>
+                            <div class="aula-corpo"><p><strong data-redactor-tag="strong" data-verified="redactor">• É um conjunto de regras e princípios para:</strong></p>
+<p>- interpretação e aplicação da lei</p>
+<p>- vigência (aspectos temporal e espacial)</p>
+<p>- revogação</p>
+<p>- garantia de eficácia</p>
+<p>- fontes e integração</p>
+<p>- dentre outros</p>
+<p><span data-verified="redactor" data-redactor-tag="span"><strong data-redactor-tag="strong" data-verified="redactor">•&nbsp;A lei começa a vigorar:</strong></span></p>
+<p>- Regra geral =&nbsp;<u data-redactor-tag="u">45 dias</u>&nbsp;(salvo disposição contrária).</p>
+<p>- Regra geral para leis brasileiras com efeitos no estrangeiro =&nbsp;<u data-redactor-tag="u">3 meses</u>.</p>
+<p><span data-verified="redactor" data-redactor-tag="span"><strong data-redactor-tag="strong" data-verified="redactor">•&nbsp;Revogação tácita x expressa.</strong></span></p>
+<p><span data-verified="redactor" data-redactor-tag="span"><strong data-redactor-tag="strong" data-verified="redactor">•&nbsp;Lei geral x lei especial.</strong></span></p>
+<p>•&nbsp;<span data-verified="redactor" data-redactor-tag="span"><strong data-redactor-tag="strong" data-verified="redactor">Repristinação</strong> (em regra, NÃO acontece).</span></p>
+<p>•&nbsp;<strong data-redactor-tag="strong" data-verified="redactor"><span data-verified="redactor" data-redactor-tag="span">Extraterritorialidade</span>&nbsp;</strong>= possibilidade de a lei brasileira ser aplicada fora do território nacional.&nbsp;(regra geral = lei do país de&nbsp;<u data-redactor-tag="u">domícilio</u>&nbsp;do indíviduo).</p>
+<p>•&nbsp;<span data-verified="redactor" data-redactor-tag="span"><strong data-redactor-tag="strong" data-verified="redactor">Quando a lei for omissa</strong></span>&nbsp;=&nbsp;<u data-redactor-tag="u">analogia</u>,&nbsp;<u data-redactor-tag="u">costumes</u>&nbsp;e&nbsp;<u data-redactor-tag="u">princípios gerais</u>&nbsp;do direito.</p>
+<p>​*Trata-se de uma legislação mais cobrada nas questões de Direito Civil, porém alguns editais cobram&nbsp;dentro do conteúdo de Direito Administrativo. De fato, há temas bastante conexos ao que estudamos em Direito Administrativo, sobretudo na parte de Princípios da Administração Pública.&nbsp;Essas passagens merecem atenção:</p>
+<p>- Artigos 1º ao 7º (atenção especial para os temas citados acima)&nbsp;</p>
+<p>- Artigos 20 ao 30 (segurança jurídica)</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=PL5lkcdIUAw" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=NlJ2jhvOOeI" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=pYMAxXZf_0o" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=8&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=393" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=8&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=393" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4v027" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=8&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=393" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4DbVD" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space">​</span>​</span></span></span></span></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=8&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=393" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FGV</a></p>
+<p><span class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q5CJou" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FGV</a></span></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=8&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=393" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a> </p>
+<p><a href="https://www.tecconcursos.com.br/s/Q75B5j" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a> </p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Lei nº 11.416 - Plano de Carreira no Judiciário Federal</h2>
+                            <div class="aula-corpo"><p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=558&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=19273" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q75z1S" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Lei de abuso de autoridade (Lei nº 13.869)</h2>
+                            <div class="aula-corpo"><p>​Trata-se de uma lei comumente cobrada em Direito Penal e/ou Direito Processual Penal, porém alguns editais a cobram dentro do conteúdo de Direito Administrativo.</p>
+<p>Quanto à cobrança dessa lei dentro das questões de Direito Administrativo, percebe-se um foco maior na&nbsp;“Parte Geral” (artigos 1º ao 8º).</p>
+<p>• Crime de abuso de autoridade = requer <u data-redactor-tag="u">dolo específico</u> (especial fim de agir).</p>
+<p>•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Efeitos da condenação = Obrigação de indenizar o dano + Inabilitação de <u data-redactor-tag="u">1 a 5 anos</u> + Perda do cargo.</p>
+<p>•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Penas restritivas de direito = Prestação de serviços e/ou Suspensão do exercício (<u data-redactor-tag="u">1 a 6 meses</u>).</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=bfOwf9M0pwI" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=tRaMAOv4gyk&amp;pp=ygUabGVpIGRlIGFidXNvIGRlIGF1dG9yaWRhZGU=" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=9&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=17461" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=9&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=17461" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4utpt" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span><br></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=9&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=17461" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44se0" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=9&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=17461" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FGV</a> </p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4HUU2" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FGV</a></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=9&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=17461" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a> </p>
+<p><a href="https://www.tecconcursos.com.br/s/Q75B8A" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a> </p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-7" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">BÔNUS - Links complementares</h2>
+                            <div class="aula-corpo"><p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=wrong&amp;per_page=20&amp;sort=newest" target="_blank" class="link-badge link-qc" rel="noopener noreferrer">📝 QC - Questões</a>• Questões que você errou ao longo da preparação:</p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=2&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=wrong&amp;per_page=20&amp;sort=newest" target="_blank" class="link-badge link-qc" rel="noopener noreferrer">📝 Aprenda com os erros - Todas as suas questões erradas no QC</a> </p>
+<p><a class="link-badge link-qc" target="_blank" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=1&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=wrong&amp;per_page=20&amp;sort=newest" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" target="_blank" href="https://www.tecconcursos.com.br/s/Q5Fgyc" rel="noopener noreferrer">🎯 Aprenda com os erros - Todas as suas questões erradas no TEC</a></span></p>
+<p><span data-redactor-tag="span" data-verified="redactor" data-redactor-style="font-size: 10px;" rel="font-size: 10px;" style="font-size:10px">*Atenção se você resolve questões pelo TEC Concursos. Para utilizar esse filtro das questões erradas, antes é preciso fazer uma "atualização" para que o sistema reconheça e traga as questões que você errou. Passo a passo: clique no link acima, vá na aba CONFIGURAÇÕES, clique em VERIFICAR ATUALIZAÇÕES e por fim em CONCLUIR ATUALIZAÇÃO.</span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"></span>• Sugestões de videoaulas e playlists:</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/playlist?list=PLX-4skTGVrWXgb1TlLGExnF9MoIVjSH0M" rel="noopener noreferrer">🎬 Playlist de videoaulas</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/playlist?list=PLbQeIXJbBuGIaA2PdmfyjrIUqhZtDVL2E" rel="noopener noreferrer">🎬 Playlist de videoaulas</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/playlist?list=PLvylrP0JLU-88zQsST8phJd6wo_w4jUDG" rel="noopener noreferrer">🎬 Playlist de videoaulas</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/playlist?list=PLZvSkVqe_ub6Swq0pl8UVCXNy-Bs3AQ7c" rel="noopener noreferrer">🎬 Playlist de videoaulas</a></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=Mlz0AmdmS-A" rel="noopener noreferrer">🎬 Aulão de revisão</a><br></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=SusIQkLG-mA" rel="noopener noreferrer">🎬 Aulão de revisão</a>​</span><br></p>
+<p><span>• Tem mais alguma boa sugestão? Comente aqui para que eu possa adicionar</span><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" rel="background-color: initial;" data-redactor-style="background-color: initial;" style="background-color:initial">​ :)</span><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" rel="background-color: initial;" data-redactor-style="background-color: initial;" style="background-color:initial">​</span></p></div>
+                        </article>
+                    
+                    </section>
+                
+    </main>
+
+    <script>
+        if (document.documentElement.classList.contains('dark')) {
+            document.getElementById('theme-btn-label').innerText = '☀️ Modo Claro';
+        } else {
+            document.getElementById('theme-btn-label').innerText = '🌙 Modo Escuro';
+        }
+    </script>
+</body>
+</html>

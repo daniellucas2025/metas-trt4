@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direito do Trabalho</title>
+    <style>
+        /* Variáveis de Tema (Light e Dark) */
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --text-strong: #000000;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --tabs-bg: #e2e8f0;
+            --primary: #2563eb;
+            --badge-border-alpha: 0.2;
+        }
+
+        html.dark {
+            --bg: #09090b;
+            --card: #18181b;
+            --text: #f4f4f5;
+            --text-strong: #ffffff;
+            --muted: #a1a1aa;
+            --border: #27272a;
+            --tabs-bg: #27272a;
+            --primary: #3b82f6;
+            --badge-border-alpha: 0.35;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.7;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 30px 20px;
+            transition: background 0.25s, color 0.25s;
+        }
+
+        .header { max-width: 960px; margin: 0 auto 30px auto; text-align: center; position: relative; }
+        .header h1 { font-size: 2.1rem; margin: 0 0 10px 0; color: var(--text-strong); }
+        
+        /* Botão Alternador de Modo Escuro */
+        .theme-toggle {
+            position: absolute; right: 0; top: 0;
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--text); padding: 8px 14px; border-radius: 20px;
+            cursor: pointer; font-size: 13px; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover { transform: scale(1.04); }
+
+        .tabs-nav { max-width: 960px; margin: 0 auto 24px auto; display: flex; gap: 8px; flex-wrap: wrap; background: var(--tabs-bg); padding: 6px; border-radius: 10px; }
+        .tab-btn { background: transparent; border: none; padding: 10px 18px; font-size: 0.95rem; font-weight: 600; color: var(--muted); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .tab-btn:hover { color: var(--text); background: rgba(125,125,125,0.15); }
+        .tab-btn.active { background: var(--card); color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        
+        .container { max-width: 960px; margin: 0 auto; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeIn 0.25s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        .aula-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 26px 30px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+        .aula-titulo { font-size: 1.35rem; color: var(--text-strong); margin-top: 0; border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; }
+        .aula-corpo p { margin: 12px 0; }
+        hr { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
+
+        /* Badges de links especiais adaptáveis ao Dark Mode */
+        .link-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; margin: 4px 2px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: transform 0.15s, opacity 0.15s; }
+        .link-badge:hover { transform: translateY(-1px); opacity: 0.9; text-decoration: none; }
+
+        .link-youtube { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, var(--badge-border-alpha)); }
+        .link-qc { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, var(--badge-border-alpha)); }
+        .link-tec { background: rgba(14, 165, 233, 0.15); color: #38bdf8; border: 1px solid rgba(14, 165, 233, var(--badge-border-alpha)); }
+        .link-geral { background: rgba(100, 116, 139, 0.15); color: var(--text); border: 1px solid var(--border); }
+
+        strong { color: var(--text-strong); }
+        u { text-decoration-color: var(--primary); text-underline-offset: 3px; }
+    </style>
+    <script>
+        function openTab(tabId, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('curso-theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-btn-label').innerText = isDark ? '☀️ Modo Claro' : '🌙 Modo Escuro';
+        }
+
+        // Aplica tema salvo ou preferência do sistema
+        (function() {
+            const saved = localStorage.getItem('curso-theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div class="header">
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span id="theme-btn-label">🌙 Alternar Tema</span>
+        </button>
+        <h1>Direito do Trabalho</h1>
+        <p style="color:var(--muted); margin:0;">Material Compilado • Suporte a Modo Escuro</p>
+    </div>
+
+    <nav class="tabs-nav">
+        <button class="tab-btn active" onclick="openTab('mod-tab-0', this)">Introdução ao direito do trabalho</button>
+<button class="tab-btn " onclick="openTab('mod-tab-1', this)">Contrato de trabalho</button>
+<button class="tab-btn " onclick="openTab('mod-tab-2', this)">Extinção do contrato</button>
+<button class="tab-btn " onclick="openTab('mod-tab-3', this)">Jornada de trabalho e férias</button>
+<button class="tab-btn " onclick="openTab('mod-tab-4', this)">Remuneração</button>
+<button class="tab-btn " onclick="openTab('mod-tab-5', this)">Direito coletivo</button>
+<button class="tab-btn " onclick="openTab('mod-tab-6', this)">Outros assuntos</button>
+<button class="tab-btn " onclick="openTab('mod-tab-7', this)">BÔNUS - Compilado de jurisprudência trabalhista</button>
+<button class="tab-btn " onclick="openTab('mod-tab-8', this)">BÔNUS - Materiais complementares</button>
+
+    </nav>
+
+    <main class="container">
+        
+                <section id="mod-tab-0" class="tab-panel active">
+                    
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Conceito e fontes do direito do trabalho</h2>
+                        <div class="aula-corpo"><p>Esse estudo inicial&nbsp;é fundamental para compreender de onde surgem as regras que estruturam a proteção jurídica ao trabalhador. Antes de analisar direitos e deveres específicos, é preciso entender como o Direito do Trabalho se forma: quais fatos sociais impulsionam a criação de normas (fontes materiais), quais instrumentos jurídicos positivam essas regras no ordenamento (fontes formais), como se classificam as normas produzidas pelas próprias partes ou pelo Estado, e como se resolve a convivência entre várias fontes, inclusive a hierarquia entre elas.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</p>
+<p>São assuntos&nbsp;introdutórios&nbsp;e, embora não tenham sido frequentes nas últimas provas, é fundamental conhecer o básico:</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Fontes MATERIAIS e fontes FORMAIS</strong></p>
+<p>Dentro de fontes FORMAIS temos:</p>
+<p>- Fontes <u data-redactor-tag="u">autônomas</u> =&nbsp;se originam da própria vontade&nbsp;das partes envolvidas&nbsp;— negociações coletivas (ACT e CCT), usos e costumes, contrato de trabalho, regulamento empresarial...</p>
+<p>- Fontes <u data-redactor-tag="u">heterônomas</u>&nbsp;=&nbsp;são impostas por um terceiro,&nbsp;geralmente o Estado — CF, leis federais, decretos, portarias, sentenças normativas, laudo arbitral, tratados e convenções internacionais...</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Atenção especial ao artigo 8º da CLT:</strong></p>
+<p>As autoridades administrativas e a Justiça do Trabalho, <span data-redactor-tag="span" data-verified="redactor">na falta de disposições legais ou contratuais</span>, decidirão, conforme o caso, pela jurisprudência, por analogia, por equidade e outros princípios e normas gerais de direito, principalmente do direito do trabalho, e, ainda, de acordo com os usos e costumes, o direito comparado, mas sempre de maneira que <span data-redactor-tag="span" data-verified="redactor">nenhum</span> interesse de classe ou particular prevaleça sobre o interesse público.</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=Ck_nZUxEhKk" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=-moHuAuVNhc" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16475&amp;subject_ids[]=16478" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16475&amp;subject_ids[]=16478" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q59D7F" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span><br></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Princípios do direito do trabalho</h2>
+                        <div class="aula-corpo"><p>Os princípios constituem a base estrutural de toda a disciplina, funcionando como diretrizes que orientam a criação das normas, guiam sua interpretação e suprem lacunas quando a lei é insuficiente. Embora as provas recentes não tenham explorado esse tópico de forma isolada, seu domínio é fundamental, porque esses princípios permeiam praticamente todos os institutos trabalhistas.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor"><span data-redactor-tag="span" data-verified="redactor"></span>Alguns princípios importantíssimos:</strong></p>
+<p>- Princípio da proteção (visa dar superioridade jurídica ao lado hipossuficiente da relação - o trabalhador)&nbsp;</p>
+<p>- In dubio pro misero&nbsp;(quando há dúvida entre interpretações&nbsp;de&nbsp;<span data-redactor-tag="span" data-verified="redactor">UMA</span> mesma norma)</p>
+<p>- Norma mais favorável (quando há&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>dúvida entre MAIS DE UMA&nbsp;norma)</p>
+<p>- Condição mais benéfica /&nbsp;Inalterabilidade contratual lesiva<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span> (o contrato não pode ser  alterado para pior, em regra<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>)</p>
+<p>- Indisponibilidade dos direitos / Irrenunciabilidade (em regra,&nbsp;o empregado não pode&nbsp;<span data-redactor-tag="span" data-verified="redactor">renunciar</span> a suas vantagens<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>)</p>
+<p>- Continuidade da relação de emprego (preservação e manutenção do contrato)</p>
+<p>- Primazia da realidade dos fatos (os FATOS prevalecem sobre a FORMA<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>)</p>
+<p>- Jus variandi (estudaremos também no tópico&nbsp;sobre <u data-redactor-tag="u">alteração do contrato</u>)</p>
+<p>- Intervenção mínima na vontade coletiva (estudaremos também no tópico sobre <u data-redactor-tag="u">negociações coletivas</u>)</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Esses assuntos são essencialmente doutrinários, mas costumam aparecer de forma contextualizada com&nbsp;alguns artigos da CLT.</strong></p>
+<p>Domine especialmente&nbsp;as Súmulas 51 e 212.</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=eiGRoSzmExA" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=s7UuX-RypUE" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=zDYLr9d15cg" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=320" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=320" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pKi" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></span></span></span></span></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Direitos constitucionais dos trabalhadores</h2>
+                        <div class="aula-corpo"><p>​​​​HISTÓRICO DE ATUALIZAÇÕES:</p>
+<p><span>20/10/2026 = De acordo com a Emenda Constitucional nº 141/2026.​</span></p>
+<p><span>Assunto comum ao Direito do Trabalho&nbsp;e ao Direito Constitucional,&nbsp;o estudo dos direitos constitucionais dos trabalhadores&nbsp;é essencial para compreender o núcleo mínimo de proteção garantido a todos os trabalhadores urbanos e rurais — e, com particularidades, aos domésticos e servidores públicos.</span></p>
+<p>Esses direitos funcionam como a espinha dorsal do Direito do Trabalho, pois trazem a base sobre temas que serão aprofundados adiante na matéria — como salário, jornada, proteção contra despedida arbitrária, adicionais, licenças, férias, prescrição e normas coletivas.</p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=aShblrvZDro" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=UVwhBXyh05k" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=3&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=436" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=3&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=436" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q59DKA" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span><br></span></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Relação de trabalho e relação de emprego</h2>
+                        <div class="aula-corpo"><p>Tema&nbsp;indispensável para compreender toda a estrutura do Direito do Trabalho, pois diferencia o gênero "relação de trabalho"&nbsp;(RT)<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span> — toda forma de prestação de serviço humano — de uma de suas espécies mais importantes: a "relação de emprego" (RE), que só se forma quando estão presentes requisitos específicos, como <u data-redactor-tag="u">pessoalidade</u>, <u data-redactor-tag="u">subordinação</u>, <u data-redactor-tag="u">onerosidade</u>, <u data-redactor-tag="u">não eventualidade</u> e prestação por <u data-redactor-tag="u">pessoa física</u>.&nbsp;</p>
+<p>Ou seja, a a&nbsp;RT é um gênero que comporta várias espécies —&nbsp;uma delas a RE, que é uma "RT especial/qualificada", pois tem alguns requisitos obrigatórios.</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/live/DzgDPPVF0hg?si=yGUhG-5gDC1jscUP&amp;t=1140" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=LCkKgC5IHrI" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span><br></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=6604" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=6604" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pMx" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></span></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Empregador, grupo econômico, sucessão, sócio retirante, terceirização...</h2>
+                        <div class="aula-corpo"><p>​Imagine a relação de emprego como um grande palco. O empregado é o artista que executa a atividade, mas quem decide o roteiro, paga o cachê e assume os riscos do espetáculo é o empregador. Ele pode ser uma empresa grande, pequena, individual, coletiva — até um profissional liberal — desde que admita, assalarie e dirija a prestação do serviço.&nbsp;</p>
+<p>Às vezes, esse empregador não está sozinho: ele faz parte de um grupo econômico, uma espécie de “família de empresas” que atua de forma integrada, e todas elas respondem solidariamente pelos direitos trabalhistas. Há ainda momentos em que o espetáculo muda de dono: é a sucessão trabalhista, onde a nova empresa assume de onde a anterior parou<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​.</span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">Lembre-se:</span></p>
+<p><span data-verified="redactor" data-redactor-tag="span"><strong data-redactor-tag="strong" data-verified="redactor">• Empregado e empregador</strong></span>&nbsp;(são os sujeitos da relação de emprego)<br></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor"><span data-verified="redactor" data-redactor-tag="span">• </span><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Grupo econômico</strong> (regra geral: responsabilidade <u data-redactor-tag="u">solidária ativa e passiva</u>) —&nbsp;*não basta a mera identidade de sócios<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor"><span data-verified="redactor" data-redactor-tag="span">• </span><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Sócio retirante</strong> (regra geral: responsabilidade <u data-redactor-tag="u">subsidiária</u>) — *só em ações ajuizadas até <u data-redactor-tag="u">2 anos</u> depois&nbsp;da averbação da&nbsp;modificação do contrato</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor"><span data-verified="redactor" data-redactor-tag="span">• </span><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Sucessão de empregadores</strong> (regra geral: responsabilidade da empresa <u data-redactor-tag="u">sucessora</u>)</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Terceirização (</strong>além da jurisprudência consolidada do TST, muita atenção também às decisões do STF)</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=tkfeei94Fcc" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=KDNIKKs3YOU" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=0FmU9AwIQpw" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=1044&amp;subject_ids[]=1117" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=1044&amp;subject_ids[]=1117" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q59DN6" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></span></span></span></p></div>
+                    </article>
+                
+                </section>
+            
+                <section id="mod-tab-1" class="tab-panel ">
+                    
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Características, prazo determinado, trabalho intermitente...</h2>
+                        <div class="aula-corpo"><p>O estudo do contrato de trabalho, de suas características essenciais e das modalidades de contratação — especialmente o contrato por prazo determinado e o trabalho intermitente — é fundamental para compreender como a relação empregatícia se forma, se desenvolve e se adapta às necessidades das partes.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</p>
+<p>Atenção para os 2 tipos de contrato mais cobrados em prova:</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Contrato por prazo determinado</strong> (Art. 443 - § 1º e 2º, Art. 451 e 452)</p>
+<p>-&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​é a exceção (pois a regra é o prazo indeterminado)</span><br>- até <u data-redactor-tag="u">2 anos</u><span data-redactor-tag="span" data-verified="redactor">, admitida apenas <u data-redactor-tag="u">1 prorrogação</u> (*experiência = <u data-redactor-tag="u">90 dias</u>)</span><br>- pode ser convertido em prazo indeterminado</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Contrato de trabalho intermitente</strong> (Art. 443 - § 3º e Art. 452-A)</p>
+<p>- natureza não contínua<br>- convocação = <u data-redactor-tag="u">3 dias CORRIDOS de antecedência</u><br>- resposta = <u data-redactor-tag="u">1 dia ÚTIL</u><span data-redactor-tag="span" data-verified="redactor">&nbsp;</span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=Ygv4rCsescY" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=PTHOElT8BvY" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16489" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16489" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pNn" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></span></span></span></span></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Alteração do contrato</h2>
+                        <div class="aula-corpo"><p>​O estudo da alteração do contrato de trabalho é essencial para compreender até onde o empregador pode exercer seu poder diretivo e em que momento a modificação contratual passa a ser ilícita por violar o princípio da inalterabilidade contratual lesiva.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Regra geral</strong> = mútuo consentimento (bilateralidade) + sem prejuízos ao empregado</p>
+<p><span data-redactor-tag="span" data-verified="redactor"></span><strong data-redactor-tag="strong" data-verified="redactor">Exceção</strong> = jus variandi (alterações unilaterais por parte do empregador e seu poder diretivo)</p>
+<p>*Hoje não há mais a manutenção/incoração da gratificação, independente do tempo na função de confiança, sendo permitida a reversão (volta ao cargo de origem, deixando a função).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Transferência do empregado</strong> = mútuo acordo/bilateral (salvo cargo de confiança, cláusula contratual, extinção do estabelecimento ou transferência provisória com adicional de <u data-redactor-tag="u">25% no mínimo</u>).</p>
+<p>*Mesmo sendo o caso de cargo de confiança ou cláusula contratual, é preciso haver real necessidade do serviço.</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=ufv22WFPYgk" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=gcvGE62BlsU" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=3pgrXYg2UL4" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=698" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=698" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q59DXb" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span><br></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Suspensão e interrupção do contrato</h2>
+                        <div class="aula-corpo"><p>HISTÓRICO DE ATUALIZAÇÕES:</p>
+<p>23/04/2026 = De acordo com a Lei nº 15.377/2026.</p>
+<p>​Para acertar as questões, você precisa de 2 coisas:</p>
+<p>1. <strong data-redactor-tag="strong" data-verified="redactor">Saber diferenciar</strong> <u data-redactor-tag="u">suspensão</u> (sem trabalhar e sem receber) e <u data-redactor-tag="u">interrupção</u> (sem trabalhar mas recebendo).</p>
+<p>2. <strong data-redactor-tag="strong" data-verified="redactor">Conhecer bem as hipóteses de cada uma</strong>.</p>
+<p>- Exemplos (suspensão) = capacitação profissional, greve...</p>
+<p>- Exemplos (interrupção) = luto, casamento, doação de sangue...</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=y6p7tj_57uc" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=hx2wKDTC6Dk" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=xCTyGv--3nQ" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=WzgbpyRuKuE" rel="noopener noreferrer">🎬 Videoaula</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=1461" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=1461" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pOP" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span>​</span><br></p></div>
+                    </article>
+                
+                </section>
+            
+                <section id="mod-tab-2" class="tab-panel ">
+                    
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Formas de extinção e verbas rescisórias</h2>
+                        <div class="aula-corpo"><p>Vamos estudar acerca do&nbsp;encerramento do contrato, passando por todas as formas de extinção&nbsp;e as consequências de cada uma.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p>​• <strong data-redactor-tag="strong" data-verified="redactor">Obrigações do empregador</strong> quando da dispensa/extinção/rescisão do CT (anotação na CTPS + comunicação aos órgãos competentes + pagamento das verbas rescisórias).</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Hipóteses </strong><strong data-redactor-tag="strong" data-verified="redactor">de</strong>:</p>
+<p>- Justa causa = culpa exclusiva do trabalhador</p>
+<p>- Rescisão indireta ("justa causa do empregador")&nbsp;=&nbsp;culpa exclusiva do empregador</p>
+<p>- Culpa recíproca&nbsp;=&nbsp;culpa&nbsp;de ambas as partes</p>
+<p>- Dispensa arbitrária = sem justa causa</p>
+<p>- Distrato (acordo) = acordo entre as partes</p>
+<p>- Término antecipado do contrato por prazo determinado =&nbsp;fim antes do prazo estipulado<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Verbas rescisórias e indenização devidas em cada modalidade​</strong></p>
+<p>Despencam em prova:</p>
+<p>*<u data-redactor-tag="u">Acordo</u> = METADE do aviso prévio indenizado e da indenização/multa do FGTS, além de 80% da movimentação da conta FGTS e 100% das demais verbas.</p>
+<p>*<u data-redactor-tag="u">Culpa recíproca</u> = METADE da indenização,&nbsp;aviso prévio, 13º e férias proporcionais.</p>
+<p>Domine especialmente a Súmula 14 e a&nbsp;OJ 238<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​.</span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=88IjNluHCUQ" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=5mcoLnVJsQY" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=_FUIT6crMeA" rel="noopener noreferrer">🎬 Videoaula</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=699&amp;subject_ids[]=16508" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=699&amp;subject_ids[]=16508" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pOn" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span><br></span></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Aviso prévio</h2>
+                        <div class="aula-corpo"><p>É o instituto que marca o início da fase final do contrato de trabalho, projetando seus efeitos para o futuro e definindo o tempo que ainda integrará o vínculo antes da rescisão. Estudaremos as regras específicas sobre contagem do tempo, forma de cumprimento, projeção contratual, estabilidade, renúncia e indenização.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Prazo do Aviso Prévio:</strong></p>
+<p>Mínimo = <u data-redactor-tag="u">30 dias</u><br><u data-redactor-tag="u">+ 3 dias</u> para cada ano<br>Máximo = <u data-redactor-tag="u">até 90 dias</u></p>
+<p>*Atenção à forma de contagem desse prazo: a banca FCC tem cobrado um entendimento minoritário no que tange à forma de contagem do aviso prévio (considerando o acréscimo de + 3 dias somente a partir do 2º ano completo).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Aviso Prévio Indenizado ou Trabalhado</strong></p>
+<p>Se trabalhado:</p>
+<p>- Direito à redução diária de <u data-redactor-tag="u">2 horas</u><br>- Ou a faltar <u data-redactor-tag="u">7 dias</u> corridos</p>
+<p>Em ambos os casos, o termo final do contrato é somente ao fim do AP.</p>
+<p>*Muita atenção à Súmula 276 (irrenunciabilidade do AP, salvo novo emprego).</p>
+<p>*O aviso prévio é incompatível com as garantias provisórias no emprego - só haverá AP após o fim da "estabilidade" (Súmula 348).</p>
+<p>Domine também as Súmulas 73, 230, 305, 354 e 371.</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=uRQTu03Cjp8&amp;pp=ygUUa2xpcHBlbCBhdmlzbyBwcmV2aW8=" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=eOzvoG4nFk4" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=mXE6vb5Xv98&amp;pp=ygURYXVsYSBhdmlzbyBwcmV2aW8=" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=9SiJIaidXb8&amp;pp=ygUMYXZpc28gcHJldmlv" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=700" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=700" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pOu" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Estabilidade da gestante</h2>
+                        <div class="aula-corpo"><p>O uso consagrou a expressão “estabilidade” ou “estabilidade provisória”,&nbsp;mas tecnicamente falando é um tipo de “garantia&nbsp;provisória&nbsp;no emprego”.&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"></span>Portanto, pode aparecer na sua prova com uma ou outra nomenclatura.</p>
+<p>Qual a principal?</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Gestante</strong> (da confirmação da gravidez <u data-redactor-tag="u">até 5 meses após o parto</u>)</p>
+<p>*Não confundir com a<strong data-redactor-tag="strong" data-verified="redactor"> licença-maternidade</strong> (<u data-redactor-tag="u">120 dias</u>)</p>
+<p>Você precisa dominar a Súmula 244</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=ffxKOFN0NAQ&amp;pp=ygUsZGlyZWl0byBkbyB0cmFiYWxobyBlc3RhYmlsaWRhZGUgZGEgZ2VzdGFudGU=" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=ZmCOu83AhYM&amp;pp=ygUsZGlyZWl0byBkbyB0cmFiYWxobyBlc3RhYmlsaWRhZGUgZGEgZ2VzdGFudGU=" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;q=gravidez&amp;sort=newest&amp;subject_ids[]=702" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;q=gravidez&amp;sort=newest&amp;subject_ids[]=702" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q59DjR" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span><br></p></div>
+                    </article>
+                
+                </section>
+            
+                <section id="mod-tab-3" class="tab-panel ">
+                    
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Jornada, horas extras, intervalos, trabalho noturno...</h2>
+                        <div class="aula-corpo"><p>Esse conjunto de temas ligados à duração do trabalho — jornada, intervalos, DSR, trabalho noturno, horas extras, compensação, banco de horas...&nbsp;— forma um dos núcleos de conhecimento&nbsp;mais cobrados nessa disciplina.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor"><u>IMPORTANTE: os incisos XIII e XV do art. 7º da CF tiveram a redação alterada pela EC nº 141/2026 (jornada de 40h semanais e repouso semanal remunerado de 2 dias, com regras de transição). No material em PDF, eu te explico&nbsp;o que muda no seu estudo agora.</u></strong><span>​</span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">Você pode dividir o estudo desse assunto​ em 2 partes:</span></p>
+<p>​<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">PARTE 1:​</span>​</span></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Da duração do trabalho / da jornada de trabalho</strong></p>
+<p>Regra = máximo <u data-redactor-tag="u">8h diárias</u> e <u data-redactor-tag="u">44h semanais</u><span data-redactor-tag="u">, segundo a CLT</span></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Horas in itinere</strong></p>
+<p>Embora ainda costume vir previsto nos editais, lembre que hoje não existem mais as "horas in itinere", que eram hipóteses em que o tempo de deslocamento era considerado como tempo trabalhado. A reforma trabalhista acabou com isso.</p>
+<p>Você precisa se atentar ao conceito de "tempo à disposição" (Art. 4º da CLT), o que é considerado e principalmente o que não é (incisos do § 2º).</p>
+<p><span data-verified="redactor" data-redactor-tag="span"><strong data-redactor-tag="strong" data-verified="redactor">• Trabalho extraordinário</strong></span></p>
+<p>Duração = máximo&nbsp;<u data-redactor-tag="u">2 horas</u>&nbsp;por dia<br>Adicional = mínimo&nbsp;<u data-redactor-tag="u">50%</u></p>
+<p>*<span data-verified="redactor" data-redactor-tag="span">Compensação e banco de horas</span>&nbsp;= depende de previsão em ACT/CCT (dentro de&nbsp;<u data-redactor-tag="u">1 ano</u>), ou acordo individual escrito (até&nbsp;<u data-redactor-tag="u">6 meses</u>) - ou até mesmo acordo individual tácito (no&nbsp;<u data-redactor-tag="u">mesmo mês</u>).</p>
+<p>​PARTE 2:</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Períodos de descanso</strong></p>
+<p>- Intrajornada (dentro da jornada) = <u data-redactor-tag="u">1 a 2 horas</u> (para jornadas superiores a 6h).</p>
+<p>*Não concessão ou concessão parcial = pagamento (com adicional de <u data-redactor-tag="u">50%</u>) apenas do período <u data-redactor-tag="u">suprimido</u>, e não do período total.</p>
+<p>- Interjornada (entre uma jornada e outra) = <u data-redactor-tag="u">mínimo 11 horas</u>.</p>
+<p>- Descanso Semanal Remunerado - DSR = preferencialmente no <u data-redactor-tag="u">domingo</u>.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Trabalho noturno</strong></p>
+<p>Entre as <u data-redactor-tag="u">22h e 05h</u><br>Hora "ficta" = <u data-redactor-tag="u">52:30</u><br>Adicional = mínimo <u data-redactor-tag="u">20%</u></p>
+<p>Vale lembrar que, dentre os trabalhadores não abrangidos pelas regras desse capítulos, estão aqueles em regime de teletrabalho por produção ou tarefa.</p>
+<p>Além da leitura atenta da CLT, principalmente das partes alteradas pela reforma, você precisa dominar as jurisprudências mais cobradas: Súmulas 110, 172, 291, 340 e&nbsp;360 + OJs 103, 323, 394, 397 e&nbsp;410.</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=mxQOD0ateyo" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=g1lp-aG1hoU" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=qFAJahaqENs&amp;list=PLM3AZzPJ3IR4fvlb5S6Sl-7xzssOR8EFr&amp;index=3&amp;pp=iAQB" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span><br></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=7IYbxvC4gSg" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=-trSWfdhiT0" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span><br></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=790&amp;subject_ids[]=1250&amp;subject_ids[]=1976&amp;subject_ids[]=16496" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pPq" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></span></span></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Teletrabalho</h2>
+                        <div class="aula-corpo"><p>É a modalidade de prestação de serviços realizada fora das dependências do empregador, com uso de tecnologias de informação e comunicação, sem se confundir com trabalho externo.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Atenção para as ALTERAÇÕES no contrato de teletrabalho:</strong></p>
+<p>- alteração do presencial e teletrabalho = mútuo acordo + aditivo contratual</p>
+<p>- volta para o presencial = determinação do empregador + aditivo contratual (prazo de transição mínimo = <u data-redactor-tag="u">15 dias</u>)</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=2rY_wnzdIKc" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=K31u4VW_TMg" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;q=teletrabalho&amp;sort=newest" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=not_resolved&amp;q=teletrabalho" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pO0" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span><br></span></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Férias</h2>
+                        <div class="aula-corpo"><p>Atenção para os principais pontos:</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Período&nbsp;</strong><u data-redactor-tag="u"><strong data-redactor-tag="strong" data-verified="redactor">aquisitivo</strong></u>&nbsp;= 12 meses em que o empregado adquire o direito a "1 férias".</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Período&nbsp;</strong><u data-redactor-tag="u"><strong data-redactor-tag="strong" data-verified="redactor">concessivo</strong></u>&nbsp;= 12 meses subsequentes&nbsp;nos quais&nbsp;a empresa obrigatoriamente precisa conceder as férias.&nbsp;Se não = pagamento em&nbsp;<u data-redactor-tag="u">dobro</u>.</p>
+<p>•<strong data-redactor-tag="strong" data-verified="redactor"> Proporção dos dias de férias </strong>(art. 130).</p>
+<p>O empregado tem direito a <u data-redactor-tag="u">30, 24, 18 e 12 dias</u> de férias se, respectivamente, tiver <u data-redactor-tag="u">até 5, 14, 23 e 32 faltas</u>.</p>
+<p>*Macete para lembrar: no primeiro grupo de números, vai subtraindo de 6 em 6; e no segundo grupo, vai somando de 9 em 9.</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Perda do direito a férias</strong> (art. 133) - atenção aos PRAZOS!</p>
+<p>•<strong data-redactor-tag="strong" data-verified="redactor"> Fracionamento das férias </strong>(art. 134)</p>
+<p><u data-redactor-tag="u">Até 3 períodos</u> (1 não inferior a 14 dias, e os outros não inferiores a 5 dias).</p>
+<p>*Férias coletivas = <u data-redactor-tag="u">até 2 períodos</u> (nenhum inferior a 10 dias).</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Remuneração </strong>= + adicional de <u data-redactor-tag="u">1/3</u></p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Abono de férias </strong>= faculdade do empregado converter <u data-redactor-tag="u">1/3</u> das suas férias em abono pecuniário (popularmente conhecido como "vender uma parte das férias").</p>
+<p>Atenção às Súmulas 261 e 328.</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=jTl5l7jjtSg" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=bORmfeIMRAc" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=7deRKeThIXk" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=LunrSNkJX2s" rel="noopener noreferrer">🎬 Videoaula</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=705" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=705" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pPw" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span>​</span></p></div>
+                    </article>
+                
+                </section>
+            
+                <section id="mod-tab-4" class="tab-panel ">
+                    
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Salário mínimo</h2>
+                        <div class="aula-corpo"><p>Tema pouco cobrado em provas de Direito do Trabalho, caindo mais em Direito Constitucional (revise também o tópico "Direitos Constitucionais dos Trabalhadores"<span class="redactor-invisible-space">​</span>).&nbsp;</p>
+<p>Mas é sempre importante ter uma noção:</p>
+<p>Na CF = artigo 7º, inciso IV (lembre-se da <strong data-redactor-tag="strong" data-verified="redactor">vedação à vinculação para qualquer fim</strong>).</p>
+<p>Na CLT = artigos 76 a 83 + 117 a 126.</p>
+<p>​Não há um filtro específico para questões desse tópico nos sites de questões.</p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Salário e remuneração, gorjetas, salário in natura, 13º, descontos...</h2>
+                        <div class="aula-corpo"><p><strong data-redactor-tag="strong" data-verified="redactor">​• Salário x Remuneração</strong></p>
+<p><u data-redactor-tag="u">Remuneração</u> = Salário + gorjetas.</p>
+<p><u data-redactor-tag="u">Salário</u> = Importância fixa estipulada + comissões<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​ +&nbsp;</span>gratificações legais.</p>
+<p>A banca gosta de contar uma historinha para saber se você sabe o que tem ou não natureza remuneratória.</p>
+<p>*NÃO integram a remuneração (e portanto não causam repercussões):</p>
+<p>- ajuda de custo<br>- auxílio-alimentação (vedado seu pagamento em dinheiro)<br>- diárias para viagem<br>- prêmios e abonos</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Prestações in natura / salário in natura / salário-utilidade</strong></p>
+<p>A maioria não é considerada salário (Art. 458, § 2º).</p>
+<p>Exceções = até <u data-redactor-tag="u">20%</u> do valor da alimentação e <u data-redactor-tag="u">25%</u> da habitação.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• 13º salário (gratificação natalina)</strong></p>
+<p><u data-redactor-tag="u">1/12</u> da remuneração de dezembro por mês de serviço (ou fração igual ou superior a <u data-redactor-tag="u">15 dias</u>).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Modalidades de salário</strong></p>
+<p>O pagamento pode ser por unidade de tempo, obra ou tarefa.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Forma de pagamento</strong></p>
+<p>Não pode ser estipulado por período superior a <u data-redactor-tag="u">1 mês</u> (salvo comissões, percentagens e gratificações).</p>
+<p>Se o pagamento for mensal = até o <u data-redactor-tag="u">5º dia útil</u> do mês subsequente ao vencido.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Descontos salariais</strong></p>
+<p>Vedado, em regra - salvo adiantamento, desconto legal, “contrato coletivo” (norma coletiva), ou dano causado pelo empregado (se a possibilidade foi acordada, ou no caso de dolo).</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=VC4ULEtN364" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=2cL-bOaWdyw" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=nz5mcTj0LPg" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=1806&amp;subject_ids[]=2142&amp;subject_ids[]=2203&amp;subject_ids[]=2311&amp;subject_ids[]=16501" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pQR" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Equiparação salarial</h2>
+                        <div class="aula-corpo"><p>A equiparação salarial concretiza o princípio da isonomia, assegurando salário igual para trabalho de igual valor, mas sofreu forte restrição após a Reforma Trabalhista, que tornou seus requisitos mais rigorosos.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Requisitos</strong>:</p>
+<p>- <u data-redactor-tag="u">idêntica</u> função</p>
+<p>- trabalho de <u data-redactor-tag="u">igual</u> valor</p>
+<p>- prestado ao <u data-redactor-tag="u">mesmo</u> empregador</p>
+<p>- no <u data-redactor-tag="u">mesmo</u> estabelecimento empresarial</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Diferença de tempo:</strong></p>
+<p>• Tempo de serviço para o mesmo&nbsp;empregador (“tempo de casa”) =&nbsp;<u data-redactor-tag="u">até 4 anos</u> de diferença<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p>• Tempo na função =&nbsp;<u data-redactor-tag="u">até 2 anos</u>&nbsp;de diferença</p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=CQYFTMsshq4" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=7xg2-dhnN4k" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=1245" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=1245" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q59EKd" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span><br></span></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Adicionais de insalubridade e periculosidade</h2>
+                        <div class="aula-corpo"><p>Os adicionais de insalubridade e de periculosidade integram o núcleo de proteção à saúde e à integridade física do trabalhador, sendo devidos apenas quando a atividade se enquadra nos critérios legais e regulamentares fixados pelo Ministério do Trabalho.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</p>
+<p>Aqui você deve principalmente saber diferenciar o seguinte:</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Hipóteses:</strong></p>
+<p><u data-redactor-tag="u">Insalubridade</u> = risco à saúde (ex: limpeza de banheiro público)</p>
+<p><u data-redactor-tag="u">Periculosidade</u> = risco à vida (ex: inflamáveis, explosivos, violência...)</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Valores dos percentuais:</strong></p>
+<p>Insalubridade = <u data-redactor-tag="u">10, 20 ou 40%</u> do valor do salário mínimo (graus mínimo, médio e máximo).</p>
+<p>Periculosidade = <u data-redactor-tag="u">30%</u> sobre o salário base (sem acréscimos).</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Tipos de exposição</strong> (e se há direito à periculosidade – Súmula 364):</p>
+<p><u data-redactor-tag="u">Permanente</u> = tem direito<br><u data-redactor-tag="u">Intermitente</u> = tem direito<br><u data-redactor-tag="u">Eventual / Fortuito / Esporádico</u> = não tem direito<br><u data-redactor-tag="u">Habitual por tempo extremamente reduzido</u> = não tem direito</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=y5fvZQjwk3s" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=7ooFQGuXeBA" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=2311" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=2311" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pRk" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span></span></span></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Fundo de Garantia por Tempo de Serviço – FGTS</h2>
+                        <div class="aula-corpo"><p>A base está na lei Lei nº 8.036/1990. Cá entre nós, é uma lei longa e chata, fala muito sobre as políticas do governo, etc... Então recomendo que você foque nisso:</p>
+<p>• Art. 15 (<strong data-redactor-tag="strong" data-verified="redactor">depósito mensa</strong>l de <u data-redactor-tag="u">8%</u> na conta vinculada – incide sobre HE, adicionais, gorjetas,&nbsp;13º, salário in natura...<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>)</p>
+<p>•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Art. 18 (<strong data-redactor-tag="strong" data-verified="redactor">indenização </strong>de <u data-redactor-tag="u">40%</u> sobre o saldo do FGTS – <u data-redactor-tag="u">metade</u> no caso de culpa recíproca,&nbsp;força maior ou acordo/distrato)</p>
+<p>•&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>Art. 20 (hipóteses de <strong data-redactor-tag="strong" data-verified="redactor">movimentação/saque</strong>)</p>
+<p>Esses conhecimentos são cobrados junto à jurisprudência acerca do FGTS, da multa indenizatória, da base de cálculo, etc (ex: Súmula 63 e OJ 232).</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=dctUg_KtxN8&amp;t=2122s" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=701" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=701" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pQs" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span><br></p></div>
+                    </article>
+                
+                </section>
+            
+                <section id="mod-tab-5" class="tab-panel ">
+                    
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Negociações coletivas (Acordo Coletivo de Trabalho – ACT e Convenção Coletiva de Trabalho – CCT)</h2>
+                        <div class="aula-corpo"><p>• <strong data-redactor-tag="strong" data-verified="redactor">Convenção Coletiva de Trabalho (CCT)</strong> = Sindicato profissional (trabalhadores) + Sindicato econômico (empregadores).</p>
+<p>•<strong data-redactor-tag="strong" data-verified="redactor"> Acordo Coletivo de Trabalho (ACT)</strong> = Sindicato profissional (trabalhadores) + Uma ou mais empresas.</p>
+<p>- Vigência máxima = <u data-redactor-tag="u">2 anos</u><br>- Princípio da prevalência do negociado sobre o legislado.<br>- Princípio da intervenção <u data-redactor-tag="u">mínima</u> na autonomia da vontade coletiva.</p>
+<p>Muita atenção ao rol de incisos dos:</p>
+<p><u data-redactor-tag="u">Art. 611-A</u>: hipóteses em que ACT/CCT tem prevalência sobre a lei.</p>
+<p><u data-redactor-tag="u">Art. 611-B</u>: direitos que a supressão/redução é ilícita (inegociáveis).</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/live/41bnfQ9a0fg?si=RniOcVBCVn7JhiSv&amp;t=1248" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=197" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=197" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pUV" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span><br></p></div>
+                    </article>
+                
+                </section>
+            
+                <section id="mod-tab-6" class="tab-panel ">
+                    
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Prescrição e decadência</h2>
+                        <div class="aula-corpo"><p>HISTÓRICO DE ATUALIZAÇÕES:</p>
+<p><span>03/10/2026 = De acordo com as novas teses vinculantes do TST - Tema nº 39 e Tema nº 91​ dos IRR/TST.​</span></p>
+<p>​<span></span>Delimitam até quando os direitos trabalhistas podem ser exigidos judicialmente.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p>É um tema que se liga a diversos outros conceitos do Direito do Trabalho e do Direito Processual do Trabalho.</p>
+<p>O básico que você precisa saber:</p>
+<p>• Como funciona a <strong data-redactor-tag="strong" data-verified="redactor">prescrição QUINQUENAL&nbsp;</strong>(<u data-redactor-tag="u">5 anos</u>) e <strong data-redactor-tag="strong" data-verified="redactor">BIENAL&nbsp;</strong>(<u data-redactor-tag="u">2 anos</u>) - inciso XXIX do art. 7º da CF.</p>
+<p>• Como funciona a <strong data-redactor-tag="strong" data-verified="redactor">prescrição INTERCORRENTE&nbsp;</strong>(fase de execução do processo - prazo de <u data-redactor-tag="u">2 anos</u>) - artigo 11-A da CLT.</p>
+<p>*Porém, se a banca quiser complicar (como fez na minha prova do TRT-22), pode cobrar acerca da "<strong data-redactor-tag="strong" data-verified="redactor">prescrição TOTAL ou PARCIAL</strong>".</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=tGOpSY-SCns" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=6602" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=6602" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pSA" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span><br></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Proteção do trabalho da mulher</h2>
+                        <div class="aula-corpo"><p>HISTÓRICO DE ATUALIZAÇÕES:</p>
+<p>03/10/2026 = De acordo com a ADI 7495 do&nbsp;STF.</p>
+<p>​<span>​</span><span>​​São poucos artigos, faça uma boa leitura e dê atenção principalmente a:</span></p>
+<p>• Práticas discriminatórias vedadas (art. 373-A).</p>
+<p>• <u data-redactor-tag="u">30 mulheres com + de 16 anos</u> = deve haver local apropriado p/ guardar filhos no período de amamentação.</p>
+<p>• Dispensa do horário de trabalho = para, no mínimo, <u data-redactor-tag="u">6 consultas médicas</u>.</p>
+<p>• Afastamento das atividades insalubres COM manutenção do adicional.</p>
+<p>• Períodos de descanso especiais = <u data-redactor-tag="u">2 períodos de meia hora</u> p/ amamentar filho (<u data-redactor-tag="u">até 6 meses</u>).</p>
+<p>Não confunda:</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">estabilidade da gestante</strong> (da confirmação da gravidez <u data-redactor-tag="u">até 5 meses após o parto</u>).</p>
+<p>• com a <strong data-redactor-tag="strong" data-verified="redactor">licença-maternidade</strong> (<u data-redactor-tag="u">120 dias</u>).</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=SsZtopMX1-U" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16666" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;subject_ids[]=16666" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pSw" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span><br></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Proteção do trabalho do menor</h2>
+                        <div class="aula-corpo"><p>Antes de tudo, lembre-se da CF (art. 7º , inciso XXXIII): <strong data-redactor-tag="strong" data-verified="redactor">trabalho só a partir dos 16, salvo aprendiz (14)</strong>.</p>
+<p>Muita atenção aos primeiros artigos da CLT, que trazem uma série de <strong data-redactor-tag="strong" data-verified="redactor">vedações </strong>quanto aos locais de trabalho para o menor de idade.</p>
+<p>Lembre que:</p>
+<p>• Prescrição = não corre contra o menor.</p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">• Escola mais distante do que&nbsp;<u data-redactor-tag="u">2 km</u>&nbsp;(e havendo mais de&nbsp;<u data-redactor-tag="u">30 menores analfabetos</u>) = empresa deverá ter local para instrução primária.​</span><br></p>
+<p>• Horas extras do MENOR = só em caso de força MAIOR (*aprendiz não faz hora extra).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Contrato de aprendizagem (menor aprendiz)</strong></p>
+<p>- Prazo = Máximo <u data-redactor-tag="u">2 anos</u>, salvo PCD (sem prazo máximo)<br>- Idade = <u data-redactor-tag="u">14 a 24 anos</u>, salvo PCD (sem idade máxima)<br>- Máximo <u data-redactor-tag="u">6 horas</u> (vedadas a prorrogação e a compensação)</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=TFo_a8n7cJc" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=2YjDsB1DFa0&amp;t=2135s" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=XG1CmTy67Jo" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=706&amp;subject_ids[]=779&amp;subject_ids[]=16494" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=706&amp;subject_ids[]=779&amp;subject_ids[]=16494" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pT0" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span><br></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Comissões de Conciliação Prévia</h2>
+                        <div class="aula-corpo"><p>Órgãos criados no âmbito dos sindicatos ou das empresas, com a finalidade de resolução do conflito individual trabalhista por meio da autocomposição. Trata-se de um meio alternativo, extrajudicial, de solução do conflito que tem por finalidade propiciar maior celeridade à resolução da lide, sem burocracia do Poder Judiciário Trabalhista.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Objetivo </strong>= tentar mediar e conciliar conflitos antes levar ao Judiciário</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Número de membros</strong> = <u data-redactor-tag="u">2 a 10</u></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Composição paritária</strong></p>
+<p>Metade = indicados pelo empregador</p>
+<p>Metade = eleitos pelos empregados (estes possuem estabilidade <u data-redactor-tag="u">até 1 ano após o mandato</u>, salvo falta grave)</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=6RneHTt8MFU" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=1517" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;subject_ids[]=1517" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pUz" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span><br></p></div>
+                    </article>
+                
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Indenização por dano moral (dano extrapatrimonial)</h2>
+                        <div class="aula-corpo"><p><strong data-redactor-tag="strong" data-verified="redactor">Ação ou omissão </strong>que ofenda a esfera moral ou existencial da <strong data-redactor-tag="strong" data-verified="redactor">PF ou PJ</strong>.</p>
+<p>Ofensa leve = <u data-redactor-tag="u">até 3x</u><br>Ofensa média = <u data-redactor-tag="u">até 5x</u><br>Ofensa grave = <u data-redactor-tag="u">até 20x</u><br>Ofensa gravíssima = <u data-redactor-tag="u">até 50x</u></p>
+<p>Com base no último salário do ofendido (se o ofendido for PJ = com base no salário do ofensor).</p>
+<p>*STF permite valores superiores a esses limites previstos na CLT.</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=9HmKdvzcMIU" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=7_3X-mZmNj0" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16642" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;subject_ids[]=16642" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44pVS" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span><br></p></div>
+                    </article>
+                
+                </section>
+            
+                <section id="mod-tab-7" class="tab-panel ">
+                    
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">Jurisprudência relativa ao Direito do Trabalho</h2>
+                        <div class="aula-corpo"><p>Reuni&nbsp;as Súmulas, Orientações Jurisprudenciais e outros enunciados&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>ao longo dos cadernos e compilei neste material, que serve também como uma boa fonte de revisão de reta final,&nbsp;em conjunto com a&nbsp;leitura da CLT.​</p>
+<p><a href="https://www.youtube.com/playlist?list=PLQUlf4vRUEyQUWOxqksmHSNsjfVmxGMYw" target="_blank" class="link-badge link-youtube" rel="noopener noreferrer">🎬 Playlist de videoaulas</a> </p></div>
+                    </article>
+                
+                </section>
+            
+                <section id="mod-tab-8" class="tab-panel ">
+                    
+                    <article class="aula-card">
+                        <h2 class="aula-titulo">BÔNUS - Links complementares</h2>
+                        <div class="aula-corpo"><p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=wrong&amp;per_page=20&amp;sort=newest" target="_blank" class="link-badge link-qc" rel="noopener noreferrer">📝 QC - Questões</a>• Questões que você errou ao longo da preparação:</p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=7&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=wrong&amp;per_page=20&amp;sort=newest" target="_blank" class="link-badge link-qc" rel="noopener noreferrer">📝 Aprenda com os erros - Todas as suas questões erradas no QC</a> </p>
+<p><a class="link-badge link-qc" target="_blank" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=1&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=wrong&amp;per_page=20&amp;sort=newest" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" target="_blank" href="https://www.tecconcursos.com.br/s/Q5Fh5w" rel="noopener noreferrer">🎯 Aprenda com os erros - Todas as suas questões erradas no TEC</a></span></p>
+<p><span data-redactor-tag="span" data-verified="redactor" data-redactor-style="font-size: 10px;" rel="font-size: 10px;" style="font-size:10px">*Atenção se você resolve questões pelo TEC Concursos. Para utilizar esse filtro das questões erradas, antes é preciso fazer uma "atualização" para que o sistema reconheça e traga as questões que você errou. Passo a passo: clique no link acima, vá na aba CONFIGURAÇÕES, clique em VERIFICAR ATUALIZAÇÕES e por fim em CONCLUIR ATUALIZAÇÃO.</span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"></span>• Sugestões de videoaulas e playlists:</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/playlist?list=PLUr7DkGB4IlMZpbS6prS1uinag2DeSZU_" target="_blank" rel="noopener noreferrer">🎬 Playlist de videoaulas</a></p>
+<p><a href="https://www.youtube.com/playlist?list=PL_R-F0SJS63_XJQNF87rd0kzwKJJz7Ren" target="_blank" class="link-badge link-youtube" rel="noopener noreferrer">🎬 Playlist de videoaulas</a> </p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=eK7tqsim9_c" rel="noopener noreferrer">🎬 Aulão de revisão</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=aZnyg-zDdmM" rel="noopener noreferrer">🎬 Aulão de revisão</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" rel="background-color: initial;" data-redactor-style="background-color: initial;" style="background-color: initial; --darkreader-inline-bgcolor: initial;" data-darkreader-inline-bgcolor="">​</span>• Tem mais alguma boa sugestão? Comente aqui para que eu possa adicionar<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" rel="background-color: initial;" data-redactor-style="background-color: initial;" style="background-color: initial; --darkreader-inline-bgcolor: initial;" data-darkreader-inline-bgcolor="">​ :)</span><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" rel="background-color: initial;" data-redactor-style="background-color: initial;" style="background-color: initial; --darkreader-inline-bgcolor: initial;" data-darkreader-inline-bgcolor="">​</span></p></div>
+                    </article>
+                
+                </section>
+            
+    </main>
+
+    <script>
+        // Atualiza o texto do botão conforme o estado inicial
+        if (document.documentElement.classList.contains('dark')) {
+            document.getElementById('theme-btn-label').innerText = '☀️ Modo Claro';
+        } else {
+            document.getElementById('theme-btn-label').innerText = '🌙 Modo Escuro';
+        }
+    </script>
+</body>
+</html>

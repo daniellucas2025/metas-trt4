@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direitos Humanos</title>
+    <style>
+        /* Variáveis de Tema (Light e Dark) */
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --text-strong: #000000;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --tabs-bg: #e2e8f0;
+            --primary: #2563eb;
+            --badge-border-alpha: 0.2;
+        }
+
+        html.dark {
+            --bg: #09090b;
+            --card: #18181b;
+            --text: #f4f4f5;
+            --text-strong: #ffffff;
+            --muted: #a1a1aa;
+            --border: #27272a;
+            --tabs-bg: #27272a;
+            --primary: #3b82f6;
+            --badge-border-alpha: 0.35;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.7;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 30px 20px;
+            transition: background 0.25s, color 0.25s;
+        }
+
+        .header { max-width: 960px; margin: 0 auto 30px auto; text-align: center; position: relative; }
+        .header h1 { font-size: 2.1rem; margin: 0 0 10px 0; color: var(--text-strong); }
+        
+        /* Botão Alternador de Modo Escuro */
+        .theme-toggle {
+            position: absolute; right: 0; top: 0;
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--text); padding: 8px 14px; border-radius: 20px;
+            cursor: pointer; font-size: 13px; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover { transform: scale(1.04); }
+
+        .tabs-nav { max-width: 960px; margin: 0 auto 24px auto; display: flex; gap: 8px; flex-wrap: wrap; background: var(--tabs-bg); padding: 6px; border-radius: 10px; }
+        .tab-btn { background: transparent; border: none; padding: 10px 18px; font-size: 0.95rem; font-weight: 600; color: var(--muted); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .tab-btn:hover { color: var(--text); background: rgba(125,125,125,0.15); }
+        .tab-btn.active { background: var(--card); color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        
+        .container { max-width: 960px; margin: 0 auto; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeIn 0.25s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        .aula-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 26px 30px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+        .aula-titulo { font-size: 1.35rem; color: var(--text-strong); margin-top: 0; border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; }
+        .aula-corpo p { margin: 12px 0; }
+        hr { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
+
+        /* Badges de links especiais adaptáveis ao Dark Mode */
+        .link-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; margin: 4px 2px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: transform 0.15s, opacity 0.15s; }
+        .link-badge:hover { transform: translateY(-1px); opacity: 0.9; text-decoration: none; }
+
+        .link-youtube { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, var(--badge-border-alpha)); }
+        .link-qc { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, var(--badge-border-alpha)); }
+        .link-tec { background: rgba(14, 165, 233, 0.15); color: #38bdf8; border: 1px solid rgba(14, 165, 233, var(--badge-border-alpha)); }
+        .link-geral { background: rgba(100, 116, 139, 0.15); color: var(--text); border: 1px solid var(--border); }
+
+        strong { color: var(--text-strong); }
+        u { text-decoration-color: var(--primary); text-underline-offset: 3px; }
+    </style>
+    <script>
+        function openTab(tabId, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('curso-theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-btn-label').innerText = isDark ? '☀️ Modo Claro' : '🌙 Modo Escuro';
+        }
+
+        (function() {
+            const saved = localStorage.getItem('curso-theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div class="header">
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span id="theme-btn-label">🌙 Alternar Tema</span>
+        </button>
+        <h1>Direitos Humanos</h1>
+        <p style="color:var(--muted); margin:0;">Material Compilado • Suporte a Modo Escuro</p>
+    </div>
+
+    <nav class="tabs-nav">
+        <button class="tab-btn active" onclick="openTab('mod-tab-0', this)">Introdução aos Direitos Humanos</button>
+<button class="tab-btn " onclick="openTab('mod-tab-1', this)">Módulo Geral</button>
+<button class="tab-btn " onclick="openTab('mod-tab-2', this)">Pactos Internacionais</button>
+<button class="tab-btn " onclick="openTab('mod-tab-3', this)">Convenção Americana</button>
+<button class="tab-btn " onclick="openTab('mod-tab-4', this)">Gênero, equidade e outras temáticas</button>
+<button class="tab-btn " onclick="openTab('mod-tab-5', this)">Resoluções</button>
+<button class="tab-btn " onclick="openTab('mod-tab-6', this)">Outros tópicos</button>
+<button class="tab-btn " onclick="openTab('mod-tab-7', this)">BÔNUS - Materiais complementares</button>
+
+    </nav>
+
+    <main class="container">
+        
+                    <section id="mod-tab-0" class="tab-panel active">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Conceito, classificação e características dos Direitos Humanos</h2>
+                            <div class="aula-corpo"><p>​Ao longo da história, os direitos humanos evoluíram como uma resposta aos desafios sociais e às aspirações por um mundo mais justo e igualitário. Eles desempenham um papel crucial na promoção da justiça, liberdade e dignidade para toda a humanidade.</p>
+<p><span data-verified="redactor" data-redactor-tag="span"><strong data-redactor-tag="strong" data-verified="redactor">​Algumas características dos Direitos Humanos:</strong></span></p>
+<p>• <u data-redactor-tag="u">Essencialidade</u>: Essencial à dignidade da pessoa humana.</p>
+<p>• <u data-redactor-tag="u">Irrenunciabilidade</u>: Não se pode renunciar/abrir mão desses direitos.</p>
+<p>• <u data-redactor-tag="u">Imprescritibilidade</u>: Não se extinguem pelo decurso do tempo.</p>
+<p>• <u data-redactor-tag="u">Universalidade</u>: São para todos, sem distinção.</p>
+<p>• <u data-redactor-tag="u">Relatividade</u>: Passíveis de limitação quando em conflito com outros direitos.</p>
+<p>*Exceção à Relatividade: Vedação à tortura e vedação à escravidão (impossível relativizar).</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=91XMLlW6C_E" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=KB63ivDt-EA&amp;pp=ygVBQ29uY2VpdG8sIGNsYXNzaWZpY2HDp8OjbyBlIGNhcmFjdGVyw61zdGljYXMgZG9zIERpcmVpdG9zIEh1bWFub3M=" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=LvrqS6_pk2w&amp;pp=ygVBQ29uY2VpdG8sIGNsYXNzaWZpY2HDp8OjbyBlIGNhcmFjdGVyw61zdGljYXMgZG9zIERpcmVpdG9zIEh1bWFub3M=" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=18764" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=214&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=18764" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q5C5od" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></span></span></span></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=18764" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a> </p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a href="https://www.tecconcursos.com.br/s/Q76jjK" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a> </span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=214&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=18764" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q7FWfa" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a></span></span></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Evolução histórica dos Direitos Humanos</h2>
+                            <div class="aula-corpo"></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-1" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Aula sem título</h2>
+                            <div class="aula-corpo"><p><em>(Sem descrição em texto)</em></p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-2" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Pacto Internacional dos Direitos Civis e Políticos - PIDCP</h2>
+                            <div class="aula-corpo"><p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=18776" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=18776" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q6CuCC" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=18776" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a> </p>
+<p><a href="https://www.tecconcursos.com.br/s/Q76jtw" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a> </p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Pacto Internacional dos Direitos Econômicos Sociais e Culturais - PIDESC</h2>
+                            <div class="aula-corpo"><p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=18777" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=18777" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q6CuCj" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=18777" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a> </p>
+<p><a href="https://www.tecconcursos.com.br/s/Q76jwm" class="link-badge link-tec" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a> </p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-3" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Convenção Americana sobre Direitos Humanos - CADH (Pacto de São José da Costa Rica)</h2>
+                            <div class="aula-corpo"><p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=18797" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p>​<a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q4SjJb" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Protocolo adicional à Convenção Americana sobre Direitos Humanos (Protocolo de San Salvador)</h2>
+                            <div class="aula-corpo"></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-4" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Grupos vulneráveis e minorias</h2>
+                            <div class="aula-corpo"><p>​É de conhecimento geral que os grupos vulneráveis merecem especial atenção, por exemplo:</p>
+<p>Mulher: direito à igualdade de gênero, proteção contra violência e assédio, participação plena na vida pública e política...</p>
+<p>Negro: combate ao racismo e promoção da igualdade racial, reconhecimento e preservação da cultura afrodescendente...</p>
+<p>Criança e Adolescente: garantia de acesso à educação e cuidados de saúde, prevenção e combate ao trabalho infantil e exploração sexual...</p>
+<p>Idoso: acesso a cuidados de saúde, assistência social...</p>
+<p>Pessoa com Deficiência: direito à igualdade de oportunidades, acessibilidade e adaptações para garantir participação plena, combate ao estigma e discriminação...</p>
+<p>Pessoas em Situação de Rua: direito à moradia e condições de vida dignas, acesso a serviços sociais, saúde e emprego...</p>
+<p>Povos Indígenas: respeito aos direitos territoriais e culturais, consulta prévia e informada em decisões que os afetem...</p>
+<p>LGBT: direito à não discriminação com base na orientação sexual e identidade de gênero, reconhecimento legal de uniões homoafetivas, proteção contra violência...</p>
+<p>Quilombolas: reconhecimento e titulação de terras quilombolas, preservação da cultura e tradições, combate à discriminação racial.</p>
+<p>Sem-teto e Sem-terra: direito à moradia digna, direito à terra e reforma agrária.</p>
+<p>Imigrantes e Refugiados: direito a pedir asilo e proteção internacional.</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/watch?v=IcgMfplg_VE" target="_blank" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p>*Salvo melhor juízo, este tópico não dispõe de um filtro específico nos sites de questões. Resolva as questões selecionadas ao final do material.&nbsp;</p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Convenção sobre a eliminação de todas as formas de discriminação racial</h2>
+                            <div class="aula-corpo"><p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=18778" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=18778" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q6CuLd" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Convenção sobre a eliminação de todas as formas de discriminação contra a mulher</h2>
+                            <div class="aula-corpo"><p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=18779" class="link-badge link-qc" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q6CuMP" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Convenção sobre os direitos da criança</h2>
+                            <div class="aula-corpo"><p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=18782" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=214&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=18782" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q6CuPA" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Convenção sobre os direitos da pessoa com deficiência</h2>
+                            <div class="aula-corpo"><p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=18785" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;examining_board_ids[]=63&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=18785" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q6CuQG" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a></span></p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;administrative_level_ids[]=20&amp;discipline_ids[]=214&amp;examining_board_ids[]=152&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=18785" target="_blank" rel="noopener noreferrer">📝 QC - Questões - Vunesp</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q7FYf0" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - Vunesp</a></span></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Declaração das Nações Unidas sobre os direitos dos povos indígenas</h2>
+                            <div class="aula-corpo"><p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q6CuRL" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a><span class="redactor-invisible-space">​</span><br></p>
+<p>​Não há um filtro específico para questões desse tópico no site QConcursos.</p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-5" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Resolução CNJ nº 492 (Julgamento com perspectiva de gênero e participação feminina)</h2>
+                            <div class="aula-corpo"></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-6" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Mecanismos de proteção aos Direitos Humanos</h2>
+                            <div class="aula-corpo"><p>Não há um filtro específico para questões desse tópico nos sites de questões.</p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Tribunal Penal Internacional (Estatuto de Roma)</h2>
+                            <div class="aula-corpo"></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Carta das Nações Unidas (Estatuto da Corte Internacional de Justiça)</h2>
+                            <div class="aula-corpo"></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Protocolos para Atuação e Julgamento na Justiça do Trabalho</h2>
+                            <div class="aula-corpo"><p><span>Os Protocolos para Atuação e Julgamento na Justiça do Trabalho são uma novidade nos editais de concurso. Ou seja, ainda não sabemos como as bancas vão cobrar esse assunto. Também não vale a pena ler o documento inteiro: são quase 600 páginas, com muita teoria, estatística e referência bibliográfica. Por isso, a seguir você encontra um resumo do que se trata, os pontos com mais "cara de prova" e as páginas onde estão os trechos mais importantes, caso queira aprofundar. A dica é deixar esse conteúdo para o final da preparação e usar a leitura direcionada para não perder tempo.<span class="redactor-invisible-space">​</span><br></span></p>
+<p><span>Lançados em agosto de 2024, esses protocolos orientam a Justiça do Trabalho a considerar desigualdades históricas e estruturais em todo o processo, da inicial à sentença.&nbsp;</span><span>A inspiração foi o&nbsp;</span><span>Protocolo para Julgamento com Perspectiva de Gênero </span><span>do CNJ (2021).&nbsp;</span><span>São três protocolos</span><span>:</span></p>
+<ul>
+<li><strong data-redactor-tag="strong">Antidiscriminatório, interseccional e inclusivo:</strong> gênero e sexualidade, raça e etnia, pessoa com deficiência e pessoa idosa.</li>
+<li><strong data-redactor-tag="strong">Infância e adolescência:</strong> trabalho infantil e proteção integral.</li>
+<li><strong data-redactor-tag="strong">Enfrentamento do trabalho escravo contemporâneo.</strong></li>
+</ul>
+<p><strong data-redactor-tag="strong">ATENÇÃO:</strong> o documento diz que isso não afasta o livre convencimento motivado.</p>
+<p><strong data-redactor-tag="strong">O que mais pode cair:</strong></p>
+<ul>
+<li><strong data-redactor-tag="strong">Passo a passo do protocolo antidiscriminatório:</strong>
+<ol>
+<li>“Contar até seis” para identificar vulnerabilidades: gênero, raça, orientação sexual, classe, deficiência e idade.</li>
+<li>Conduzir o processo livre de opressões.</li>
+<li>Decidir com essa perspectiva.</li>
+</ol>
+</li>
+<li><strong data-redactor-tag="strong">Assédio:</strong> a palavra da vítima tem peso diferenciado, o agressor não depõe como testemunha (é suspeito) e vítima e agressor devem ser mantidos separados no fórum.</li>
+<li><strong data-redactor-tag="strong">Pessoa com deficiência:</strong> se a discriminação é subjetiva, o ônus da prova é do reclamante; se é objetiva (falta de adaptação), o ônus é da reclamada.</li>
+<li><strong data-redactor-tag="strong">Trabalho escravo (art. 149 do CP):</strong> basta uma das hipóteses do artigo. O auto de infração gera presunção favorável ao trabalhador.</li>
+<li><strong data-redactor-tag="strong">Infância:</strong> o STF (ADI 5326) manteve na Justiça Estadual a autorização para trabalho artístico infantil.</li>
+</ul>
+<p><strong data-redactor-tag="strong">Como estudar:</strong> deixe para o fim e leia preferencialmente estes trechos (páginas do PDF):</p>
+<ul><li><span>Antidiscriminatório: páginas 201–229</span></li><li>Trabalho escravo: páginas&nbsp;<span class="redactor-invisible-space">​</span> 485–499 e 529–548</li><li>Infância: páginas&nbsp;<span class="redactor-invisible-space">​</span> 425–445</li></ul>
+<p>​Acesse o documento completo:</p>
+<p><a href="https://www.csjt.jus.br/documents/955023/0/Protocolos+de+Atuação+e+Julgamento+da+Justiça+do+Trabalho+(1).pdf/3a7256a6-2c97-22d7-a74e-bf607baf22ce?t=1724100057072" target="_blank" class="link-badge link-geral" rel="noopener noreferrer">🔗 Protocolos para Atuação e Julgamento na Justiça do Trabalho</a> </p>
+<p><span class="redactor-invisible-space">Não há um filtro específico para questões desse tópico nos sites de questões.<span class="redactor-invisible-space">​</span>​</span><br></p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-7" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">BÔNUS - Links complementares</h2>
+                            <div class="aula-corpo"><p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=wrong&amp;per_page=20&amp;sort=newest" target="_blank" class="link-badge link-qc" rel="noopener noreferrer">📝 QC - Questões</a>• Questões que você errou ao longo da preparação:</p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=214&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=wrong&amp;per_page=20&amp;sort=newest" target="_blank" class="link-badge link-qc" rel="noopener noreferrer">📝 Aprenda com os erros - Todas as suas questões erradas no QC</a> </p>
+<p><a class="link-badge link-qc" target="_blank" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=1&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=wrong&amp;per_page=20&amp;sort=newest" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" target="_blank" href="https://www.tecconcursos.com.br/s/Q5Fh0R" rel="noopener noreferrer">🎯 Aprenda com os erros - Todas as suas questões erradas no TEC</a></span></p>
+<p><span data-redactor-tag="span" data-verified="redactor" data-redactor-style="font-size: 10px;" rel="font-size: 10px;" style="font-size:10px">*Atenção se você resolve questões pelo TEC Concursos. Para utilizar esse filtro das questões erradas, antes é preciso fazer uma "atualização" para que o sistema reconheça e traga as questões que você errou. Passo a passo: clique no link acima, vá na aba CONFIGURAÇÕES, clique em VERIFICAR ATUALIZAÇÕES e por fim em CONCLUIR ATUALIZAÇÃO.</span><span>​</span></p></div>
+                        </article>
+                    
+                    </section>
+                
+    </main>
+
+    <script>
+        if (document.documentElement.classList.contains('dark')) {
+            document.getElementById('theme-btn-label').innerText = '☀️ Modo Claro';
+        } else {
+            document.getElementById('theme-btn-label').innerText = '🌙 Modo Escuro';
+        }
+    </script>
+</body>
+</html>

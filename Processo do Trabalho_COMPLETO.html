@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processo do Trabalho</title>
+    <style>
+        /* Variáveis de Tema (Light e Dark) */
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --text-strong: #000000;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --tabs-bg: #e2e8f0;
+            --primary: #2563eb;
+            --badge-border-alpha: 0.2;
+        }
+
+        html.dark {
+            --bg: #09090b;
+            --card: #18181b;
+            --text: #f4f4f5;
+            --text-strong: #ffffff;
+            --muted: #a1a1aa;
+            --border: #27272a;
+            --tabs-bg: #27272a;
+            --primary: #3b82f6;
+            --badge-border-alpha: 0.35;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.7;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 30px 20px;
+            transition: background 0.25s, color 0.25s;
+        }
+
+        .header { max-width: 960px; margin: 0 auto 30px auto; text-align: center; position: relative; }
+        .header h1 { font-size: 2.1rem; margin: 0 0 10px 0; color: var(--text-strong); }
+        
+        /* Botão Alternador de Modo Escuro */
+        .theme-toggle {
+            position: absolute; right: 0; top: 0;
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--text); padding: 8px 14px; border-radius: 20px;
+            cursor: pointer; font-size: 13px; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover { transform: scale(1.04); }
+
+        .tabs-nav { max-width: 960px; margin: 0 auto 24px auto; display: flex; gap: 8px; flex-wrap: wrap; background: var(--tabs-bg); padding: 6px; border-radius: 10px; }
+        .tab-btn { background: transparent; border: none; padding: 10px 18px; font-size: 0.95rem; font-weight: 600; color: var(--muted); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .tab-btn:hover { color: var(--text); background: rgba(125,125,125,0.15); }
+        .tab-btn.active { background: var(--card); color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        
+        .container { max-width: 960px; margin: 0 auto; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeIn 0.25s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        .aula-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 26px 30px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+        .aula-titulo { font-size: 1.35rem; color: var(--text-strong); margin-top: 0; border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; }
+        .aula-corpo p { margin: 12px 0; }
+        hr { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
+
+        /* Badges de links especiais adaptáveis ao Dark Mode */
+        .link-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; margin: 4px 2px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: transform 0.15s, opacity 0.15s; }
+        .link-badge:hover { transform: translateY(-1px); opacity: 0.9; text-decoration: none; }
+
+        .link-youtube { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, var(--badge-border-alpha)); }
+        .link-qc { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, var(--badge-border-alpha)); }
+        .link-tec { background: rgba(14, 165, 233, 0.15); color: #38bdf8; border: 1px solid rgba(14, 165, 233, var(--badge-border-alpha)); }
+        .link-geral { background: rgba(100, 116, 139, 0.15); color: var(--text); border: 1px solid var(--border); }
+
+        strong { color: var(--text-strong); }
+        u { text-decoration-color: var(--primary); text-underline-offset: 3px; }
+    </style>
+    <script>
+        function openTab(tabId, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('curso-theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-btn-label').innerText = isDark ? '☀️ Modo Claro' : '🌙 Modo Escuro';
+        }
+
+        (function() {
+            const saved = localStorage.getItem('curso-theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div class="header">
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span id="theme-btn-label">🌙 Alternar Tema</span>
+        </button>
+        <h1>Processo do Trabalho</h1>
+        <p style="color:var(--muted); margin:0;">Material Compilado • Suporte a Modo Escuro</p>
+    </div>
+
+    <nav class="tabs-nav">
+        <button class="tab-btn active" onclick="openTab('mod-tab-0', this)">Organização e competência da Justiça do Trabalho</button>
+<button class="tab-btn " onclick="openTab('mod-tab-1', this)">Fontes e princípios do processo trabalhista</button>
+<button class="tab-btn " onclick="openTab('mod-tab-2', this)">O processo judiciário trabalhista</button>
+<button class="tab-btn " onclick="openTab('mod-tab-3', this)">Dissídios individuais</button>
+<button class="tab-btn " onclick="openTab('mod-tab-4', this)">Execução</button>
+<button class="tab-btn " onclick="openTab('mod-tab-5', this)">Recursos</button>
+<button class="tab-btn " onclick="openTab('mod-tab-6', this)">Processo Judicial Eletrônico - PJE</button>
+<button class="tab-btn " onclick="openTab('mod-tab-7', this)">BÔNUS - Compilado de jurisprudência processual trabalhista</button>
+<button class="tab-btn " onclick="openTab('mod-tab-8', this)">BÔNUS - Materiais complementares</button>
+
+    </nav>
+
+    <main class="container">
+        
+                    <section id="mod-tab-0" class="tab-panel active">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Organização e Competência da Justiça do Trabalho</h2>
+                            <div class="aula-corpo"><p><span>HISTÓRICO DE ATUALIZAÇÕES:</span>​</p>
+<p>12/09/2026 = De acordo com as novas teses vinculantes - Tema nº 32 e Tema nº 215 dos IRR/TST.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p><u data-redactor-tag="u">ORGANIZAÇÃO</u>: Define quem compõe, como se estrutura e como funciona o judiciário trabalhista brasileiro.</p>
+<p><u data-redactor-tag="u">COMPETÊNCIA</u>: Define quais causas podem ou não ser julgadas pela Justiça do Trabalho - JT<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​, assim como o local&nbsp;de&nbsp;julgamento, por exemplo.</span></p>
+<p>• ​<span data-verified="redactor" data-redactor-tag="span"><strong data-redactor-tag="strong" data-verified="redactor">Órgãos que compõem a JT</strong></span>:&nbsp;<u data-redactor-tag="u">TST</u>,&nbsp;<u data-redactor-tag="u">TRTs</u>&nbsp;e&nbsp;<u data-redactor-tag="u">Juízes do Trabalho</u></p>
+<p><span data-redactor-tag="span" data-verified="redactor">• <strong data-redactor-tag="strong" data-verified="redactor">Número de membros</strong>: <u data-redactor-tag="u">27</u> no TST ("Trinta Sem Três") e <u data-redactor-tag="u">7</u> no TRT (no mínimo)</span></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Matérias de competência da JT</strong></p>
+<p>Competência material&nbsp;(quais causas a JT vai julgar) -&nbsp;artigos 111 a 117 da CF</p>
+<p>*Por exemplo, a JT NÃO julga:</p>
+<p>- servidor estatutário</p>
+<p>- crime</p>
+<p>- relação de consumo</p>
+<p><span data-verified="redactor" data-redactor-tag="span"><strong data-redactor-tag="strong" data-verified="redactor">• Jurisdição e competência das Varas</strong></span></p>
+<p>Competência territorial (regra geral: local de&nbsp;<u data-redactor-tag="u">prestação</u>&nbsp;do serviço) -&nbsp;artigos 650 a 653 da CLT</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Exceção de Incompetência Territorial</strong> (art. 800 da CLT)</p>
+<p>- apresentação: em&nbsp;<u data-redactor-tag="u">5 dias</u>&nbsp;da notificação</p>
+<p>-&nbsp;<u data-redactor-tag="u">antes</u>&nbsp;da audiência</p>
+<p>- em peça&nbsp;<u data-redactor-tag="u">apartada</u><span data-redactor-tag="span" data-verified="redactor">&nbsp;</span></p>
+<p><span data-redactor-tag="span" data-verified="redactor"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=5HWfVxpW17M" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></span></p>
+<p><span data-redactor-tag="span" data-verified="redactor"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=ExdXANfLbw4&amp;list=PL_R-F0SJS63-r94cu-gOdd9I99TP1giLQ&amp;index=2&amp;pp=iAQB" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></span></p>
+<p><span data-redactor-tag="span" data-verified="redactor"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=PHBQaDHM26k&amp;list=PL_R-F0SJS63-r94cu-gOdd9I99TP1giLQ&amp;index=3&amp;pp=iAQB" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></span></p>
+<p><span data-redactor-tag="span" data-verified="redactor"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=xAZ2I2RZs_o&amp;list=PL_R-F0SJS63-r94cu-gOdd9I99TP1giLQ&amp;index=4&amp;pp=iAQB" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span data-redactor-tag="span" data-verified="redactor"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=2211&amp;subject_ids[]=16531" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span data-redactor-tag="span" data-verified="redactor"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=2211&amp;subject_ids[]=16531" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44oic" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span><br></span></span></p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-1" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Fontes e princípios</h2>
+                            <div class="aula-corpo"><p>​São muitos os princípios e, embora não tenham caído muitas "questões apenas sobre princípios", eles são fundamentais, pois são a base para entendimento de vários pontos da matéria.</p>
+<p>É uma parte essencialmente doutrinária, mas todo o tempo fazendo referência a artigos da CLT e CPC:</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Princípios gerais </strong>(ex: isonomia, contraditório e ampla defesa, devido processo legal, juiz natural, etc)</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Princípios comuns ao Direito Processual Civil/Comum&nbsp;e ao Trabalhista</strong> (ex: princípio dispositivo e inquisitivo, impugnação especificada, eventualidade, oralidade, celeridade, etc)</p>
+<p>Dentre eles, merece destaque: "<u data-redactor-tag="u">irrecorribilidade imediata das decisões interlocutórias</u>" (e suas exceções na Súmula 214)</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Princípios peculiares ao Processo do Trabalho</strong> (proteção processual, conciliação, normatização coletiva, etc)</p>
+<p>Dentre eles, merece destaque: "<u data-redactor-tag="u">jus postulandi</u>" (e suas limitações na Súmula 425)</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=d8Y1N3S-DFg" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=TquGod1SdSc" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=CUv3HIxuTgE" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16518&amp;subject_ids[]=16519" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16518&amp;subject_ids[]=16519" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44oij" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span><br></p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-2" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Atos, termos, prazos e distribuição</h2>
+                            <div class="aula-corpo"><p>​Aqui você começará a entender o processo trabalhista em si, ou seja,&nbsp;compreender como o procedimento se desenvolve na prática.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Disposições preliminares</strong></p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Atos, termos e prazos processuais</strong></p>
+<p>- Atos = dias ÚTEIS, <u data-redactor-tag="u">06 às 20h</u></p>
+<p>- Prazos = contagem em dias ÚTEIS, com <u data-redactor-tag="u">exclusão</u> da data de início e <u data-redactor-tag="u">inclusão</u> da data de vencimento</p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Distribuição</strong></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​<a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/live/TsbcS6YQTu4?si=hEoONsij48j36Gnh&amp;t=1196" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=NVccVvBXipw" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16549&amp;subject_ids[]=16550&amp;subject_ids[]=16823" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16549&amp;subject_ids[]=16550&amp;subject_ids[]=16823" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44oj4" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span></span></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Custas e emolumentos</h2>
+                            <div class="aula-corpo"><p>HISTÓRICO DE ATUALIZAÇÕES:</p>
+<p>12/09/2026 = De acordo com a ADC 80 do STF.<span class="redactor-invisible-space">​</span></p>
+<p>​<span>​Custas são valores pagos pela parte perdedora&nbsp;e que são destinadas ao custeio da máquina judiciária (diferente dos honorários advocatícios, também pagos por quem perdeu, mas o $ vai para o advogado).</span></p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Custas </strong>= base de cálculo de <u data-redactor-tag="u">2%</u></p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Mínimo </strong>= <u data-redactor-tag="u">R$ 10,64</u></p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Máximo </strong>= <u data-redactor-tag="u">4x</u> o limite do RGPS</p>
+<p>Aqui também estudamos o <strong data-redactor-tag="strong" data-verified="redactor">BJG (Benefício da Justiça Gratuita)</strong>, a <strong data-redactor-tag="strong" data-verified="redactor">Isenção de Custas</strong>&nbsp;e os&nbsp;<strong data-redactor-tag="strong" data-verified="redactor">Honorários Periciais</strong> (HP).</p>
+<p>São isentos do pagamento das custas:</p>
+<p>- BJG<br>- União, Estados, DF e Municípios<br>- Autarquias e Fundações Públicas (que não explorem atividade econômica)<br>- MPT</p>
+<p>*NÃO entram: Empresas estatais (EP/SEM) exploradoras de atividade econômica<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​ +&nbsp;Entidades fiscalizadoras do exercício profissional&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></span></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">Algumas passagens do art. 790-B foram declaradas inconstitucionais, então hoje funciona assim:</strong></p>
+<p>Quem paga os HP = parte sucumbente no objeto da perícia (e se for BJG, União paga)</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=fywGDLt3cbI" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=1iUzELxZ6gg" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=z5uID6jkxzI" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=2175" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;subject_ids[]=2175" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44ojK" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span>​</span>​</span><br></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Partes e procuradores</h2>
+                            <div class="aula-corpo"><p><strong data-redactor-tag="strong" data-verified="redactor">• Partes e Procuradores</strong></p>
+<p><u data-redactor-tag="u">Jus postulandi</u> = as partes podem reclamar pessoalmente perante a Justiça do Trabalho (ou seja, sem necessidade de advogado).</p>
+<p>Mas o jus postulandi NÃO alcança:</p>
+<p>- <span data-redactor-tag="span" data-verified="redactor">A</span>ção Rescisória<br>- <span data-redactor-tag="span" data-verified="redactor">M</span>andado de Segurança<br>- <span data-redactor-tag="span" data-verified="redactor">A</span>ção Cautelar<br>- <span data-redactor-tag="span" data-verified="redactor">R</span>ecursos para o TST<br>- Homologação de acordo extrajudicial<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p>• <strong data-redactor-tag="strong" data-verified="redactor">Honorários sucumbenciais</strong> = <u data-redactor-tag="u">5 a 15%</u></p>
+<p>Devidos ao advogado da parte vencedora (mesmo atuando em causa própria).</p>
+<p>*Procedência parcial = honorários de sucumbência recíproca (<u data-redactor-tag="u">vedada a compensação</u>).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Responsabilidade por dano processual</strong></p>
+<p>Multa de <u data-redactor-tag="u">1 a 10%</u> para o litigante de má fé (inclusive testemunhas).</p>
+<p>Se o valor da causa for irrisório/inestimável = até <u data-redactor-tag="u">2x</u> o limite do RGPS.</p>
+<p>*OBS: Depósito da multa de litigência de má fé não&nbsp;é pressuposto recursal (não é requisito de admissibilidade de recurso).</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=mO3bGK14ab8" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=Z_iausCp80U" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=r3EodC6_s90" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=wGSL1BOXxl8" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16541" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16541" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44ojl" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span><br></span></span></span></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Audiências</h2>
+                            <div class="aula-corpo"><p>Os artigos 813 a 817 da CLT trazem o "geralzão" sobre as audiências trabalhistas. Em breve, estudaremos mais a fundo&nbsp;sobre a audiência de conciliação, instrução e julgamento nos dissídios individuais.</p>
+<p>- Entre <u data-redactor-tag="u">8 e 18h</u>.</p>
+<p>- Máximo de <u data-redactor-tag="u">5 horas</u> seguidas.</p>
+<p>- Audiências extraordinárias = convocadas com antecedência mínima de <u data-redactor-tag="u">24h</u>.</p>
+<p>*Se o juiz não chegar em <u data-redactor-tag="u">15 minutos</u> = os presentes podem se retirar.<strong data-verified="redactor" data-redactor-tag="strong">​</strong></p>
+<p><strong data-verified="redactor" data-redactor-tag="strong">*</strong><span>Se a audiência&nbsp;</span><span>não iniciada (injustificadamente) em <u>30 mintutos</u> = as partes e os advogados podem se retirar.<span class="redactor-invisible-space">​</span></span></p>
+<p>​​​Não há um filtro específico para questões desse tópico nos sites de questões.</p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-3" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Dissídios individuais (reclamação, notificação, audiência, procedimento sumaríssimo...)</h2>
+                            <div class="aula-corpo"><p><strong data-redactor-tag="strong" data-verified="redactor">• Legitimidade para ajuizar</strong></p>
+<p>Lembre-se do <u data-redactor-tag="u">jus postulandi</u> = capacidade da própria parte, mesmo, sem advogado, apresentar reclamação perante a Justiça do Trabalho, inclusive de forma verbal - depois o servidor irá reduzir a termo (escrever/digitar/formalizar) essa reclamação.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Reclamação escrita e verbal</strong></p>
+<p>Pedido certo, determinado e com indicação do valor.</p>
+<p>Pedidos que não atendam os requisitos = <u data-redactor-tag="u">15 dias</u> para regularizar (Súmula 263).</p>
+<p>Apresentação da reclamação verbal &gt;&gt;&gt; Distribuição &gt;&gt;&gt; Redução a termo (<u data-redactor-tag="u">5 dias</u>).</p>
+<p>*A distribuição é antes da redução a termo – art. 786.<br>*Atenção às penalidades do art. 731 e 732.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Notificação</strong></p>
+<p>Notificação do reclamado = em <u data-redactor-tag="u">48h</u> após a reclamação (para comparecer à audiência – primeira desimpedida depois de <u data-redactor-tag="u">5 dias</u>).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Audiências de conciliação, de instrução e de julgamento</strong></p>
+<p>Para a CLT, “audiência de julgamento” = audiência una (é o todo).</p>
+<p>Mas na prática, há um fracionamento em 3 fases:</p>
+<p>- <u data-redactor-tag="u">Conciliação</u> (audiência inaugural - tentativa de acordo)<br>- <u data-redactor-tag="u">Instrução</u> (audiência em prosseguimento - produção de provas)<br>- <u data-redactor-tag="u">Julgamento</u></p>
+<p>*Não comparecimento (à audiência inaugural)</p>
+<p>- <u data-redactor-tag="u">Reclamante</u> = arquivamento + pagamento das custas<br>- <u data-redactor-tag="u">Reclamado</u> = revelia + confissão quanto à matéria de fato</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Outros números importantes</strong></p>
+<p>Defesa da reclamada = oral, em <u data-redactor-tag="u">20 minutos</u><br>Razões finais = cada parte tem <u data-redactor-tag="u">10 minutos</u></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Procedimento sumaríssimo</strong></p>
+<p>Um rito de maior celeridade, para dissídios individuais com valor de <u data-redactor-tag="u">até 40 salários mínimos</u>.</p>
+<p>A maior pegadinha = se uma das partes é a Adm. Pública Direta, Autárquica e Fundacional, esquece o sumaríssimo (vai ser rito ordinário mesmo).</p>
+<p>- Apreciação da reclamação = Máximo <u data-redactor-tag="u">15 dias</u> do ajuizamento.</p>
+<p>- Testemunhas = <u data-redactor-tag="u">até 2</u>.</p>
+<p>- Audiência única, sem interrupções (se interrompida = prosseguimento e solução no máximo em <u data-redactor-tag="u">30 dias</u>).</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=i78fhRlGOsY" rel="noopener noreferrer">🎬 Videoaula</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=KCv0Tw1xuCA&amp;pp=ygUUdHJhYmFsaG8gc3VtYXJpc3NpbW8=" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=208&amp;subject_ids[]=2610&amp;subject_ids[]=16561&amp;subject_ids[]=16563" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=208&amp;subject_ids[]=2610&amp;subject_ids[]=16561&amp;subject_ids[]=16563" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44okw" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span><br></p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-4" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Execução (iniciativa, liquidação, penhora, embargos, arrematação, leilão...)</h2>
+                            <div class="aula-corpo"><p>HISTÓRICO DE ATUALIZAÇÕES:</p>
+<p>03/10/2026 = De acordo com a&nbsp;nova&nbsp;tese&nbsp;vinculante&nbsp;do TST - Tema nº 39 dos IRR/TST.​<span class="redactor-invisible-space">​</span>​</p>
+<p>​O objetivo da fase de execução trabalhista é tornar efetiva a decisão judicial ou o acordo, garantindo a satisfação concreta do crédito reconhecido ao exequente.&nbsp;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p>Pode parecer complicada de se estudar, mas se torna mais simples quando entendemos que é uma sequência de passos, como quase tudo no Processo do Trabalho:</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Iniciativa</strong></p>
+<p>Regra geral = promovida pelas partes.</p>
+<p>Excepcionalmente = execução de ofício (pelo juiz) – só se as partes partes NÃO estiverem representadas por advogado.</p>
+<p>*Conheça também os títulos executivos (aquilo que pode ser executado) – também fazem parte desse rol os Cheques e Notas Promissórias relativos a dívidas de natureza trabalhista.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Liquidação</strong></p>
+<p>"Tudo bem, ganhei a ação. Mas quanto exatamente vou receber?"</p>
+<p>Liquidar significa traduzir em termos monetários todos os direitos da parte.</p>
+<p>A sentença ilíquida deve antes ser liquidada (segundo a CLT: “por cálculo, por arbitramento, ou por artigos”).</p>
+<p>Quando a conta tá liquidada = Prazo COMUM de <u data-redactor-tag="u">8 dias</u> para as partes impugnarem.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Mandado de citação e penhora</strong></p>
+<p>O juiz expede um mandado para o executado:</p>
+<p>- pagar em <u data-redactor-tag="u">48h</u><br>- ou garantir a execução</p>
+<p>Se o executado não fizer nada = penhora dos bens (recomendo a leitura dos artigos 833 a 836 do CPC - bens impenhoráveis e ordem preferencial de penhora).</p>
+<p>*Sempre cai em prova = somente após <u data-redactor-tag="u">45 dias</u> da citação (não sendo feita a garantia do juízo) é que a decisão transitada em julgado poderá ser levada a protesto e gerar inscrição do nome do executado em órgãos de proteção de crédito e no Banco Nacional de Devedores Trabalhista – BNDT.</p>
+<p>*Uma atenção também à <strong data-redactor-tag="strong" data-verified="redactor">Prescrição Intercorrente </strong>- <u data-redactor-tag="u">2 anos</u>&nbsp;conforme o art. 11-A da CLT (tema que estudamos em Direito do Trabalho, mas que está ligada à fase de execução do processo trabalhista).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Embargos à execução</strong></p>
+<p>É uma impugnação da parte executada.<br>Momento = Após a garantia da execução OU a penhora dos bens.<br>Prazo = <u data-redactor-tag="u">5 dias</u>.</p>
+<p>Não confunda:</p>
+<p>- Embargos à execução = não é “recurso”, mas sim medida judicial (prazo de <u data-redactor-tag="u">5 dias</u>).</p>
+<p>- Embargos de terceiros = ajuizado por pessoa cujos bens sofram constrição ou estejam ameaçados de sofrê-la, ainda que essa pessoa não seja parte no processo.</p>
+<p>- Agravo de petição = tipo de recurso na fase de execução (prazo de <u data-redactor-tag="u">8 dias</u>).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Arrematação e leilão</strong></p>
+<p>Julgada subsistente a penhora = juiz manda proceder logo a avaliação dos bens.</p>
+<p>Conclusão da avaliação = <u data-redactor-tag="u">10 dias</u> após nomeação do avaliador.</p>
+<p>Edital de leilão = antecedência mínima de <u data-redactor-tag="u">20 dias</u>.</p>
+<p>Sinal para garantir o lance = <u data-redactor-tag="u">20%</u> (se não pagar o preço da arrematação em <u data-redactor-tag="u">24h</u> = perde o sinal e os bens “voltam à praça”).</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=E3c1W5TlDMA" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=GtBX8k-mRAo" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=_nl636-FhHk" rel="noopener noreferrer">🎬 Videoaula</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=YUzS9KXhQmE&amp;list=PL_R-F0SJS63-r94cu-gOdd9I99TP1giLQ&amp;index=20&amp;pp=iAQB" rel="noopener noreferrer">🎬 Videoaula</a></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16576" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16576" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44oln" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></span></span></span></span></span></p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-5" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Teoria geral dos recursos</h2>
+                            <div class="aula-corpo"><p><span>HISTÓRICO DE ATUALIZAÇÕES:</span>​</p>
+<p>12/09/2026 = De acordo com a nova tese vinculante - Tema nº 41 dos IRR/TST.<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p>​Inicialmente&nbsp;vamos estudar a parte mais geral (Teoria Geral dos Recursos), e no tópico seguinte estudaremos cada recurso trabalhista em espécie.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Prazos</strong></p>
+<p>Contados em dias <u data-redactor-tag="u">úteis</u><br>Em regra = <u data-redactor-tag="u">8 dias</u></p>
+<p>*Salvo:</p>
+<p>- Embargos de Declaração = <u data-redactor-tag="u">5 dias</u>.<br>- Embargos à Execução = <u data-redactor-tag="u">5 dias</u> (não é recurso, mas sim medida judicial).<br>- Recurso Extraordinário = <u data-redactor-tag="u">15 dias</u>.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Juízos</strong></p>
+<p>Quando o recurso é recebido, passa por 2 juízos:</p>
+<p>1. Juízo de <u data-redactor-tag="u">admissibilidade</u> = análise dos requisitos/pressupostos de admissibilidade.</p>
+<p>Exemplo: cabimento (recurso adequado), tempestividade (prazo) e preparo (custas processuais + depósito recursal).</p>
+<p>2. Juízo de <u data-redactor-tag="u">mérito</u> = análise do mérito em si, do que efetivamente diz o recurso.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Depósito recursal</strong></p>
+<p>- Hipóteses de redução pela <u data-redactor-tag="u">metade</u> = entidades sem fins lucrativos, empregadores domésticos e MEI / ME / EPP.</p>
+<p>- Hipóteses de <u data-redactor-tag="u">isenção</u> = BJG, Fazenda Pública, MPT, entidades filantrópicas e empresas em recuperação judicial.</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Irrecorribilidade imediata das decisões interlocutórias (em regra)</strong></p>
+<p>Conheça muito bem a Súmula 214, que traz as exceções.</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=qskgnb0VXhc" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=16566&amp;subject_ids[]=16567&amp;subject_ids[]=16568" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=16566&amp;subject_ids[]=16567&amp;subject_ids[]=16568" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q59Gyy" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span><br></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Recursos em espécie</h2>
+                            <div class="aula-corpo"><p>HISTÓRICO DE ATUALIZAÇÕES:</p>
+<p><span>10/10/2026 = De acordo com a Resolução TST nº 226/2026, que acrescentou dispositivos na IN TST nº 40 (relacionada ao tema "Recurso de revista").</span></p>
+<p>​<strong data-redactor-tag="strong" data-verified="redactor">• Embargos no TST</strong></p>
+<p>- Pode ser “<u data-redactor-tag="u">Infringentes</u>” (relativos a dissídios coletivos, portanto julgados pela SDC).<br>- ou “<u data-redactor-tag="u">Divergentes</u>” (relativos a divergências entre as Turmas do TST).</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Embargos de declaração – ED</strong></p>
+<p>Para sanar omissão/contradição/obscuridade<br>*Prazo diferente = <u data-redactor-tag="u">5 dias</u></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Recurso ordinário – RO</strong></p>
+<p>Recurso para instância superior</p>
+<p>- Decisão da VT = cabe RO para o TRT<br>- Decisão do TRT (competência originária) = cabe RO para o TST</p>
+<p>*RO no Sumaríssimo:</p>
+<p>- Distribuição <u data-redactor-tag="u">imediata</u><br>- Relator libera em no máximo <u data-redactor-tag="u">10 dias</u><br>- Sem revisor - Secretaria coloca em pauta = <u data-redactor-tag="u">imediatamente</u></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Recurso de revista – RR</strong></p>
+<p>Recurso contra decisão do TRT em sede de RO<br>Dirigido a uma Turma do TST</p>
+<p>*RR no Sumaríssimo</p>
+<p>- Regra geral = não cabe<br>- Exceções = ofensa direta à CF ou contrariedade a Súmula/SV</p>
+<p>Ainda sobre RR, atenção também à questão da Transcendência, bem como aos RR Repetitivos</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Agravo de petição</strong></p>
+<p>Recurso da VT para o TRT na fase de <u data-redactor-tag="u">execução</u><br>“É como se fosse o RO, mas na fase de execução”</p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Agravo de instrumento</strong></p>
+<p>Para <u data-redactor-tag="u">destrancar</u> um recurso<br>“Denegou seguimento = cabe agravo de instrumento”<br>Preparo =&nbsp;50% do valor do recurso “trancado”<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p><strong data-redactor-tag="strong" data-verified="redactor">• Agravo regimental (ou agravo interno)</strong></p>
+<p>Contra decisão <u data-redactor-tag="u">monocrática</u> (p/ forçar o julgamento colegiado)</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=UfBTkTuFY20" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/live/3lGW6Z2mseA?si=zO8oedMSI7DVXtlK&amp;t=1096" rel="noopener noreferrer">🎬 Videoaula</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=3148&amp;subject_ids[]=16569&amp;subject_ids[]=16570&amp;subject_ids[]=16571&amp;subject_ids[]=16572&amp;subject_ids[]=16573" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=11&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=all&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=3148&amp;subject_ids[]=16569&amp;subject_ids[]=16570&amp;subject_ids[]=16571&amp;subject_ids[]=16572&amp;subject_ids[]=16573" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q59Gz9" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span></span></span></p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-6" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Lei nº 11.419 - Informatização do processo judicial</h2>
+                            <div class="aula-corpo"><p>É uma lei curta, com apenas 22 artigos, em que se pode destacar:</p>
+<p>- Aplicação =&nbsp;processos civil, penal e trabalhista +&nbsp;juizados especiais +&nbsp;em qualquer grau de jurisdição<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span></p>
+<p>- Meio eletrônico x transmissão eletrônica</p>
+<p>- Tempestividade =&nbsp;<u data-redactor-tag="u">até as 24h do último dia</u></p>
+<p>- Disponiblização &gt;&gt;&gt;&nbsp;Publicação &gt;&gt;&gt;<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span> Início do Prazo</p>
+<p>- Intimação = consulta em <u data-redactor-tag="u">até 10 dias</u></p>
+<p>Leitura complementar: arts. 193 a 199 do CPC</p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=OyJz4uoJXmg" rel="noopener noreferrer">🎬 Videoaula</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?administrative_level_ids[]=18&amp;discipline_ids[]=53&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;per_page=20&amp;publication_year[]=2020&amp;publication_year[]=2021&amp;publication_year[]=2022&amp;publication_year[]=2023&amp;publication_year[]=2024&amp;publication_year[]=2025&amp;publication_year[]=2026&amp;sort=newest&amp;subject_ids[]=21168" target="_blank" rel="noopener noreferrer">📝 QC - Questões - FCC</a></span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=53&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;subject_ids[]=21168" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q44on8" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões - FCC</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span>​</span>​</span><br></p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-7" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Jurisprudência relativa ao Processo do Trabalho</h2>
+                            <div class="aula-corpo"><p>Reuni&nbsp;as&nbsp;Súmulas, Orientações Jurisprudenciais e outros enunciados&nbsp;ao longo dos cadernos e compilei&nbsp;neste&nbsp;material, que serve também&nbsp;como uma boa fonte de revisão de reta final,&nbsp;em conjunto com a&nbsp;leitura da CLT.​</p>
+<p><a href="https://www.youtube.com/playlist?list=PLQUlf4vRUEyQUWOxqksmHSNsjfVmxGMYw" target="_blank" class="link-badge link-youtube" rel="noopener noreferrer">🎬 Playlist de videoaulas</a></p></div>
+                        </article>
+                    
+                    </section>
+                
+                    <section id="mod-tab-8" class="tab-panel ">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">BÔNUS - Links complementares</h2>
+                            <div class="aula-corpo"><p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=wrong&amp;per_page=20&amp;sort=newest" target="_blank" class="link-badge link-qc" rel="noopener noreferrer">📝 QC - Questões</a>• Questões que você errou ao longo da preparação:</p>
+<p><a href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=11&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=wrong&amp;per_page=20&amp;sort=newest" target="_blank" class="link-badge link-qc" rel="noopener noreferrer">📝 Aprenda com os erros - Todas as suas questões erradas no QC</a> </p>
+<p><a class="link-badge link-qc" target="_blank" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=1&amp;examining_board_ids[]=1&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;my_questions=wrong&amp;per_page=20&amp;sort=newest" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" target="_blank" href="https://www.tecconcursos.com.br/s/Q5Fh69" rel="noopener noreferrer">🎯 Aprenda com os erros - Todas as suas questões erradas no TEC</a></span></p>
+<p><span data-redactor-tag="span" data-verified="redactor" data-redactor-style="font-size: 10px;" rel="font-size: 10px;" style="font-size:10px">*Atenção se você resolve questões pelo TEC Concursos. Para utilizar esse filtro das questões erradas, antes é preciso fazer uma "atualização" para que o sistema reconheça e traga as questões que você errou. Passo a passo: clique no link acima, vá na aba CONFIGURAÇÕES, clique em VERIFICAR ATUALIZAÇÕES e por fim em CONCLUIR ATUALIZAÇÃO.</span></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"></span>• Sugestões de videoaulas e playlists:</p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/playlist?list=PLUr7DkGB4IlNQU0vjVXovP6Y20Mycdqx-" target="_blank" rel="noopener noreferrer">🎬 Playlist de videoaulas</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/playlist?list=PL_R-F0SJS63-r94cu-gOdd9I99TP1giLQ" rel="noopener noreferrer">🎬 Playlist de videoaulas</a></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-youtube" target="_blank" href="https://youtu.be/SWDzr157p-o?si=1MZ5JZAJgm1m5HU8&amp;t=320" rel="noopener noreferrer">🎬 Aulão de revisão</a>​</span><br></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=z184XlYVwGI" rel="noopener noreferrer">🎬 Aulão de revisão</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><a class="link-badge link-youtube" target="_blank" href="https://www.youtube.com/watch?v=wDFBuEhBIrg" rel="noopener noreferrer">🎬 Aulão de revisão</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" style="background-color: initial; --darkreader-inline-bgcolor: initial;" data-darkreader-inline-bgcolor="">​</span></p>
+<p><a class="link-badge link-youtube" href="https://www.youtube.com/@ProfessorDaniloVilanova" target="_blank" rel="noopener noreferrer">🎬 Videoaula no YouTube</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" style="background-color: initial; --darkreader-inline-bgcolor: initial;" rel="background-color: initial;" data-redactor-style="background-color: initial;" data-darkreader-inline-bgcolor="">​</span>• Tem mais alguma boa sugestão? Comente aqui para que eu possa adicionar<span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" rel="background-color: initial;" data-redactor-style="background-color: initial;" style="background-color: initial; --darkreader-inline-bgcolor: initial;" data-darkreader-inline-bgcolor="">​ :)</span><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" rel="background-color: initial;" data-redactor-style="background-color: initial;" style="background-color: initial; --darkreader-inline-bgcolor: initial;" data-darkreader-inline-bgcolor="">​</span></p></div>
+                        </article>
+                    
+                    </section>
+                
+    </main>
+
+    <script>
+        if (document.documentElement.classList.contains('dark')) {
+            document.getElementById('theme-btn-label').innerText = '☀️ Modo Claro';
+        } else {
+            document.getElementById('theme-btn-label').innerText = '🌙 Modo Escuro';
+        }
+    </script>
+</body>
+</html>
