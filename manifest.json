@@ -1,6 +1,6 @@
 {
-  "name": "Plataforma de Metas • TRT-4",
-  "short_name": "Metas TRT-4",
+  "name": "Estudos DL • Metas TRT-4",
+  "short_name": "Estudos DL",
   "description": "Plataforma de Estudos e Controlador de Metas para o TRT-4 (Caderno do Aprovado)",
   "start_url": "./index.html",
   "scope": "./",

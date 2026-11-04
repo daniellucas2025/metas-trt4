@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma de Metas • TRT-4 (Caderno do Aprovado)</title>
+    <title>Estudos DL • Plataforma de Metas TRT-4</title>
     <!-- Configurações PWA & Mobile -->
     <meta name="theme-color" content="#090a0f">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Metas TRT-4">
+    <meta name="apple-mobile-web-app-title" content="Estudos DL">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon-192.png">
@@ -135,10 +135,26 @@
             display: flex; align-items: center; gap: 12px; cursor: pointer;
         }
         .topbar-logo {
-            width: 38px; height: 38px; border-radius: 10px;
-            background: linear-gradient(135deg, var(--primary), var(--accent-green));
+            width: 42px; height: 42px; border-radius: 12px;
+            background: linear-gradient(135deg, #111827, #0b0f19);
+            border: 1.5px solid #38bdf8;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.25rem; font-weight: 900; color: #fff; box-shadow: 0 3px 10px rgba(59, 130, 246, 0.35);
+            box-shadow: 0 4px 14px rgba(56, 189, 248, 0.28);
+            position: relative;
+            transition: var(--transition);
+        }
+        .topbar-brand:hover .topbar-logo {
+            transform: scale(1.05);
+            border-color: #818cf8;
+            box-shadow: 0 6px 20px rgba(129, 140, 248, 0.38);
+        }
+        .topbar-logo-badge {
+            font-size: 1.15rem; font-weight: 900;
+            background: linear-gradient(135deg, #38bdf8, #818cf8, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.04em;
+            line-height: 1;
         }
         .topbar-title h1 { font-size: 1.05rem; font-weight: 800; color: var(--text-heading); letter-spacing: -0.01em; }
         .topbar-title p { font-size: 0.74rem; color: var(--text-muted); }
@@ -853,12 +869,14 @@
     <header class="topbar">
         <!-- LINHA PRINCIPAL DA TOPBAR -->
         <div class="topbar-main-row">
-            <!-- MARCA -->
-            <div class="topbar-brand" onclick="abrirVisaoQuadro()">
-                <div class="topbar-logo">🎯</div>
+            <!-- MARCA ESTUDOS DL -->
+            <div class="topbar-brand" onclick="abrirVisaoQuadro()" title="Estudos DL • Retornar ao Quadro de Metas">
+                <div class="topbar-logo">
+                    <span class="topbar-logo-badge">DL</span>
+                </div>
                 <div class="topbar-title">
-                    <h1>Plataforma de Metas • TRT-4</h1>
-                    <p>Metodologia Caderno do Aprovado • José Humberto</p>
+                    <h1>Estudos DL <span style="font-size: 0.70rem; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); padding: 2px 7px; border-radius: 6px; margin-left: 6px; vertical-align: middle;">TRT-4</span></h1>
+                    <p>Metas de Estudos • Caderno do Aprovado</p>
                 </div>
             </div>
 
@@ -1623,7 +1641,6 @@
 
                 if (modoExibirTodos) {
                     aulas.forEach((a, i) => {
-                        const isSubDone = !!progressoSubtopicos[`${metaId}-sub-${i}`];
                         aulasHtml += `
                             <article class="aula-card-render" style="margin-bottom:20px;">
                                 <div class="aula-header-action-row">
@@ -1631,17 +1648,12 @@
                                         <span class="aula-header-badge">${i + 1} de ${aulas.length}</span>
                                         <h3 class="aula-card-subtitulo">${escapeHtml(a.titulo)}</h3>
                                     </div>
-                                    <label class="aula-concluida-toggle">
-                                        <input type="checkbox" ${isSubDone ? 'checked' : ''} onchange="toggleSubtopicoConcluido('${metaId}', ${i}, this.checked)">
-                                        <span>Marcar Subtópico Concluído</span>
-                                    </label>
                                 </div>
                                 <div class="aula-body-text">${a.html}</div>
                             </article>
                         `;
                     });
                 } else {
-                    const isSubDone = !!progressoSubtopicos[`${metaId}-sub-${subIdx}`];
                     aulasHtml += `
                         <article class="aula-card-render">
                             <div class="aula-header-action-row">
@@ -1649,10 +1661,6 @@
                                     <span class="aula-header-badge">${subIdx + 1} de ${aulas.length}</span>
                                     <h3 class="aula-card-subtitulo">${escapeHtml(aulaAtiva.titulo)}</h3>
                                 </div>
-                                <label class="aula-concluida-toggle">
-                                    <input type="checkbox" ${isSubDone ? 'checked' : ''} onchange="toggleSubtopicoConcluido('${metaId}', ${subIdx}, this.checked)">
-                                    <span>Marcar Subtópico Concluído</span>
-                                </label>
                             </div>
                             <div class="aula-body-text">${aulaAtiva.html}</div>
                         </article>
