@@ -1,7 +1,7 @@
 // Service Worker da Plataforma de Metas TRT-4
 // Estratégia: Network-First com Cache Fallback (Garante atualização online e funcionamento 100% offline)
 
-const CACHE_NAME = 'trt4-metas-pwa-v3.1.0';
+const CACHE_NAME = 'trt4-metas-pwa-v3.2.0';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

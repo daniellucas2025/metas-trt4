@@ -121,8 +121,8 @@
             display: flex; align-items: center; gap: 10px;
         }
         .topbar-subrow {
-            display: flex; align-items: center; justify-content: space-between; gap: 14px;
-            padding-top: 6px; border-top: 1px solid rgba(255, 255, 255, 0.05); flex-wrap: wrap; width: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding-top: 4px; width: 100%;
         }
         .topbar-subrow-hint {
             font-size: 0.76rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;
@@ -430,7 +430,7 @@
 
         /* CONTAINER PRINCIPAL */
         .main-container {
-            max-width: 1440px; margin: 0 auto; padding: 20px 24px 60px 24px;
+            max-width: 1560px; margin: 0 auto; padding: 12px 18px 50px 18px;
         }
 
         /* SEÇÃO QUADRO DE METAS (MATRIZ COMPACTA) */
@@ -478,25 +478,25 @@
 
         /* TABELA DA MATRIZ DO CICLO */
         .matriz-container {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg);
-            padding: 16px 20px; box-shadow: var(--shadow); overflow-x: auto;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md);
+            padding: 8px 12px; box-shadow: var(--shadow); overflow-x: auto;
         }
         .matriz-table {
-            width: 100%; border-collapse: separate; border-spacing: 6px; min-width: 1100px;
+            width: 100%; border-collapse: separate; border-spacing: 3px; min-width: 980px;
         }
         .matriz-row-header {
-            text-align: left; padding: 8px 12px; font-size: 0.83rem; font-weight: 800;
-            color: var(--text-heading); white-space: nowrap; width: 220px;
-            border-right: 1px solid var(--border);
+            text-align: left; padding: 4px 8px; font-size: 0.74rem; font-weight: 800;
+            color: var(--text-heading); white-space: nowrap; width: 160px;
+            border-right: 1px solid var(--border); line-height: 1.25;
         }
         .matriz-cell {
             background: var(--bg-body); border: 1px solid var(--border);
-            border-radius: 8px; padding: 7px 5px; text-align: center;
-            font-size: 0.74rem; font-weight: 800; cursor: pointer; transition: var(--transition);
-            min-width: 46px; position: relative; user-select: none;
+            border-radius: 5px; padding: 4px 2px; text-align: center;
+            font-size: 0.67rem; font-weight: 800; cursor: pointer; transition: var(--transition);
+            min-width: 35px; position: relative; user-select: none;
         }
         .matriz-cell:hover {
-            transform: scale(1.08); border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 5;
+            transform: scale(1.12); border-color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 5;
         }
         .matriz-cell.revisao {
             border-color: rgba(16, 185, 129, 0.5);
@@ -513,7 +513,7 @@
             background: rgba(139, 92, 246, 0.25);
         }
         .matriz-cell.prioritaria::after {
-            content: '★'; position: absolute; top: 1px; right: 3px; font-size: 0.65rem; color: var(--accent-gold);
+            content: '★'; position: absolute; top: 0px; right: 2px; font-size: 0.55rem; color: var(--accent-gold);
         }
         .matriz-cell.concluida {
             background: rgba(59, 130, 246, 0.25) !important;
@@ -530,12 +530,12 @@
             border-color: #8b5cf6 !important;
             color: #ffffff !important;
         }
-        .matriz-cell-badge { font-size: 0.65rem; opacity: 0.8; display: block; }
+        .matriz-cell-badge { font-size: 0.55rem; opacity: 0.85; display: block; line-height: 1; margin-top: 1px; }
 
         /* PAINEL DE METAS EXTRAS NO FINAL DE CADA DISCIPLINA (QUADRO DE METAS) */
         .quadro-metas-extras-panel {
-            margin-top: 24px; background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: var(--radius-lg); padding: 22px 24px; box-shadow: var(--shadow);
+            margin-top: 14px; background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 12px 16px; box-shadow: var(--shadow);
         }
         .quadro-extras-header-title {
             display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px;
@@ -931,10 +931,7 @@
 
         <!-- SEGUNDA LINHA: BARRA DE PESQUISA ABAIXO DE CONTINUAR CICLO -->
         <div class="topbar-subrow">
-            <div class="topbar-subrow-hint">
-                <span style="color:#a78bfa; font-weight:700;">💡 Dica de Estudo:</span>
-                <span>Pressione <kbd>/</kbd> ou <kbd>Ctrl + K</kbd> para buscar leis, artigos, metas ou assuntos teóricos.</span>
-            </div>
+            
 
             <!-- BARRA DE BUSCA GLOBAL -->
             <div class="topbar-search-container">
@@ -1217,9 +1214,14 @@
                 const pctDisc = Math.round((concluidasDisc / disc.metas.length) * 100);
 
                 html += `<tr>`;
-                html += `<td class="matriz-row-header">
-                            <div>📚 ${disc.sigla} - ${disc.disciplina}</div>
-                            <div style="font-size:0.70rem; color:var(--text-muted); font-weight:600;">${concluidasDisc}/${disc.metas.length} metas (${pctDisc}%)</div>
+                html += `<td class="matriz-row-header" title="${disc.disciplina}">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span>📚 <strong>${disc.sigla}</strong></span>
+                                <span style="font-size:0.66rem; color:var(--accent-green); font-weight:700;">${pctDisc}%</span>
+                            </div>
+                            <div style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:145px;">
+                                ${disc.disciplina}
+                            </div>
                          </td>`;
 
                 for (let c = 1; c <= maxCols; c++) {
