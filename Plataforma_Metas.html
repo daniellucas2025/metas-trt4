@@ -102,27 +102,131 @@
         }
 
         /* TOPBAR */
+                /* TOPBAR REFINADA */
         .topbar {
             background: var(--bg-card);
             border-bottom: 1px solid var(--border);
-            padding: 6px 18px;
+            padding: 8px 24px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
             transition: var(--transition);
             box-sizing: border-box;
             width: 100%;
         }
         .topbar-main-row {
-            display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: nowrap; width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            width: 100%;
         }
-        .topbar-cycle-group {
-            display: flex; align-items: center; gap: 10px;
+        .topbar-subrow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding-top: 6px;
+            margin-top: 6px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            width: 100%;
         }
-        
-        
-        
+        .topbar-tools {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        /* BUSCA CENTRALIZADA */
+        .topbar-search-container {
+            position: relative;
+            max-width: 440px;
+            min-width: 320px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .topbar-subrow-spacer {
+            width: 290px;
+            flex-shrink: 0;
+            display: block;
+        }
+        @media (max-width: 1200px) {
+            .topbar-subrow-spacer { display: none; }
+        }
+        .search-input-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            border-radius: 9999px;
+            padding: 0 12px;
+            height: 32px;
+            transition: var(--transition);
+        }
+        .search-input-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            background: var(--bg-card);
+        }
+        .search-icon {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-right: 8px;
+            user-select: none;
+        }
+        .topbar-search-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-heading);
+            font-size: 0.80rem;
+            font-weight: 500;
+            padding: 5px 0;
+            font-family: inherit;
+        }
+        .topbar-search-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.8;
+            font-size: 0.78rem;
+        }
+        .btn-clear-search {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .btn-clear-search:hover { color: var(--text-heading); }
+        .search-shortcut-hint {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1px 5px;
+            user-select: none;
+            margin-left: 6px;
+        }
+        .search-dropdown-results {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+            max-height: 480px;
+            overflow-y: auto;
+            z-index: 1000;
+            padding: 8px;
+        }
         .topbar-brand {
             display: flex; align-items: center; gap: 12px; cursor: pointer;
         }
@@ -865,7 +969,7 @@
 
     <!-- TOPBAR -->
     <header class="topbar">
-        <!-- LINHA PRINCIPAL DA TOPBAR -->
+        <!-- LINHA 1 DA TOPBAR: MARCA, NAVEGAÇÃO E CICLO -->
         <div class="topbar-main-row">
             <!-- MARCA ESTUDOS DL -->
             <div class="topbar-brand" onclick="abrirVisaoQuadro()" title="Estudos DL • Retornar ao Quadro de Metas">
@@ -873,7 +977,7 @@
                     <span class="topbar-logo-badge">DL</span>
                 </div>
                 <div class="topbar-title">
-                    <h1>Estudos DL <span style="font-size: 0.70rem; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); padding: 2px 7px; border-radius: 6px; margin-left: 6px; vertical-align: middle;">TRT-4</span></h1>
+                    <h1>Estudos DL <span style="font-size: 0.68rem; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); padding: 1px 6px; border-radius: 5px; margin-left: 6px; vertical-align: middle;">TRT-4</span></h1>
                     <p>Metas de Estudos • Caderno do Aprovado</p>
                 </div>
             </div>
@@ -899,8 +1003,11 @@
                     <span>▶ Continuar Ciclo</span>
                 </button>
             </div>
+        </div>
 
-            <!-- FERRAMENTAS -->
+        <!-- LINHA 2 DA TOPBAR: FERRAMENTAS À ESQUERDA + BUSCA CENTRALIZADA -->
+        <div class="topbar-subrow">
+            <!-- FERRAMENTAS À ESQUERDA -->
             <div class="topbar-tools">
                 <div class="pomo-badge">
                     <span>⏱</span>
@@ -923,20 +1030,23 @@
                 </button>
 
                 <button class="btn-tool btn-pwa-install" id="btn-pwa-install" onclick="instalarPwa()" style="display:none;" title="Instalar Aplicativo no Celular ou Computador">📲 Instalar App</button>
-
-                <!-- BARRA DE BUSCA GLOBAL (AO LADO DO BOTÃO INSTALAR APP) -->
-                <div class="topbar-search-container">
-                    <div class="search-input-box">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" id="global-search-input" class="topbar-search-input" 
-                               placeholder="Buscar... (Ctrl+K)" 
-                               autocomplete="off" oninput="executarBuscaGlobal(this.value)">
-                        <button class="btn-clear-search" id="btn-clear-search" onclick="limparBusca()" style="display:none;" title="Limpar busca">×</button>
-                        <span class="search-shortcut-hint">/</span>
-                    </div>
-                    <div class="search-dropdown-results" id="search-dropdown-results" style="display:none;"></div>
-                </div>
             </div>
+
+            <!-- CAMPO DE BUSCA CENTRALIZADO -->
+            <div class="topbar-search-container">
+                <div class="search-input-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="global-search-input" class="topbar-search-input" 
+                           placeholder="Buscar por tópico, lei, meta ou conteúdo... (Ctrl+K)" 
+                           autocomplete="off" oninput="executarBuscaGlobal(this.value)">
+                    <button class="btn-clear-search" id="btn-clear-search" onclick="limparBusca()" style="display:none;" title="Limpar busca">×</button>
+                    <span class="search-shortcut-hint">/</span>
+                </div>
+                <div class="search-dropdown-results" id="search-dropdown-results" style="display:none;"></div>
+            </div>
+
+            <!-- ESPAÇADOR DIREITO PARA EQUILÍBRIO VISUAL DA BUSCA CENTRALIZADA -->
+            <div class="topbar-subrow-spacer"></div>
         </div>
     </header>
 
