@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Metas TRT-4 • PiP Flutuante</title>
+  <title>Metas TRT-4</title>
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <style>
     :root {
@@ -34,7 +34,7 @@
       overflow-x: hidden;
     }
     body {
-      padding: 8px;
+      padding: 10px;
       display: flex;
       flex-direction: column;
     }
@@ -48,48 +48,68 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      overflow: hidden;
+      padding: 12px;
+      gap: 10px;
       transition: opacity 0.2s ease;
     }
 
-    /* BARRA SUPERIOR */
-    .widget-titlebar {
-      background: #111827;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 8px 12px;
+    /* TOPO DO CARD: TAG DA META + CONTROLES DE TRANSPARÊNCIA INTEGRADOS */
+    .widget-header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-shrink: 0;
+      gap: 8px;
     }
-    .brand-tag {
+    .tags-group {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 11px;
-      font-weight: 800;
-      color: #60a5fa;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
-    .brand-tag::before {
-      content: "📌";
-      font-size: 11px;
+    .meta-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: rgba(37, 99, 235, 0.25);
+      border: 1px solid rgba(37, 99, 235, 0.5);
+      color: #93c5fd;
+    }
+    .meta-tag.rev {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #6ee7b7;
+    }
+    .meta-tag.extra {
+      background: rgba(168, 85, 247, 0.2);
+      border-color: rgba(168, 85, 247, 0.4);
+      color: #d8b4fe;
+    }
+    .badge-prio {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--accent-orange);
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
     }
 
-    /* CONTROLE DE TRANSPARÊNCIA */
+    /* CONTROLE DE TRANSPARÊNCIA DISCRETO */
     .opacity-box {
       display: flex;
       align-items: center;
-      gap: 4px;
-      background: rgba(255, 255, 255, 0.06);
-      padding: 2px 6px;
+      gap: 3px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 5px;
       border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
     .opacity-label {
-      font-size: 9px;
-      font-weight: 800;
+      font-size: 9.5px;
+      font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
     }
@@ -98,7 +118,7 @@
       color: #fff;
       border: 1px solid #334155;
       border-radius: 4px;
-      width: 20px;
+      width: 19px;
       height: 18px;
       font-size: 11px;
       font-weight: 900;
@@ -120,27 +140,17 @@
       text-align: center;
     }
 
-    /* CORPO */
-    .widget-body {
-      padding: 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      flex: 1;
-      justify-content: space-between;
-    }
-
-    /* CARD DA META ATUAL (CLICÁVEL PARA ABRIR O APP NO LOCAL EXATO) */
+    /* CARD CLICÁVEL DA META */
     .meta-card-click {
       background: rgba(11, 15, 25, 0.95);
       border: 1px dashed rgba(59, 130, 246, 0.5);
       border-radius: 12px;
-      padding: 10px;
+      padding: 11px;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 6px;
     }
     .meta-card-click:hover {
       border-style: solid;
@@ -148,44 +158,8 @@
       background: rgba(37, 99, 235, 0.12);
       transform: translateY(-1px);
     }
-    .meta-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .meta-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 4px;
-      background: rgba(37, 99, 235, 0.2);
-      border: 1px solid rgba(37, 99, 235, 0.4);
-      color: #93c5fd;
-    }
-    .meta-tag.rev {
-      background: rgba(16, 185, 129, 0.2);
-      border-color: rgba(16, 185, 129, 0.4);
-      color: #6ee7b7;
-    }
-    .meta-tag.extra {
-      background: rgba(168, 85, 247, 0.2);
-      border-color: rgba(168, 85, 247, 0.4);
-      color: #d8b4fe;
-    }
-    .badge-prio {
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--accent-orange);
-      background: rgba(249, 115, 22, 0.15);
-      border: 1px solid rgba(249, 115, 22, 0.3);
-      padding: 1px 5px;
-      border-radius: 4px;
-    }
     .meta-title {
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 800;
       color: #f8fafc;
       line-height: 1.35;
@@ -195,7 +169,7 @@
       overflow: hidden;
     }
     .meta-topics {
-      font-size: 10.5px;
+      font-size: 11px;
       color: var(--text-muted);
       line-height: 1.35;
       display: -webkit-box;
@@ -213,7 +187,7 @@
       color: #93c5fd;
       font-size: 10.5px;
       font-weight: 800;
-      padding: 5px;
+      padding: 6px;
       border-radius: 6px;
       margin-top: 2px;
       transition: all 0.2s;
@@ -245,25 +219,24 @@
       transition: width 0.3s ease;
     }
 
-    /* AÇÕES */
+    /* AÇÕES: POMODORO & CONCLUIR */
     .actions-row {
       display: flex;
       gap: 8px;
       align-items: center;
-      margin-top: 2px;
     }
     .pomo-badge {
       background: #0b1120;
       border: 1px solid #1e293b;
-      padding: 7px 10px;
+      padding: 7px 11px;
       border-radius: 8px;
       font-family: monospace;
-      font-size: 12px;
+      font-size: 12.5px;
       font-weight: 800;
       color: #f59e0b;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       cursor: pointer;
     }
     .btn-done-next {
@@ -272,8 +245,8 @@
       color: #fff;
       border: none;
       border-radius: 8px;
-      padding: 8px;
-      font-size: 11.5px;
+      padding: 9px;
+      font-size: 12px;
       font-weight: 800;
       cursor: pointer;
       display: flex;
@@ -294,9 +267,14 @@
 <body>
 
   <div class="widget-container" id="pip-container" style="opacity: 0.95;">
-    <!-- Topo -->
-    <div class="widget-titlebar">
-      <span class="brand-tag">Metas TRT-4 • PiP</span>
+    <!-- TOPO LIMPO: SEM BARRA REPETIDA! -->
+    <div class="widget-header-row">
+      <div class="tags-group">
+        <span class="meta-tag" id="meta-tag">DC 1</span>
+        <span class="badge-prio" id="meta-prio" style="display:none;">★ Prioritária</span>
+      </div>
+      
+      <!-- CONTROLE DE TRANSPARÊNCIA EMBUTIDO NO TOPO -->
       <div class="opacity-box">
         <span class="opacity-label">Transp:</span>
         <button class="btn-op" onclick="ajustarOpacidade(-15)" title="Diminuir opacidade">-</button>
@@ -305,44 +283,37 @@
       </div>
     </div>
 
-    <!-- Conteúdo -->
-    <div class="widget-body">
-      <!-- CARD CLICÁVEL -->
-      <div class="meta-card-click" onclick="abrirAppNoLocalExato()" title="Clique para abrir a plataforma principal nesta meta exata!">
-        <div class="meta-header-row">
-          <span class="meta-tag" id="meta-tag">DC 1</span>
-          <span class="badge-prio" id="meta-prio" style="display:none;">★ Prioritária</span>
-        </div>
-        <div class="meta-title" id="meta-title">Carregando ciclo de metas...</div>
-        <div class="meta-topics" id="meta-topics">Aguarde...</div>
-        
-        <div class="btn-open-app-spot">
-          <span>⛶</span> Abrir no app nesta meta ➔
-        </div>
+    <!-- CARD CLICÁVEL DA META -->
+    <div class="meta-card-click" onclick="abrirAppNoLocalExato()" title="Clique para abrir a plataforma principal nesta meta exata!">
+      <div class="meta-title" id="meta-title">Carregando ciclo de metas...</div>
+      <div class="meta-topics" id="meta-topics">Aguarde...</div>
+      
+      <div class="btn-open-app-spot">
+        <span>⛶</span> Abrir no app nesta meta ➔
       </div>
+    </div>
 
-      <!-- Progresso -->
-      <div style="display:flex; flex-direction:column; gap:4px;">
-        <div class="progress-info">
-          <span>Progresso do Ciclo</span>
-          <span id="stat-progress" style="color: #10b981;">0 / 0 (0%)</span>
-        </div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
-        </div>
+    <!-- PROGRESSO DO CICLO -->
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <div class="progress-info">
+        <span>Progresso do Ciclo</span>
+        <span id="stat-progress" style="color: #10b981;">0 / 0 (0%)</span>
       </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+      </div>
+    </div>
 
-      <!-- Linha de Ações: Pomodoro e Concluir Meta -->
-      <div class="actions-row">
-        <div class="pomo-badge" onclick="togglePomodoro()" title="Clique para Iniciar / Pausar Pomodoro">
-          <span>⏱️</span>
-          <span id="timer-val">25:00</span>
-          <span id="timer-icon">▶</span>
-        </div>
-        <button class="btn-done-next" onclick="concluirEAvancar()">
-          <span>✓</span> Concluir & Próxima
-        </button>
+    <!-- AÇÕES: POMODORO & CONCLUIR -->
+    <div class="actions-row">
+      <div class="pomo-badge" onclick="togglePomodoro()" title="Clique para Iniciar / Pausar Pomodoro">
+        <span>⏱️</span>
+        <span id="timer-val">25:00</span>
+        <span id="timer-icon">▶</span>
       </div>
+      <button class="btn-done-next" onclick="concluirEAvancar()">
+        <span>✓</span> Concluir & Próxima
+      </button>
     </div>
   </div>
 
@@ -440,7 +411,6 @@
         } catch (e) {}
       }
 
-      // Se aberto dentro do iframe do PiP
       if (window.parent && window.parent !== window && typeof window.parent.abrirMeta === 'function') {
         try {
           window.parent.abrirMeta(metaId);
