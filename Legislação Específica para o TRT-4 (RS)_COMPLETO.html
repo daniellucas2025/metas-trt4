@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legislação Específica para o TRT-4 (RS)</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --text-strong: #000000;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --tabs-bg: #e2e8f0;
+            --primary: #2563eb;
+            --badge-border-alpha: 0.2;
+        }
+
+        html.dark {
+            --bg: #09090b;
+            --card: #18181b;
+            --text: #f4f4f5;
+            --text-strong: #ffffff;
+            --muted: #a1a1aa;
+            --border: #27272a;
+            --tabs-bg: #27272a;
+            --primary: #3b82f6;
+            --badge-border-alpha: 0.35;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            line-height: 1.7;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 30px 20px;
+            transition: background 0.25s, color 0.25s;
+        }
+
+        .header { max-width: 960px; margin: 0 auto 30px auto; text-align: center; position: relative; }
+        .header h1 { font-size: 2.1rem; margin: 0 0 10px 0; color: var(--text-strong); }
+        
+        .theme-toggle {
+            position: absolute; right: 0; top: 0;
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--text); padding: 8px 14px; border-radius: 20px;
+            cursor: pointer; font-size: 13px; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: all 0.2s;
+        }
+        .theme-toggle:hover { transform: scale(1.04); }
+
+        .tabs-nav { max-width: 960px; margin: 0 auto 24px auto; display: flex; gap: 8px; flex-wrap: wrap; background: var(--tabs-bg); padding: 6px; border-radius: 10px; }
+        .tab-btn { background: transparent; border: none; padding: 10px 18px; font-size: 0.95rem; font-weight: 600; color: var(--muted); border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .tab-btn:hover { color: var(--text); background: rgba(125,125,125,0.15); }
+        .tab-btn.active { background: var(--card); color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        
+        .container { max-width: 960px; margin: 0 auto; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeIn 0.25s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        .aula-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 26px 30px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+        .aula-titulo { font-size: 1.35rem; color: var(--text-strong); margin-top: 0; border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 16px; }
+        .aula-corpo p { margin: 12px 0; }
+        hr { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
+
+        table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+        th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+        th { background: rgba(125,125,125,0.1); color: var(--text-strong); }
+
+        .link-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; margin: 4px 2px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: transform 0.15s, opacity 0.15s; }
+        .link-badge:hover { transform: translateY(-1px); opacity: 0.9; text-decoration: none; }
+
+        .link-youtube { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, var(--badge-border-alpha)); }
+        .link-qc { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, var(--badge-border-alpha)); }
+        .link-tec { background: rgba(14, 165, 233, 0.15); color: #38bdf8; border: 1px solid rgba(14, 165, 233, var(--badge-border-alpha)); }
+        .link-pdf { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, var(--badge-border-alpha)); }
+        .link-geral { background: rgba(100, 116, 139, 0.15); color: var(--text); border: 1px solid var(--border); }
+
+        strong { color: var(--text-strong); }
+        u { text-decoration-color: var(--primary); text-underline-offset: 3px; }
+    </style>
+    <script>
+        function openTab(tabId, btn) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('curso-theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-btn-label').innerText = isDark ? '☀️ Modo Claro' : '🌙 Modo Escuro';
+        }
+
+        (function() {
+            const saved = localStorage.getItem('curso-theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div class="header">
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <span id="theme-btn-label">🌙 Alternar Tema</span>
+        </button>
+        <h1>Legislação Específica para o TRT-4 (RS)</h1>
+        <p style="color:var(--muted); margin:0;">Material Compilado • Suporte a Modo Escuro</p>
+    </div>
+
+    <nav class="tabs-nav">
+        <button class="tab-btn active" onclick="openTab('mod-tab-0', this)">Legislação Específica para o TRT-4 (RS)</button>
+
+
+    </nav>
+
+    <main class="container">
+        
+                    <section id="mod-tab-0" class="tab-panel active">
+                        
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Noções de Sustentabilidade (Resolução CNJ nº 400)</h2>
+                            <div class="aula-corpo"><p><strong data-redactor-tag="strong">Tipos de ação (art. 2º)</strong></p>
+<ul><li><strong data-redactor-tag="strong">Ambientalmente corretas</strong>: reduzir o impacto no meio ambiente; reduzir consumo, reaproveitar, reciclar, rever padrões de consumo, analisar o ciclo de vida.</li><li><strong data-redactor-tag="strong">Economicamente viáveis</strong>: eficiência contínua dos gastos; real necessidade; análise custo-benefício.</li><li><strong data-redactor-tag="strong">Socialmente justas e inclusivas</strong>: equilíbrio e bem-estar no trabalho; saúde, acessibilidade e inclusão social.</li><li><strong data-redactor-tag="strong">Culturalmente diversas</strong>: variedade e convivência entre ideias, características, gêneros e regionalismos.</li><li><strong data-redactor-tag="strong">Inovadoras</strong>: novas tecnologias, processos e métodos.</li></ul>
+<p><strong data-redactor-tag="strong">Definições (art. 3º)</strong></p>
+<ul><li><strong data-redactor-tag="strong">Logística sustentável</strong>: coordenação do fluxo de materiais, serviços e informações, do fornecimento ao desfazimento.</li><li><strong data-redactor-tag="strong">Contratações compartilhadas</strong>: aquisição conjunta com ganho de escala, por organizações públicas de diferentes setores ou unidades da mesma organização pública.</li><li><strong data-redactor-tag="strong">Coleta seletiva</strong>: resíduos separados por constituição ou composição. <strong data-redactor-tag="strong">Solidária</strong>: destinação a associações e cooperativas de catadores.</li><li><strong data-redactor-tag="strong">Quadro de pessoal</strong>: magistrados e servidores. <strong data-redactor-tag="strong">Quadro auxiliar</strong>: inclui juízes leigos, conciliadores e voluntários.</li><li><strong data-redactor-tag="strong">Material de consumo</strong>: perde a identidade física e/ou tem utilização limitada a 2 anos.&nbsp;<strong data-redactor-tag="strong">Ponto de equilíbrio</strong><span>: quantidade ideal de recursos.</span></li></ul>
+<p><strong data-redactor-tag="strong">PLS</strong></p>
+<ul><li>Instrumento de governança alinhado à Estratégia Nacional do Judiciário e aos Planos Estratégicos.</li><li>Composição mínima: indicadores (11 temas), série histórica, metas, metodologia e unidades gestoras responsáveis.</li><li>Instituído por ato do <strong data-redactor-tag="strong">Presidente</strong>; revisão no máximo a cada <strong data-redactor-tag="strong">2 anos</strong>.</li><li>Relatório anual até <strong data-redactor-tag="strong">28 de fevereiro</strong>; avaliação pela Comissão Gestora <strong data-redactor-tag="strong">pelo menos 1 vez ao ano</strong>.</li></ul>
+<p><strong data-redactor-tag="strong">Unidade de sustentabilidade × Comissão Gestora</strong></p>
+<ul><li>Unidade: <strong data-redactor-tag="strong">permanente</strong>; subordinação <strong data-redactor-tag="strong">preferencial</strong>; mínimo de <strong data-redactor-tag="strong">3</strong> (mais de 5.000 servidores) ou <strong data-redactor-tag="strong">2</strong> servidores.</li><li>Unidade: elabora o PLS e o relatório; monitora; subsidia a administração; fomenta ações; busca parcerias.</li><li>Comissão: presidida por <strong data-redactor-tag="strong">magistrado(a)</strong>; no mínimo <strong data-redactor-tag="strong">5</strong> servidores(as); gestão estratégica, sustentabilidade e compras <strong data-redactor-tag="strong">necessariamente</strong>.</li><li>Comissão: delibera sobre indicadores e metas; avalia e aprova relatórios; propõe a revisão; sugere tarefas.</li></ul>
+<p><strong data-redactor-tag="strong">Contratações e disposições finais</strong></p>
+<ul><li>Critérios de sustentabilidade em bens, serviços e obras, <strong data-redactor-tag="strong">inclusive</strong> reformas, locação e manutenção predial.</li><li>Cada órgão institui seu <strong data-redactor-tag="strong">guia de contratações sustentáveis</strong>.</li><li>Neutralidade de carbono até <strong data-redactor-tag="strong">2030</strong> (Programa Justiça Carbono Zero).</li></ul>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=558&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;per_page=20&amp;q=400&amp;sort=newest&amp;subject_ids[]=18534" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p>
+<p><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space"><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q786IW" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></span></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Resolução CSJT nº 360 (Política de Prevenção e Enfrentamento no âmbito da Justiça do Trabalho)</h2>
+                            <div class="aula-corpo"><p>​<strong data-redactor-tag="strong">Alcance e conceitos (arts. 1º e 2º)</strong></p>
+<ul><li>Justiça do Trabalho de <strong data-redactor-tag="strong">1º e 2º graus</strong>; condutas <strong data-redactor-tag="strong">presenciais ou telemáticas</strong>; inclusive contra estagiários, aprendizes, terceirizados, voluntários e prestadores.</li><li><strong data-redactor-tag="strong">Violência e assédio</strong>: ocorrência <strong data-redactor-tag="strong">única ou repetida</strong>, <strong data-redactor-tag="strong">independentemente da intenção</strong>. <strong data-redactor-tag="strong">Assédio moral organizacional</strong>: processo <strong data-redactor-tag="strong">contínuo</strong>.</li><li><strong data-redactor-tag="strong">Assédio sexual</strong>: conotação sexual, contra a vontade; forma verbal, não verbal ou física.</li><li><strong data-redactor-tag="strong">Saúde no trabalho</strong> = construção contínua rumo ao bem-estar ≠ <strong data-redactor-tag="strong">risco</strong> = condição com potencial de causar dano.</li><li><strong data-redactor-tag="strong">Gestão participativa</strong> = modo de gestão ≠ <strong data-redactor-tag="strong">organização do trabalho</strong> = conjunto de normas e processos.</li></ul>
+<p><strong data-redactor-tag="strong">Princípios e diretrizes (arts. 3º e 4º)</strong></p>
+<ul><li>Valorização da <strong data-redactor-tag="strong">subjetividade</strong>; primazia da abordagem <strong data-redactor-tag="strong">preventiva</strong>; <strong data-redactor-tag="strong">sigilo</strong> dos dados pessoais e das apurações.</li><li>Estratégias priorizam: gestão saudável, <strong data-redactor-tag="strong">escuta e acolhimento</strong> e práticas <strong data-redactor-tag="strong">restaurativas</strong>.</li><li>Prevenção e enfrentamento: abordagem <strong data-redactor-tag="strong">transversal</strong>. Atendimento dos casos: abordagem <strong data-redactor-tag="strong">sistêmica</strong> (gestão de pessoas + saúde).</li></ul>
+<p><strong data-redactor-tag="strong">Gestores e acolhimento (arts. 6º a 11)</strong></p>
+<ul><li>Gestores: <strong data-redactor-tag="strong">responsáveis</strong> pela análise crítica; <strong data-redactor-tag="strong">corresponsáveis</strong> pelas relações de respeito; <strong data-redactor-tag="strong">solicitam suporte</strong> quando precisarem.</li><li>Canal <strong data-redactor-tag="strong">permanente</strong>, <strong data-redactor-tag="strong">preferencialmente</strong> na gestão de pessoas, com <strong data-redactor-tag="strong">sigilo profissional</strong>.</li><li>Acolhimento: lógica do cuidado, caráter <strong data-redactor-tag="strong">distinto e autônomo</strong> do disciplinar.</li></ul>
+<p><strong data-redactor-tag="strong">Notícia (arts. 12 a 14)</strong></p>
+<ul><li>Noticia <strong data-redactor-tag="strong">qualquer pessoa</strong>: quem se percebe alvo <strong data-redactor-tag="strong">ou</strong> quem conhece os fatos.</li><li><strong data-redactor-tag="strong">8 instâncias</strong> podem acolher. Encaminhar a uma <strong data-redactor-tag="strong">não impede</strong> a atuação concomitante de Saúde e Gestão de Pessoas.</li><li>Não representar protege a <strong data-redactor-tag="strong">intimidade</strong> e, sozinho, <strong data-redactor-tag="strong">não gera</strong> consequência penal, cível ou administrativa.</li><li>Sigilo e confidencialidade, mas <strong data-redactor-tag="strong">vedado o anonimato</strong>.</li><li>Registro: consentimento <strong data-redactor-tag="strong">expresso</strong>. Sem autorização: cientificação <strong data-redactor-tag="strong">verbal</strong> e só acolhimento.</li></ul>
+<p><strong data-redactor-tag="strong">Comitês e apuração (arts. 15 a 17-A)</strong></p>
+<ul><li>Comitês em <strong data-redactor-tag="strong">45 dias</strong>, pelo menos <strong data-redactor-tag="strong">1 por grau</strong> de jurisdição, com participação <strong data-redactor-tag="strong">plúrima</strong>.</li><li>Obrigatório: servidor e terceirizado <strong data-redactor-tag="strong">eleitos</strong>; indicado pela <strong data-redactor-tag="strong">Comissão de Acessibilidade e Inclusão</strong>; <strong data-redactor-tag="strong">diversidade de gênero</strong>.</li><li>Comitês <strong data-redactor-tag="strong">não substituem</strong> as comissões de sindicância e PAD.</li><li>Apuração: sindicância ou PAD, pela <strong data-redactor-tag="strong">autoridade competente</strong>, com <strong data-redactor-tag="strong">denúncia fundamentada</strong>, devido processo legal e ampla defesa.</li></ul>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q7E6Au" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" style="background-color: initial; color: color(srgb 0.0509804 0.0509804 0.0509804); --darkreader-inline-bgcolor: initial; --darkreader-inline-color: var(--darkreader-text-0d0d0d, #e0ddd9);" data-darkreader-inline-bgcolor="" data-darkreader-inline-color="">​</span></p>
+<p>Não há um filtro específico para questões desse tópico no site QConcursos.<span class="redactor-invisible-space">​</span><br></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Código de Conduta e Valores Éticos do TRT-4 (Portaria GP TRT-4 nº 4.573)</h2>
+                            <div class="aula-corpo"><p><span>​</span><strong data-redactor-tag="strong">Destinatários e princípios<br></strong><span>• Efetivos do TRT4 (no TRT4 ou em </span><strong data-redactor-tag="strong">qualquer outro</strong><span> órgão), não efetivos </span><strong data-redactor-tag="strong">em exercício no TRT4</strong><span>, estagiários e terceirizados com </span><strong data-redactor-tag="strong">dedicação exclusiva</strong><span> de mão de obra.<br></span><span>• Deveres: agentes públicos; estagiários e terceirizados, </span><strong data-redactor-tag="strong">no que couber</strong><span>.<br></span><span>• Art. 3º, I: legalidade, impessoalidade, moralidade e </span><strong data-redactor-tag="strong">interesse público</strong><span>. Art. 12 (Alta Administração): legalidade, impessoalidade, moralidade, </span><strong data-redactor-tag="strong">publicidade</strong><span> e </span><strong data-redactor-tag="strong">eficiência</strong><span>.<br></span><strong data-redactor-tag="strong">Direitos, deveres e vedações<br></strong><span>• Direito: ambiente que preserve a integridade </span><strong data-redactor-tag="strong">física e mental</strong><span>. Dever: ambiente que preserve a integridade </span><strong data-redactor-tag="strong">física, moral e psicológica</strong><span>.<br></span><span>• Sigilo: direito (informação pessoal respeitada), dever (manter sigilo) e vedação (divulgar).<br></span><span>• Sigilo revelado → chefia imediata ou autoridade responsável. Ato contrário ao interesse público → chefia imediata. Fato contrário ao Código → </span><strong data-redactor-tag="strong">Comitê</strong><span>.<br></span><strong data-redactor-tag="strong">Presentes<br></strong><span>• Vedado solicitar, sugerir ou receber de interessado, </span><strong data-redactor-tag="strong">mesmo em festividades</strong><span>.<br></span><span>• Não são presentes: sem valor comercial; brindes até </span><strong data-redactor-tag="strong">1% do teto</strong><span>; recebidos por terceirizados em campanhas do TRT4.<br></span><span>• Sem como recusar ou devolver: </span><strong data-redactor-tag="strong">Secretaria de Administração</strong><span>, até </span><strong data-redactor-tag="strong">10 dias</strong><span>, doação a entidade filantrópica.<br></span><strong data-redactor-tag="strong">Licitações e parentesco<br></strong><span>• Não podem participar de licitação nem ser contratados: planejamento e área de licitações; direção, chefia e assessoramento das unidades envolvidas; Presidente; Diretor da Escola Judicial (só contratações da Escola); cônjuge, companheiro e parentes; PJ com essas pessoas como sócias.<br></span><span>• Alcança licitações iniciadas até </span><strong data-redactor-tag="strong">6 meses</strong><span> após a desincompatibilização. Exceção: </span><strong data-redactor-tag="strong">inexigibilidade</strong><span> (art. 74, I, da Lei nº 14.133/2021).<br></span><span>• Parentesco no Código: até o </span><strong data-redactor-tag="strong">3º grau, inclusive</strong><span>.<br></span><strong data-redactor-tag="strong">Alta Administração<br></strong><span>• Presidente, 2 Vice-Presidentes e Corregedor; Diretor e Vice-Diretor da Escola Judicial; 2 Ouvidores; juízes auxiliares; </span><strong data-redactor-tag="strong">CJ-3 e CJ-4</strong><span> dos órgãos dos incisos I a III.<br></span><span>• Termo de compromisso: posse ou </span><strong data-redactor-tag="strong">1º dia de exercício</strong><span>.<br></span><span>• Não recebe retribuição de atividade incompatível nem transporte, hospedagem ou favores de particulares que gerem dúvida sobre sua probidade. Pode ir a seminários sem conflito de interesses.<br></span><strong data-redactor-tag="strong">Apuração<br></strong><span>• Comitê inicia </span><strong data-redactor-tag="strong">de ofício</strong><span> ou por </span><strong data-redactor-tag="strong">denúncia fundamentada</strong><span>; processo </span><strong data-redactor-tag="strong">sigiloso</strong><span>; identidade do denunciante </span><strong data-redactor-tag="strong">pode</strong><span> ser preservada.<br></span><span>• 2º grau → Presidência; 1º grau → Corregedoria; Presidente → Vice-Presidência Institucional; estagiário ou contratado → Diretoria-Geral.<br></span><span>• Decide a </span><strong data-redactor-tag="strong">autoridade competente</strong><span>, não o Comitê.<br></span><span>• Magistrado: </span><strong data-redactor-tag="strong">proposta</strong><span> de PAD. Servidor: </span><strong data-redactor-tag="strong">determinação</strong><span> de sindicância ou PAD. Menor potencial ofensivo: TAC. Estagiário: advertência ou desligamento. Empresa: penalidade contratual.<br></span><span>• Recurso só nos incisos IV e V: estagiário </span><strong data-redactor-tag="strong">10 dias contínuos</strong><span>; empresa </span><strong data-redactor-tag="strong">5 dias úteis</strong><span> (8.666) ou </span><strong data-redactor-tag="strong">15 dias úteis</strong><span> (14.133); reconsideração em </span><strong data-redactor-tag="strong">5 dias úteis</strong><span>.<br></span><span>• Ilícito penal → PF e MPF. Improbidade → também </span><strong data-redactor-tag="strong">TCU</strong><span>.<br></span><strong data-redactor-tag="strong">Disposições finais<br></strong><span>• Casos omissos: </span><strong data-redactor-tag="strong">Presidência</strong><span>. Revisão: no máximo a cada </span><strong data-redactor-tag="strong">2 anos</strong><span>.</span></p>
+<p>​​Não há um filtro específico para questões desse tópico nos sites de questões.<span class="redactor-invisible-space">​</span><br></p></div>
+                        </article>
+                    
+                        <article class="aula-card">
+                            <h2 class="aula-titulo">Regimento Interno do TRT-4</h2>
+                            <div class="aula-corpo"><p>​​Na primeira meta deste Regimento, estude os artigos 1º a 72.</p>
+<p>Na segunda meta, estude os artigos 73 e seguintes.</p>
+<p><strong data-redactor-tag="strong">Estrutura e direção</strong></p>
+<p>• Órgãos do Tribunal: Pleno, Órgão Especial, Seções, Turmas, <strong data-redactor-tag="strong">Presidência</strong>, <strong data-redactor-tag="strong">Corregedoria</strong> e Ouvidorias.</p>
+<p>• Órgãos da Justiça do Trabalho na 4ª Região: o TRT e os <strong data-redactor-tag="strong">Juízes do Trabalho</strong>.</p>
+<p>• Tribunal com <strong data-redactor-tag="strong">48</strong> desembargadores; <strong data-redactor-tag="strong">4</strong> cargos de direção (Presidente, 2 Vices e Corregedor).</p>
+<p>• Eleição: escrutínio <strong data-redactor-tag="strong">secreto</strong>, sessão <strong data-redactor-tag="strong">ordinária</strong> do Pleno; posse em sessão <strong data-redactor-tag="strong">extraordinária</strong>.</p>
+<p>• Direção: mandato de <strong data-redactor-tag="strong">2 anos</strong>, vedada a reeleição. Ouvidorias: <strong data-redactor-tag="strong">2 anos</strong>, permitida <strong data-redactor-tag="strong">1</strong> recondução.</p>
+<p><span>• Posse de Desembargador: </span><strong data-redactor-tag="strong">30 dias</strong><span>, prorrogáveis por mais </span><strong data-redactor-tag="strong">30</strong><span> a critério do Órgão Especial.</span>​<br></p>
+<p><strong data-redactor-tag="strong">Tribunal Pleno × Órgão Especial</strong></p>
+<p>• Pleno: totalidade dos efetivos; quórum de <strong data-redactor-tag="strong">metade + 1</strong>. Órgão Especial: <strong data-redactor-tag="strong">16</strong> membros; quórum de <strong data-redactor-tag="strong">10</strong>.</p>
+<p>• Decisões pela maioria dos presentes; inconstitucionalidade: <strong data-redactor-tag="strong">maioria absoluta</strong> dos efetivos do Pleno.</p>
+<p>• Presidente só tem voto de desempate (salvo inconstitucionalidade); em matéria administrativa vota e tem voto de qualidade.</p>
+<p>• Comissões <strong data-redactor-tag="strong"><u data-redactor-tag="u">Permanentes</u></strong>: Pleno elege. Comissões <strong data-redactor-tag="strong"><u data-redactor-tag="u">Temporárias</u></strong>: Órgão Especial elege e institui.</p>
+<p>• São do Órgão Especial: serviços auxiliares, horários de funcionamento, jurisdição das Varas, convocação de juiz para o Tribunal, processos e recursos administrativos, remoção de juiz substituto entre TRTs.</p>
+<p>• Recusa do juiz mais antigo na promoção: <strong data-redactor-tag="strong">2/3</strong> dos membros do Tribunal, motivada.</p>
+<p><strong data-redactor-tag="strong">Seções e Turmas</strong></p>
+<p>• Seções: SDC, 1ª SDI, 2ª SDI, Execução e SEJAI.</p>
+<p>• Quóruns: SDC <strong data-redactor-tag="strong">5</strong> | 1ª SDI <strong data-redactor-tag="strong">9</strong> | 2ª SDI <strong data-redactor-tag="strong">6</strong> | Execução <strong data-redactor-tag="strong">5</strong> | SEJAI <strong data-redactor-tag="strong">8</strong>.</p>
+<p>• Turma: até <strong data-redactor-tag="strong">4</strong> julgadores, só <strong data-redactor-tag="strong">3</strong> participam do julgamento; julga os recursos ordinários.</p>
+<p>• Presidente de Seção: <strong data-redactor-tag="strong">só desempata</strong>. Presidente de Turma: <strong data-redactor-tag="strong">profere voto</strong>.</p>
+<p>• Das decisões das Turmas não cabe recurso ao Órgão Especial, exceto multas e art. 201, II, "c".</p>
+<p><strong data-redactor-tag="strong">Corregedoria</strong></p>
+<p>• Supervisiona a <strong data-redactor-tag="strong">Assessoria de Juízes</strong> e decide <strong data-redactor-tag="strong">conflitos de atribuições</strong> entre juízes de 1º grau.</p>
+<p>• Corregedor <strong data-redactor-tag="strong">propõe</strong>; Órgão Especial <strong data-redactor-tag="strong">delibera</strong> (jurisdição das Varas e circunscrições).</p>
+<p>• Inspeção correcional: pelo menos <strong data-redactor-tag="strong">1</strong> vez a cada <strong data-redactor-tag="strong">2 anos</strong>. Da correição parcial cabe agravo interno em <strong data-redactor-tag="strong">8 dias</strong>.</p>
+<p><strong data-redactor-tag="strong">Sessões, prazos e recursos</strong></p>
+<p>• Sessões públicas, entre <strong data-redactor-tag="strong">8h e 18h</strong>; espera de quórum: <strong data-redactor-tag="strong">30 minutos</strong>.</p>
+<p>• Sustentação oral: <strong data-redactor-tag="strong">10 minutos</strong>, improrrogável (até <strong data-redactor-tag="strong">20</strong> em caso de litisconsortes e matéria relevante).</p>
+<p>• Vista: <strong data-redactor-tag="strong">10 dias</strong>, prorrogável por igual período. Acórdão: até <strong data-redactor-tag="strong">10 dias</strong> corridos após a sessão.</p>
+<p>• Embargos de declaração: <strong data-redactor-tag="strong">5 dias</strong>. Revista, ordinário, agravo de instrumento e agravo interno: <strong data-redactor-tag="strong">8 dias</strong>.</p>
+<p>• <strong data-redactor-tag="strong">Incabível</strong> pedido de reconsideração do despacho que <strong data-redactor-tag="strong">recebe</strong> a revista. Recurso ordinário sujeito a <strong data-redactor-tag="strong">preparo</strong>.</p>
+<p>• Agravo de instrumento: à autoridade prolatora do despacho, em <strong data-redactor-tag="strong">autos apartados</strong>.</p>
+<p>• Empate: no agravo interno prevalece o <strong data-redactor-tag="strong">despacho agravado</strong>; no HC, a decisão mais favorável ao <strong data-redactor-tag="strong">paciente</strong>.</p>
+<p>• Recurso administrativo contra decisão do Presidente: ao Órgão Especial, em <strong data-redactor-tag="strong">10 dias</strong>.</p>
+<p><a class="link-badge link-qc" href="https://www.qconcursos.com/questoes-de-concursos/questoes?discipline_ids[]=557&amp;exclude_nullified=true&amp;exclude_outdated=true&amp;per_page=20&amp;sort=newest&amp;subject_ids[]=18214" target="_blank" rel="noopener noreferrer">📝 QC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space" style="background-color: initial; color: color(srgb 0.0509804 0.0509804 0.0509804); --darkreader-inline-bgcolor: initial; --darkreader-inline-color: var(--darkreader-text-0d0d0d, #e0ddd9);" data-darkreader-inline-bgcolor="" data-darkreader-inline-color="">​</span></p>
+<p><a class="link-badge link-tec" href="https://www.tecconcursos.com.br/s/Q7E6W8" target="_blank" rel="noopener noreferrer">🎯 TEC - Questões</a><span class="redactor-invisible-space" data-verified="redactor" data-redactor-tag="span" data-redactor-class="redactor-invisible-space">​</span><br></p></div>
+                        </article>
+                    
+                             
+                   
+                    
+                    </section>
+                
+    </main>
+
+    <script>
+        if (document.documentElement.classList.contains('dark')) {
+            document.getElementById('theme-btn-label').innerText = '☀️ Modo Claro';
+        } else {
+            document.getElementById('theme-btn-label').innerText = '🌙 Modo Escuro';
+        }
+    </script>
+</body>
+</html>
