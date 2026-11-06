@@ -28,29 +28,34 @@
     html, body {
       width: 100%;
       height: 100%;
-      background: var(--bg);
+      background: transparent;
       color: var(--text);
       overflow-y: auto;
       overflow-x: hidden;
     }
     body {
-      padding: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
     }
     .widget-container {
       width: 100%;
       height: 100%;
-      background: var(--card-bg);
+      background: rgba(13, 19, 34, 0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: 1.5px solid var(--border);
       border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 12px;
       gap: 10px;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .widget-container.hover-focus:hover {
+      opacity: 1 !important;
     }
 
     /* TOPO DO CARD: TAG DA META + CONTROLES DE TRANSPARÊNCIA INTEGRADOS */
@@ -97,28 +102,28 @@
       border-radius: 4px;
     }
 
-    /* CONTROLE DE TRANSPARÊNCIA DISCRETO */
+    /* CONTROLE DE TRANSPARÊNCIA REFINADO */
     .opacity-box {
       display: flex;
       align-items: center;
-      gap: 3px;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 2px 5px;
-      border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.85);
+      padding: 3px 6px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
     }
     .opacity-label {
-      font-size: 9.5px;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
+      font-size: 11px;
+      line-height: 1;
+      user-select: none;
     }
     .btn-op {
       background: #1e293b;
-      color: #fff;
+      color: #94a3b8;
       border: 1px solid #334155;
       border-radius: 4px;
-      width: 19px;
+      width: 18px;
       height: 18px;
       font-size: 11px;
       font-weight: 900;
@@ -126,18 +131,69 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: background 0.15s;
+      transition: all 0.15s;
     }
     .btn-op:hover {
       background: #2563eb;
       border-color: #2563eb;
+      color: #fff;
+    }
+    .op-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 46px;
+      height: 4px;
+      background: #334155;
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .op-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #38bdf8;
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+      transition: transform 0.1s;
+    }
+    .op-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
     }
     .op-value {
       font-size: 10px;
       font-weight: 800;
       color: #38bdf8;
-      min-width: 28px;
+      min-width: 27px;
       text-align: center;
+      cursor: pointer;
+      padding: 1px 3px;
+      border-radius: 3px;
+      user-select: none;
+    }
+    .op-value:hover {
+      background: rgba(56, 189, 248, 0.15);
+    }
+    .btn-ghost-toggle {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      font-size: 10px;
+      cursor: pointer;
+      padding: 1px 3px;
+      color: #64748b;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-ghost-toggle.active {
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.15);
+      border-color: rgba(251, 191, 36, 0.3);
     }
 
     /* CARD CLICÁVEL DA META */
@@ -274,12 +330,14 @@
         <span class="badge-prio" id="meta-prio" style="display:none;">★ Prioritária</span>
       </div>
       
-      <!-- CONTROLE DE TRANSPARÊNCIA EMBUTIDO NO TOPO -->
-      <div class="opacity-box">
-        <span class="opacity-label">Transp:</span>
-        <button class="btn-op" onclick="ajustarOpacidade(-15)" title="Diminuir opacidade">-</button>
-        <span class="op-value" id="op-display">95%</span>
-        <button class="btn-op" onclick="ajustarOpacidade(15)" title="Aumentar opacidade">+</button>
+      <!-- CONTROLE DE TRANSPARÊNCIA COMPLETO (SLIDER + BOTÕES + FOCO AUTO) -->
+      <div class="opacity-box" title="Controle de Transparência do Widget">
+        <span class="opacity-label" title="Transparência">👁️</span>
+        <button class="btn-op" onclick="ajustarOpacidade(-10)" title="Diminuir opacidade">-</button>
+        <input type="range" id="op-slider" min="20" max="100" step="5" value="90" oninput="definirOpacidade(this.value)" class="op-slider" title="Arraste para ajustar">
+        <span class="op-value" id="op-display" onclick="alternarPresetsOpacidade()" title="Clique para alternar (100% -> 80% -> 55% -> 35%)">90%</span>
+        <button class="btn-op" onclick="ajustarOpacidade(10)" title="Aumentar opacidade">+</button>
+        <button class="btn-ghost-toggle active" id="btn-ghost" onclick="toggleGhostFocus()" title="Modo Foco: fica 100% visível ao passar o mouse">✨</button>
       </div>
     </div>
 
@@ -447,13 +505,68 @@
       }
     }
 
-    let opacidadeAtual = 95;
+    // ==========================================
+    // SISTEMA AVANÇADO DE OPACIDADE E FOCO INTELIGENTE
+    // ==========================================
+    let opacidadeAtual = parseInt(localStorage.getItem('trt4_pip_opacity')) || 90;
+    let modoGhostAtivo = localStorage.getItem('trt4_pip_ghost') !== 'false';
+
+    function aplicarOpacidade(val) {
+      opacidadeAtual = Math.min(100, Math.max(20, Math.round(val)));
+      localStorage.setItem('trt4_pip_opacity', opacidadeAtual);
+      
+      const container = document.getElementById('pip-container');
+      if (container) container.style.opacity = (opacidadeAtual / 100).toString();
+      
+      const slider = document.getElementById('op-slider');
+      if (slider) slider.value = opacidadeAtual;
+      
+      const display = document.getElementById('op-display');
+      if (display) display.innerText = opacidadeAtual + '%';
+    }
+
+    function definirOpacidade(val) {
+      aplicarOpacidade(val);
+    }
+
     function ajustarOpacidade(delta) {
-      opacidadeAtual += delta;
-      if (opacidadeAtual > 100) opacidadeAtual = 100;
-      if (opacidadeAtual < 30) opacidadeAtual = 30;
-      document.getElementById('pip-container').style.opacity = (opacidadeAtual / 100).toString();
-      document.getElementById('op-display').innerText = opacidadeAtual + '%';
+      aplicarOpacidade(opacidadeAtual + delta);
+    }
+
+    function alternarPresetsOpacidade() {
+      const presets = [100, 80, 55, 35];
+      let proximo = presets[0];
+      for (let i = 0; i < presets.length; i++) {
+        if (opacidadeAtual > presets[i]) {
+          proximo = presets[i];
+          break;
+        }
+      }
+      aplicarOpacidade(proximo);
+    }
+
+    function toggleGhostFocus() {
+      modoGhostAtivo = !modoGhostAtivo;
+      localStorage.setItem('trt4_pip_ghost', modoGhostAtivo);
+      atualizarEstadoGhost();
+    }
+
+    function atualizarEstadoGhost() {
+      const btn = document.getElementById('btn-ghost');
+      const container = document.getElementById('pip-container');
+      if (modoGhostAtivo) {
+        if (btn) {
+          btn.classList.add('active');
+          btn.title = 'Modo Foco ATIVO (fica 100% nítido ao passar o mouse)';
+        }
+        if (container) container.classList.add('hover-focus');
+      } else {
+        if (btn) {
+          btn.classList.remove('active');
+          btn.title = 'Modo Foco DESATIVADO (opacidade fixa constante)';
+        }
+        if (container) container.classList.remove('hover-focus');
+      }
     }
 
     let segundosRestantes = 25 * 60;
@@ -488,6 +601,8 @@
       }
     });
 
+    aplicarOpacidade(opacidadeAtual);
+    atualizarEstadoGhost();
     renderWidget();
   </script>
 </body>

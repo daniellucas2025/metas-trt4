@@ -13,15 +13,9 @@
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon-192.png">
     <!-- Firebase SDK Compat (v10.8.0) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js">        verificarHashMeta();
-        window.addEventListener('hashchange', verificarHashMeta);
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js">        verificarHashMeta();
-        window.addEventListener('hashchange', verificarHashMeta);
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js">        verificarHashMeta();
-        window.addEventListener('hashchange', verificarHashMeta);
-    </script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <style>
         :root {
             --bg-body: #090a0f;
@@ -1161,6 +1155,354 @@
             font-size: 0.85rem; font-weight: 700; color: var(--text-heading);
             display: none; align-items: center; gap: 8px; z-index: 1000;
         }
+
+        /* ==========================================================================
+           RESPONSIVIDADE MOBILE REFINADA (SMARTPHONES & TABLETS)
+           ========================================================================== */
+        @media (max-width: 860px) {
+            .hide-mobile {
+                display: none !important;
+            }
+
+            /* 1. TOPBAR & CABEÇALHO COMPACTO */
+            .topbar {
+                padding: 6px 10px;
+                position: sticky;
+                top: 0;
+            }
+            .topbar-main-row {
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 6px;
+            }
+            .topbar-brand {
+                order: 1;
+                gap: 8px;
+            }
+            .topbar-logo {
+                width: 34px;
+                height: 34px;
+                border-radius: 10px;
+            }
+            .topbar-logo-badge {
+                font-size: 0.95rem;
+            }
+            .topbar-title h1 {
+                font-size: 0.84rem;
+                margin: 0;
+            }
+            .topbar-title p {
+                display: none; /* Oculta slogan no mobile para economizar altura */
+            }
+            .topbar-cycle-group {
+                order: 2;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                margin: 0;
+            }
+            .topbar-progress-wrap {
+                padding: 3px 8px;
+                gap: 6px;
+            }
+            .topbar-progress-text {
+                font-size: 0.70rem;
+            }
+            .topbar-progress-bar {
+                width: 50px;
+                height: 5px;
+            }
+            .btn-next-cycle {
+                padding: 5px 10px;
+                font-size: 0.74rem;
+                border-radius: 16px;
+            }
+            .btn-next-cycle span {
+                white-space: nowrap;
+            }
+
+            /* ABAS EM LINHA DEDICADA COM SCROLL HORIZONTAL POR TOQUE */
+            .topbar-tabs {
+                order: 3;
+                width: 100%;
+                display: flex;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                flex-wrap: nowrap;
+                gap: 4px;
+                padding: 3px;
+                margin-top: 3px;
+            }
+            .topbar-tabs::-webkit-scrollbar {
+                display: none;
+            }
+            .topbar-tab-btn {
+                flex: 1 0 auto;
+                white-space: nowrap;
+                padding: 6px 10px;
+                font-size: 0.78rem;
+                font-weight: 700;
+                text-align: center;
+                border-radius: 7px;
+            }
+
+            /* LINHA 2: FERRAMENTAS & BUSCA */
+            .topbar-subrow {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+                padding-top: 5px;
+                margin-top: 4px;
+            }
+            .topbar-tools {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                gap: 6px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding-bottom: 2px;
+            }
+            .topbar-tools::-webkit-scrollbar {
+                display: none;
+            }
+            .pomo-badge {
+                padding: 4px 8px;
+                font-size: 0.76rem;
+                gap: 4px;
+                flex-shrink: 0;
+            }
+            .pomo-badge .btn-tool {
+                padding: 3px 6px;
+                font-size: 0.72rem;
+            }
+            .theme-select {
+                padding: 4px 6px;
+                font-size: 0.74rem;
+                flex-shrink: 0;
+            }
+            .btn-cloud-sync {
+                padding: 4px 8px;
+                font-size: 0.74rem;
+                flex-shrink: 0;
+                max-width: 130px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            #btn-open-pip {
+                display: none; /* PiP de desktop não é usado em smartphones */
+            }
+            .btn-pwa-install {
+                padding: 4px 8px;
+                font-size: 0.74rem;
+                flex-shrink: 0;
+            }
+            .topbar-search-container {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 0 !important;
+                margin: 0;
+            }
+            .search-input-box {
+                height: 34px;
+            }
+            .topbar-subrow-spacer {
+                display: none !important;
+            }
+            .search-dropdown-results {
+                width: 100%;
+                left: 0;
+                right: 0;
+                max-width: 100%;
+            }
+
+            /* 2. CONTAINER PRINCIPAL */
+            .main-container {
+                padding: 8px 8px 50px 8px;
+            }
+
+            /* 3. QUADRO DE METAS (MATRIZ NO MOBILE) */
+            .quadro-header-banner {
+                padding: 8px 10px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .quadro-header-info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .quadro-banner-controls {
+                width: 100%;
+            }
+            .quadro-filtros {
+                display: flex;
+                width: 100%;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                flex-wrap: nowrap;
+                gap: 6px;
+            }
+            .quadro-filtros::-webkit-scrollbar {
+                display: none;
+            }
+            .filtro-btn {
+                flex: 0 0 auto;
+                padding: 5px 12px;
+                font-size: 0.74rem;
+                white-space: nowrap;
+            }
+
+            /* MATRIZ COM COLUNA STICKY FIXA E TOUCH CONFORTÁVEL */
+            .matriz-container {
+                padding: 0;
+                border-radius: var(--radius-sm);
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .matriz-table {
+                border-spacing: 0;
+                border-collapse: separate;
+                min-width: 820px;
+            }
+            .matriz-row-header {
+                position: sticky;
+                left: 0;
+                z-index: 20;
+                background-color: var(--bg-card) !important;
+                width: 86px;
+                min-width: 86px;
+                max-width: 90px;
+                padding: 8px 6px;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.55);
+                border-right: 2px solid var(--border);
+                border-bottom: 2px solid var(--bg-body);
+            }
+            .matriz-disc-name {
+                font-size: 0.58rem !important;
+                max-width: 76px !important;
+                line-height: 1.1;
+                margin-top: 2px;
+                color: var(--text-muted);
+            }
+            .matriz-cell {
+                min-width: 44px;
+                height: 42px;
+                font-size: 0.74rem;
+                padding: 4px 2px;
+                border: 1px solid var(--border);
+                border-bottom: 2px solid var(--bg-body);
+                border-right: 2px solid var(--bg-body);
+                box-sizing: border-box;
+            }
+
+            /* 4. SEÇÃO ESTUDO DA META NO MOBILE */
+            .meta-view-header {
+                padding: 12px 14px;
+            }
+            .meta-breadcrumbs {
+                flex-wrap: wrap;
+                font-size: 0.76rem;
+                gap: 4px;
+            }
+            .meta-header-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            .meta-header-titles h2 {
+                font-size: 1.15rem;
+                flex-wrap: wrap;
+            }
+            .btn-toggle-meta {
+                width: 100%;
+                justify-content: center;
+                padding: 12px 18px;
+                font-size: 0.92rem;
+            }
+            .meta-control-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            .meta-pdf-assuntos-card {
+                padding: 12px 14px;
+            }
+            .meta-item-label {
+                padding: 10px 12px;
+                font-size: 0.84rem;
+            }
+            .questoes-inputs-row {
+                flex-wrap: wrap;
+            }
+            .subtopicos-pills-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                flex-wrap: nowrap;
+                padding-bottom: 4px;
+            }
+            .subtopicos-pills-container::-webkit-scrollbar {
+                display: none;
+            }
+            .subtopico-pill {
+                flex: 0 0 auto;
+                white-space: nowrap;
+                padding: 8px 12px;
+                font-size: 0.80rem;
+            }
+
+            /* 5. VISÃO DISCIPLINAS NO MOBILE */
+            .disc-header-card {
+                padding: 12px 14px;
+            }
+            .disc-filtro-pills {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                flex-wrap: nowrap;
+                padding-bottom: 4px;
+            }
+            .disc-filtro-pills::-webkit-scrollbar {
+                display: none;
+            }
+            .disc-filtro-pill {
+                flex: 0 0 auto;
+                white-space: nowrap;
+            }
+            .disc-metas-cards-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .topbar-progress-bar {
+                display: none; /* Em telas < 480px, mantém o número mas esconde a barra gráfica para caber tudo */
+            }
+            .topbar-title h1 {
+                font-size: 0.80rem;
+            }
+            .topbar-tab-btn {
+                padding: 5px 8px;
+                font-size: 0.74rem;
+            }
+            .matriz-row-header {
+                width: 78px;
+                min-width: 78px;
+                max-width: 82px;
+                padding: 4px 4px;
+            }
+            .matriz-disc-name {
+                font-size: 0.55rem !important;
+                max-width: 68px !important;
+            }
+        }
     </style>
 </head>
 <body class="theme-dark">
@@ -1182,8 +1524,8 @@
 
             <!-- ABAS DE NAVEGAÇÃO -->
             <nav class="topbar-tabs">
-                <button class="topbar-tab-btn active" id="tab-btn-quadro" onclick="abrirVisaoQuadro()">📊 Quadro de Metas</button>
-                <button class="topbar-tab-btn" id="tab-btn-estudo" onclick="abrirVisaoEstudo()">🎯 Estudo da Meta</button>
+                <button class="topbar-tab-btn active" id="tab-btn-quadro" onclick="abrirVisaoQuadro()">📊 Quadro <span class="hide-mobile">de Metas</span></button>
+                <button class="topbar-tab-btn" id="tab-btn-estudo" onclick="abrirVisaoEstudo()">🎯 Estudo <span class="hide-mobile">da Meta</span></button>
                 <button class="topbar-tab-btn" id="tab-btn-disciplinas" onclick="abrirVisaoDisciplinas()">📚 Disciplinas</button>
                 <button class="topbar-tab-btn" id="tab-btn-diag" onclick="abrirVisaoDiagnostico()">📋 O que Falta?</button>
             </nav>
@@ -1495,7 +1837,7 @@
                                 <span>📚 <strong>${disc.sigla}</strong></span>
                                 <span style="font-size:0.66rem; color:var(--accent-green); font-weight:700;">${pctDisc}%</span>
                             </div>
-                            <div style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:145px;">
+                            <div class="matriz-disc-name" style="font-size:0.66rem; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:145px;">
                                 ${disc.disciplina}
                             </div>
                          </td>`;
@@ -2736,14 +3078,14 @@ Escolha uma opção:
                     pipWindow.document.documentElement.style.margin = '0';
                     pipWindow.document.documentElement.style.padding = '0';
                     pipWindow.document.documentElement.style.overflow = 'hidden';
-                    pipWindow.document.documentElement.style.background = '#070a13';
+                    pipWindow.document.documentElement.style.background = 'transparent';
 
                     pipWindow.document.body.style.width = '100%';
                     pipWindow.document.body.style.height = '100%';
                     pipWindow.document.body.style.margin = '0';
                     pipWindow.document.body.style.padding = '0';
                     pipWindow.document.body.style.overflow = 'hidden';
-                    pipWindow.document.body.style.background = '#070a13';
+                    pipWindow.document.body.style.background = 'transparent';
 
                     const widgetFrame = document.createElement('iframe');
                     widgetFrame.src = 'widget.html';
