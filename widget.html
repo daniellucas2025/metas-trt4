@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Widget • Metas TRT-4</title>
+  <title>Metas TRT-4 • PiP Flutuante</title>
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <style>
     :root {
       --bg: #070a13;
-      --card-bg: rgba(17, 24, 39, 0.95);
-      --border: rgba(51, 65, 85, 0.6);
+      --card-bg: rgba(13, 19, 34, 0.96);
+      --border: rgba(59, 130, 246, 0.35);
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
       --accent-green: #10b981;
@@ -26,113 +26,136 @@
       user-select: none;
     }
     body {
-      background: var(--bg);
+      background: transparent;
       color: var(--text);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 12px;
-      overflow-x: hidden;
+      padding: 10px;
+      overflow: hidden;
     }
-    .widget-card {
+    .widget-container {
       width: 100%;
-      max-width: 370px;
+      max-width: 360px;
       background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 28px;
-      padding: 20px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 25px rgba(37, 99, 235, 0.25);
       backdrop-filter: blur(16px);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      transition: all 0.3s ease;
+      transition: opacity 0.25s ease, transform 0.2s ease;
     }
-    .widget-header {
+
+    /* BARRA SUPERIOR COM CONTROLES DE TRANSPARÊNCIA */
+    .widget-titlebar {
+      background: #111827;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 9px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .widget-brand {
+    .brand-tag {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #60a5fa;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .widget-logo {
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      background: linear-scale(135deg, #1d4ed8, #2563eb);
-      background: #2563eb;
+    .brand-tag::before {
+      content: "📌";
+      font-size: 11px;
+    }
+
+    /* CONTROLES DE TRANSPARÊNCIA */
+    .opacity-box {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .opacity-label {
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .btn-op {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #334155;
+      border-radius: 4px;
+      width: 20px;
+      height: 18px;
+      font-size: 11px;
+      font-weight: 900;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 900;
-      font-size: 13px;
-      color: #fff;
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+      cursor: pointer;
+      transition: background 0.15s;
     }
-    .widget-title {
-      font-size: 14px;
+    .btn-op:hover {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+    .op-value {
+      font-size: 10px;
       font-weight: 800;
-      color: #fff;
-      line-height: 1.2;
+      color: #38bdf8;
+      min-width: 28px;
+      text-align: center;
     }
-    .widget-subtitle {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-    .widget-stats {
-      text-align: right;
-    }
-    .stats-count {
-      font-size: 15px;
-      font-weight: 900;
-      color: var(--accent-green);
-      font-variant-numeric: tabular-nums;
-    }
-    .stats-pct {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-muted);
-    }
-    .progress-bar-wrap {
-      width: 100%;
-      height: 7px;
-      background: rgba(30, 41, 59, 0.8);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .progress-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #2563eb, #10b981);
-      border-radius: 999px;
-      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .meta-box {
-      background: rgba(11, 15, 25, 0.8);
-      border: 1px solid rgba(51, 65, 85, 0.5);
-      border-radius: 18px;
+
+    /* CORPO PRINCIPAL */
+    .widget-body {
       padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
-    .meta-box-header {
+
+    /* CARD DA META ATUAL (CLICÁVEL PARA ABRIR O APP NO LOCAL EXATO) */
+    .meta-card-click {
+      background: rgba(11, 15, 25, 0.9);
+      border: 1.5px dashed rgba(59, 130, 246, 0.5);
+      border-radius: 14px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .meta-card-click:hover {
+      border-style: solid;
+      border-color: #3b82f6;
+      background: rgba(37, 99, 235, 0.12);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+    }
+    .meta-header-row {
+      display: flex;
       justify-content: space-between;
+      align-items: center;
     }
     .meta-tag {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 12px;
+      gap: 5px;
+      font-size: 11px;
       font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
+      padding: 2px 8px;
+      border-radius: 5px;
       background: rgba(37, 99, 235, 0.2);
       border: 1px solid rgba(37, 99, 235, 0.4);
       color: #93c5fd;
@@ -156,17 +179,17 @@
       padding: 2px 6px;
       border-radius: 4px;
     }
-    .meta-titulo {
-      font-size: 13px;
-      font-weight: 700;
-      color: #f1f5f9;
-      line-height: 1.4;
+    .meta-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #f8fafc;
+      line-height: 1.35;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .meta-detalhe {
+    .meta-topics {
       font-size: 11px;
       color: var(--text-muted);
       line-height: 1.4;
@@ -175,133 +198,148 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-    .btn-action-primary {
+
+    /* BOTÃO DE CLIQUE PARA ABRIR O APP NO LOCAL EXATO */
+    .btn-open-app-spot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(37, 99, 235, 0.4);
+      color: #93c5fd;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 10px;
+      border-radius: 8px;
+      margin-top: 4px;
+      transition: all 0.2s;
+    }
+    .meta-card-click:hover .btn-open-app-spot {
+      background: #2563eb;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+    }
+
+    /* PROGRESSO & ESTATÍSTICAS */
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .progress-bar-wrap {
       width: 100%;
-      background: var(--primary);
+      height: 6px;
+      background: #1e293b;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb, #10b981);
+      border-radius: 99px;
+      transition: width 0.3s ease;
+    }
+
+    /* LINHA DE AÇÕES & POMODORO */
+    .actions-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .pomo-badge {
+      background: #0b1120;
+      border: 1px solid #1e293b;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-family: monospace;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #f59e0b;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+    .btn-done-next {
+      flex: 1;
+      background: #10b981;
       color: #fff;
       border: none;
-      border-radius: 14px;
-      padding: 12px;
-      font-size: 13px;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 12px;
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-      transition: all 0.2s ease;
-    }
-    .btn-action-primary:hover {
-      background: var(--primary-hover);
-      transform: translateY(-1px);
-    }
-    .btn-action-primary:active {
-      transform: scale(0.98);
-    }
-    .actions-row {
-      display: flex;
-      gap: 8px;
-    }
-    .btn-action-secondary {
-      flex: 1;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--accent-green);
-      border-radius: 12px;
-      padding: 10px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       gap: 6px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
       transition: all 0.2s ease;
     }
-    .btn-action-secondary:hover {
-      background: rgba(16, 185, 129, 0.2);
+    .btn-done-next:hover {
+      background: #059669;
     }
-    .widget-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 4px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 11px;
-    }
-    .footer-link {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.2s;
-      cursor: pointer;
-    }
-    .footer-link:hover {
-      color: #93c5fd;
-    }
-    .timer-badge {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      color: #cbd5e1;
-      font-family: monospace;
-      font-weight: 700;
-      font-size: 12px;
+    .btn-done-next:active {
+      transform: scale(0.98);
     }
   </style>
 </head>
 <body>
 
-  <div class="widget-card">
-    <!-- Topo / Cabeçalho -->
-    <div class="widget-header">
-      <div class="widget-brand">
-        <div class="widget-logo">DL</div>
-        <div>
-          <div class="widget-title">Metas TRT-4</div>
-          <div class="widget-subtitle">Ciclo Oficial de Estudos</div>
+  <div class="widget-container" id="pip-container" style="opacity: 0.95;">
+    <!-- Barra Superior com Controles de Transparência -->
+    <div class="widget-titlebar">
+      <span class="brand-tag">Metas TRT-4 • PiP</span>
+      <div class="opacity-box">
+        <span class="opacity-label">Transp:</span>
+        <button class="btn-op" onclick="ajustarOpacidade(-15)" title="Diminuir opacidade">-</button>
+        <span class="op-value" id="op-display">95%</span>
+        <button class="btn-op" onclick="ajustarOpacidade(15)" title="Aumentar opacidade">+</button>
+      </div>
+    </div>
+
+    <!-- Corpo com Card da Meta -->
+    <div class="widget-body">
+      <!-- CARD CLICÁVEL: AO CLICAR, ABRE O APP NO MESMO LOCAL EXATO -->
+      <div class="meta-card-click" onclick="abrirAppNoLocalExato()" title="Clique para abrir a plataforma principal nesta meta exata!">
+        <div class="meta-header-row">
+          <span class="meta-tag" id="meta-tag">DC 1</span>
+          <span class="badge-prio" id="meta-prio" style="display:none;">★ Prioritária</span>
+        </div>
+        <div class="meta-title" id="meta-title">Carregando ciclo de metas...</div>
+        <div class="meta-topics" id="meta-topics">Aguarde...</div>
+        
+        <div class="btn-open-app-spot">
+          <span>⛶</span> Clique para abrir o app nesta meta ➔
         </div>
       </div>
-      <div class="widget-stats">
-        <div class="stats-count" id="stat-count">0 / 0</div>
-        <div class="stats-pct" id="stat-pct">0% concluído</div>
+
+      <!-- Barra de Progresso do Ciclo -->
+      <div class="progress-info">
+        <span>Progresso Geral</span>
+        <span id="stat-progress" style="color: #10b981;">0 / 0 (0%)</span>
       </div>
-    </div>
-
-    <!-- Barra de Progresso do Ciclo -->
-    <div class="progress-bar-wrap">
-      <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
-    </div>
-
-    <!-- Card da Próxima Meta -->
-    <div class="meta-box" id="meta-box-content">
-      <div class="meta-box-header">
-        <span class="meta-tag" id="meta-sigla-num">DC 1</span>
-        <span class="badge-prio" id="meta-prio" style="display:none;">★ Prioritária</span>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
       </div>
-      <div class="meta-titulo" id="meta-titulo">Carregando ciclo de metas...</div>
-      <div class="meta-detalhe" id="meta-detalhe">Aguarde...</div>
-    </div>
 
-    <!-- Botões de Ação -->
-    <div class="actions-row">
-      <button class="btn-action-primary" onclick="abrirPlataformaNaMeta()">
-        <span>▶</span> Estudar Esta Meta
-      </button>
-      <button class="btn-action-secondary" onclick="concluirEAvancar()">
-        <span>✓</span> Feito
-      </button>
-    </div>
-
-    <!-- Rodapé -->
-    <div class="widget-footer">
-      <div class="timer-badge">
-        <span>⏱️</span>
-        <span id="widget-timer">25:00</span>
-        <span onclick="toggleTimer()" style="cursor:pointer; margin-left:2px;" id="btn-timer-icon">▶</span>
+      <!-- Ações: Pomodoro e Concluir Meta -->
+      <div class="actions-row">
+        <div class="pomo-badge" onclick="togglePomodoro()" title="Clique para Iniciar / Pausar Pomodoro">
+          <span>⏱️</span>
+          <span id="timer-val">25:00</span>
+          <span id="timer-icon" style="margin-left:2px;">▶</span>
+        </div>
+        <button class="btn-done-next" onclick="concluirEAvancar()">
+          <span>✓</span> Concluir & Próxima
+        </button>
       </div>
-      <a class="footer-link" onclick="abrirPlataformaCompleta()">Abrir Plataforma ↗</a>
     </div>
   </div>
 
@@ -341,24 +379,22 @@
 
     let metaAtualFoco = null;
 
-    function atualizarWidget() {
+    function renderWidget() {
       const prog = getProgresso();
       const total = listaPlanaMetas.length;
       const concluidas = listaPlanaMetas.filter(m => prog[m.id]).length;
       const pct = total > 0 ? Math.round((concluidas / total) * 100) : 0;
 
-      document.getElementById('stat-count').innerText = `${concluidas} / ${total}`;
-      document.getElementById('stat-pct').innerText = `${pct}% concluído`;
+      document.getElementById('stat-progress').innerText = `${concluidas} / ${total} (${pct}%)`;
       document.getElementById('progress-fill').style.width = `${pct}%`;
 
-      // Encontra a primeira meta não concluída do ciclo
       metaAtualFoco = listaPlanaMetas.find(m => !prog[m.id]);
       if (!metaAtualFoco && listaPlanaMetas.length > 0) {
-        metaAtualFoco = listaPlanaMetas[0]; // ciclo concluído, recomeça
+        metaAtualFoco = listaPlanaMetas[0];
       }
 
       if (metaAtualFoco) {
-        const tagEl = document.getElementById('meta-sigla-num');
+        const tagEl = document.getElementById('meta-tag');
         let tagText = `${metaAtualFoco.sigla} ${metaAtualFoco.numero}`;
         let tagClass = 'meta-tag';
         if (metaAtualFoco.revisao) {
@@ -371,19 +407,41 @@
         tagEl.className = tagClass;
         tagEl.innerText = tagText;
 
-        const prioEl = document.getElementById('meta-prio');
-        prioEl.style.display = metaAtualFoco.prioritaria ? 'inline-block' : 'none';
+        document.getElementById('meta-prio').style.display = metaAtualFoco.prioritaria ? 'inline-block' : 'none';
 
         const tit = metaAtualFoco.assuntos && metaAtualFoco.assuntos.length > 0 
           ? metaAtualFoco.assuntos[0] 
           : (metaAtualFoco.revisao ? 'Revisão estratégica da disciplina' : 'Meta de estudo');
-        document.getElementById('meta-titulo').innerText = tit;
+        document.getElementById('meta-title').innerText = tit;
 
         let det = metaAtualFoco.assuntos && metaAtualFoco.assuntos.length > 1
           ? metaAtualFoco.assuntos.slice(1).join(' • ')
           : (metaAtualFoco.subtitulo || 'Clique para abrir o conteúdo teórico e questões');
-        document.getElementById('meta-detalhe').innerText = det;
+        document.getElementById('meta-topics').innerText = det;
       }
+    }
+
+    // FUNÇÃO REQUISITADA: ABRIR O APP NO MESMO LOCAL EXATO ONDE ESTÁ
+    function abrirAppNoLocalExato() {
+      if (!metaAtualFoco) return;
+      const metaId = metaAtualFoco.id;
+
+      // 1. Tenta focar a janela pai/aberta da plataforma se estiver aberta
+      if (window.opener && !window.opener.closed) {
+        try {
+          if (typeof window.opener.abrirMeta === 'function') {
+            window.opener.abrirMeta(metaId);
+          } else {
+            window.opener.location.hash = `#meta=${metaId}`;
+          }
+          window.opener.focus();
+          return;
+        } catch (e) {}
+      }
+
+      // 2. Se for aberta independente ou PiP nativo, abre/foca o index com o hash da meta exata
+      const win = window.open(`index.html#meta=${metaId}`, 'PlataformaMetasTRT4');
+      if (win) win.focus();
     }
 
     function concluirEAvancar() {
@@ -391,45 +449,47 @@
       const prog = getProgresso();
       prog[metaAtualFoco.id] = true;
       saveProgresso(prog);
-      atualizarWidget();
-    }
+      renderWidget();
 
-    function abrirPlataformaNaMeta() {
-      const metaId = metaAtualFoco ? metaAtualFoco.id : '';
-      const url = `index.html#meta=${metaId}`;
-      window.open(url, '_blank');
-    }
-
-    function abrirPlataformaCompleta() {
-      window.open('index.html', '_blank');
-    }
-
-    // Sincroniza se o usuário marcar algo na outra aba
-    window.addEventListener('storage', (e) => {
-      if (e.key === 'trt4_metas_concluidas') {
-        atualizarWidget();
+      // Atualiza também a janela principal se estiver conectada
+      if (window.opener && typeof window.opener.atualizarProgressoGlobal === 'function') {
+        try {
+          window.opener.progressoMetas[metaAtualFoco.id] = true;
+          window.opener.atualizarProgressoGlobal();
+          window.opener.renderizarMatriz();
+        } catch(e) {}
       }
-    });
+    }
 
-    // Timer simples
-    let timeLeft = 25 * 60;
-    let timerInterval = null;
-    function toggleTimer() {
-      const icon = document.getElementById('btn-timer-icon');
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
+    // CONTROLE DE TRANSPARÊNCIA (- e +)
+    let opacidadeAtual = 95;
+    function ajustarOpacidade(delta) {
+      opacidadeAtual += delta;
+      if (opacidadeAtual > 100) opacidadeAtual = 100;
+      if (opacidadeAtual < 30) opacidadeAtual = 30; // limite mínimo para continuar legível
+      document.getElementById('pip-container').style.opacity = (opacidadeAtual / 100).toString();
+      document.getElementById('op-display').innerText = opacidadeAtual + '%';
+    }
+
+    // POMODORO SIMPLES
+    let segundosRestantes = 25 * 60;
+    let timerId = null;
+    function togglePomodoro() {
+      const icon = document.getElementById('timer-icon');
+      if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
         icon.innerText = '▶';
       } else {
-        timerInterval = setInterval(() => {
-          if (timeLeft > 0) {
-            timeLeft--;
-            const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-            const s = String(timeLeft % 60).padStart(2, '0');
-            document.getElementById('widget-timer').innerText = `${m}:${s}`;
+        timerId = setInterval(() => {
+          if (segundosRestantes > 0) {
+            segundosRestantes--;
+            const m = String(Math.floor(segundosRestantes / 60)).padStart(2, '0');
+            const s = String(segundosRestantes % 60).padStart(2, '0');
+            document.getElementById('timer-val').innerText = `${m}:${s}`;
           } else {
-            clearInterval(timerInterval);
-            timerInterval = null;
+            clearInterval(timerId);
+            timerId = null;
             icon.innerText = '▶';
             alert('⏱️ Pomodoro concluído! Hora de descansar 5 minutos.');
           }
@@ -438,7 +498,13 @@
       }
     }
 
-    atualizarWidget();
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'trt4_metas_concluidas') {
+        renderWidget();
+      }
+    });
+
+    renderWidget();
   </script>
 </body>
 </html>
