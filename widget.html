@@ -8,8 +8,8 @@
   <style>
     :root {
       --bg: #070a13;
-      --card-bg: rgba(13, 19, 34, 0.96);
-      --border: rgba(59, 130, 246, 0.35);
+      --card-bg: #0d1322;
+      --border: rgba(59, 130, 246, 0.4);
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
       --accent-green: #10b981;
@@ -25,38 +25,42 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       user-select: none;
     }
-    body {
-      background: transparent;
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    body {
+      padding: 8px;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px;
-      overflow: hidden;
+      flex-direction: column;
     }
     .widget-container {
       width: 100%;
-      max-width: 360px;
+      height: 100%;
       background: var(--card-bg);
       border: 1.5px solid var(--border);
-      border-radius: 20px;
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 25px rgba(37, 99, 235, 0.25);
-      backdrop-filter: blur(16px);
-      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
       display: flex;
       flex-direction: column;
-      transition: opacity 0.25s ease, transform 0.2s ease;
+      justify-content: space-between;
+      overflow: hidden;
+      transition: opacity 0.2s ease;
     }
 
-    /* BARRA SUPERIOR COM CONTROLES DE TRANSPARÊNCIA */
+    /* BARRA SUPERIOR */
     .widget-titlebar {
       background: #111827;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 9px 14px;
+      padding: 8px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-shrink: 0;
     }
     .brand-tag {
       display: flex;
@@ -73,7 +77,7 @@
       font-size: 11px;
     }
 
-    /* CONTROLES DE TRANSPARÊNCIA */
+    /* CONTROLE DE TRANSPARÊNCIA */
     .opacity-box {
       display: flex;
       align-items: center;
@@ -116,32 +120,33 @@
       text-align: center;
     }
 
-    /* CORPO PRINCIPAL */
+    /* CORPO */
     .widget-body {
-      padding: 14px;
+      padding: 10px 12px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
+      flex: 1;
+      justify-content: space-between;
     }
 
     /* CARD DA META ATUAL (CLICÁVEL PARA ABRIR O APP NO LOCAL EXATO) */
     .meta-card-click {
-      background: rgba(11, 15, 25, 0.9);
-      border: 1.5px dashed rgba(59, 130, 246, 0.5);
-      border-radius: 14px;
-      padding: 12px;
+      background: rgba(11, 15, 25, 0.95);
+      border: 1px dashed rgba(59, 130, 246, 0.5);
+      border-radius: 12px;
+      padding: 10px;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
     .meta-card-click:hover {
       border-style: solid;
       border-color: #3b82f6;
       background: rgba(37, 99, 235, 0.12);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+      transform: translateY(-1px);
     }
     .meta-header-row {
       display: flex;
@@ -151,11 +156,11 @@
     .meta-tag {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       font-size: 11px;
       font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 5px;
+      padding: 2px 7px;
+      border-radius: 4px;
       background: rgba(37, 99, 235, 0.2);
       border: 1px solid rgba(37, 99, 235, 0.4);
       color: #93c5fd;
@@ -176,11 +181,11 @@
       color: var(--accent-orange);
       background: rgba(249, 115, 22, 0.15);
       border: 1px solid rgba(249, 115, 22, 0.3);
-      padding: 2px 6px;
+      padding: 1px 5px;
       border-radius: 4px;
     }
     .meta-title {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 800;
       color: #f8fafc;
       line-height: 1.35;
@@ -190,16 +195,14 @@
       overflow: hidden;
     }
     .meta-topics {
-      font-size: 11px;
+      font-size: 10.5px;
       color: var(--text-muted);
-      line-height: 1.4;
+      line-height: 1.35;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-
-    /* BOTÃO DE CLIQUE PARA ABRIR O APP NO LOCAL EXATO */
     .btn-open-app-spot {
       display: flex;
       align-items: center;
@@ -208,31 +211,29 @@
       background: rgba(37, 99, 235, 0.2);
       border: 1px solid rgba(37, 99, 235, 0.4);
       color: #93c5fd;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 800;
-      padding: 6px 10px;
-      border-radius: 8px;
-      margin-top: 4px;
+      padding: 5px;
+      border-radius: 6px;
+      margin-top: 2px;
       transition: all 0.2s;
     }
     .meta-card-click:hover .btn-open-app-spot {
       background: #2563eb;
       color: #fff;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
     }
 
-    /* PROGRESSO & ESTATÍSTICAS */
+    /* PROGRESSO */
     .progress-info {
       display: flex;
       justify-content: space-between;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
       color: #64748b;
-      margin-top: 2px;
     }
     .progress-bar-wrap {
       width: 100%;
-      height: 6px;
+      height: 5px;
       background: #1e293b;
       border-radius: 99px;
       overflow: hidden;
@@ -244,25 +245,25 @@
       transition: width 0.3s ease;
     }
 
-    /* LINHA DE AÇÕES & POMODORO */
+    /* AÇÕES */
     .actions-row {
       display: flex;
       gap: 8px;
       align-items: center;
-      margin-top: 4px;
+      margin-top: 2px;
     }
     .pomo-badge {
       background: #0b1120;
       border: 1px solid #1e293b;
-      padding: 8px 12px;
-      border-radius: 10px;
+      padding: 7px 10px;
+      border-radius: 8px;
       font-family: monospace;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 800;
       color: #f59e0b;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       cursor: pointer;
     }
     .btn-done-next {
@@ -270,16 +271,16 @@
       background: #10b981;
       color: #fff;
       border: none;
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 12px;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 11.5px;
       font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      gap: 5px;
+      box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
       transition: all 0.2s ease;
     }
     .btn-done-next:hover {
@@ -293,7 +294,7 @@
 <body>
 
   <div class="widget-container" id="pip-container" style="opacity: 0.95;">
-    <!-- Barra Superior com Controles de Transparência -->
+    <!-- Topo -->
     <div class="widget-titlebar">
       <span class="brand-tag">Metas TRT-4 • PiP</span>
       <div class="opacity-box">
@@ -304,9 +305,9 @@
       </div>
     </div>
 
-    <!-- Corpo com Card da Meta -->
+    <!-- Conteúdo -->
     <div class="widget-body">
-      <!-- CARD CLICÁVEL: AO CLICAR, ABRE O APP NO MESMO LOCAL EXATO -->
+      <!-- CARD CLICÁVEL -->
       <div class="meta-card-click" onclick="abrirAppNoLocalExato()" title="Clique para abrir a plataforma principal nesta meta exata!">
         <div class="meta-header-row">
           <span class="meta-tag" id="meta-tag">DC 1</span>
@@ -316,25 +317,27 @@
         <div class="meta-topics" id="meta-topics">Aguarde...</div>
         
         <div class="btn-open-app-spot">
-          <span>⛶</span> Clique para abrir o app nesta meta ➔
+          <span>⛶</span> Abrir no app nesta meta ➔
         </div>
       </div>
 
-      <!-- Barra de Progresso do Ciclo -->
-      <div class="progress-info">
-        <span>Progresso Geral</span>
-        <span id="stat-progress" style="color: #10b981;">0 / 0 (0%)</span>
-      </div>
-      <div class="progress-bar-wrap">
-        <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+      <!-- Progresso -->
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <div class="progress-info">
+          <span>Progresso do Ciclo</span>
+          <span id="stat-progress" style="color: #10b981;">0 / 0 (0%)</span>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+        </div>
       </div>
 
-      <!-- Ações: Pomodoro e Concluir Meta -->
+      <!-- Linha de Ações: Pomodoro e Concluir Meta -->
       <div class="actions-row">
         <div class="pomo-badge" onclick="togglePomodoro()" title="Clique para Iniciar / Pausar Pomodoro">
           <span>⏱️</span>
           <span id="timer-val">25:00</span>
-          <span id="timer-icon" style="margin-left:2px;">▶</span>
+          <span id="timer-icon">▶</span>
         </div>
         <button class="btn-done-next" onclick="concluirEAvancar()">
           <span>✓</span> Concluir & Próxima
@@ -421,12 +424,10 @@
       }
     }
 
-    // FUNÇÃO REQUISITADA: ABRIR O APP NO MESMO LOCAL EXATO ONDE ESTÁ
     function abrirAppNoLocalExato() {
       if (!metaAtualFoco) return;
       const metaId = metaAtualFoco.id;
 
-      // 1. Tenta focar a janela pai/aberta da plataforma se estiver aberta
       if (window.opener && !window.opener.closed) {
         try {
           if (typeof window.opener.abrirMeta === 'function') {
@@ -439,7 +440,15 @@
         } catch (e) {}
       }
 
-      // 2. Se for aberta independente ou PiP nativo, abre/foca o index com o hash da meta exata
+      // Se aberto dentro do iframe do PiP
+      if (window.parent && window.parent !== window && typeof window.parent.abrirMeta === 'function') {
+        try {
+          window.parent.abrirMeta(metaId);
+          window.parent.focus();
+          return;
+        } catch(e) {}
+      }
+
       const win = window.open(`index.html#meta=${metaId}`, 'PlataformaMetasTRT4');
       if (win) win.focus();
     }
@@ -451,7 +460,6 @@
       saveProgresso(prog);
       renderWidget();
 
-      // Atualiza também a janela principal se estiver conectada
       if (window.opener && typeof window.opener.atualizarProgressoGlobal === 'function') {
         try {
           window.opener.progressoMetas[metaAtualFoco.id] = true;
@@ -459,19 +467,25 @@
           window.opener.renderizarMatriz();
         } catch(e) {}
       }
+
+      if (window.parent && window.parent !== window && typeof window.parent.atualizarProgressoGlobal === 'function') {
+        try {
+          window.parent.progressoMetas[metaAtualFoco.id] = true;
+          window.parent.atualizarProgressoGlobal();
+          window.parent.renderizarMatriz();
+        } catch(e) {}
+      }
     }
 
-    // CONTROLE DE TRANSPARÊNCIA (- e +)
     let opacidadeAtual = 95;
     function ajustarOpacidade(delta) {
       opacidadeAtual += delta;
       if (opacidadeAtual > 100) opacidadeAtual = 100;
-      if (opacidadeAtual < 30) opacidadeAtual = 30; // limite mínimo para continuar legível
+      if (opacidadeAtual < 30) opacidadeAtual = 30;
       document.getElementById('pip-container').style.opacity = (opacidadeAtual / 100).toString();
       document.getElementById('op-display').innerText = opacidadeAtual + '%';
     }
 
-    // POMODORO SIMPLES
     let segundosRestantes = 25 * 60;
     let timerId = null;
     function togglePomodoro() {

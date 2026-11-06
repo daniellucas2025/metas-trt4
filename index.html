@@ -2721,8 +2721,8 @@ Escolha uma opção:
 
                 // ABRIR JANELA FLUTUANTE PICTURE-IN-PICTURE (ALWAYS ON TOP)
         async function abrirJanelaFlutuantePiP() {
-            const largura = 380;
-            const altura = 530;
+            const largura = 370;
+            const altura = 380;
 
             if ('documentPictureInPicture' in window) {
                 try {
@@ -2730,15 +2730,31 @@ Escolha uma opção:
                         width: largura,
                         height: altura
                     });
-                    // Carrega o widget dentro da janela nativa PiP
+                    
+                    pipWindow.document.documentElement.style.width = '100%';
+                    pipWindow.document.documentElement.style.height = '100%';
+                    pipWindow.document.documentElement.style.margin = '0';
+                    pipWindow.document.documentElement.style.padding = '0';
+                    pipWindow.document.documentElement.style.overflow = 'hidden';
+                    pipWindow.document.documentElement.style.background = '#070a13';
+
+                    pipWindow.document.body.style.width = '100%';
+                    pipWindow.document.body.style.height = '100%';
+                    pipWindow.document.body.style.margin = '0';
+                    pipWindow.document.body.style.padding = '0';
+                    pipWindow.document.body.style.overflow = 'hidden';
+                    pipWindow.document.body.style.background = '#070a13';
+
                     const widgetFrame = document.createElement('iframe');
                     widgetFrame.src = 'widget.html';
                     widgetFrame.style.width = '100%';
                     widgetFrame.style.height = '100%';
                     widgetFrame.style.border = 'none';
-                    pipWindow.document.body.style.margin = '0';
-                    pipWindow.document.body.style.overflow = 'hidden';
-                    pipWindow.document.body.style.background = '#070a13';
+                    widgetFrame.style.display = 'block';
+                    widgetFrame.style.position = 'absolute';
+                    widgetFrame.style.top = '0';
+                    widgetFrame.style.left = '0';
+
                     pipWindow.document.body.appendChild(widgetFrame);
                     return;
                 } catch (err) {
@@ -2746,7 +2762,7 @@ Escolha uma opção:
                 }
             }
 
-            // Fallback: abre popup compacto flutuante
+            // Fallback para Popup
             const left = window.screen.width - largura - 20;
             const top = window.screen.height - altura - 60;
             window.open(
