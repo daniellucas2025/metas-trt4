@@ -16,6 +16,52 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- Detecção e Fixação de Layout Mobile Independente do Navegador -->
+    <script>
+        function verificarLayoutMobile() {
+            const modo = localStorage.getItem('trt4_layout_modo') || 'auto';
+            if (modo === 'pc') {
+                document.documentElement.classList.remove('layout-mobile', 'is-small-mobile');
+                document.documentElement.classList.add('layout-pc');
+                return;
+            }
+            
+            // Dimensão física real da tela do dispositivo (hardware)
+            const menorLadoFisico = Math.min(window.screen.width, window.screen.height);
+            const isSmartphoneFisico = menorLadoFisico <= 860;
+            const isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+            const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+            const isStandalone = window.matchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true);
+            const isNarrowWindow = window.innerWidth <= 860;
+            
+            // É celular se a tela física for pequena, se for PWA standalone, UA mobile com touch, ou largura <= 860
+            const ehCelular = (modo === 'celular') || isSmartphoneFisico || (isMobileUA && isTouch) || isStandalone || isNarrowWindow;
+            
+            if (ehCelular) {
+                document.documentElement.classList.add('layout-mobile');
+                document.documentElement.classList.remove('layout-pc');
+                if (menorLadoFisico <= 480 || window.innerWidth <= 480) {
+                    document.documentElement.classList.add('is-small-mobile');
+                } else {
+                    document.documentElement.classList.remove('is-small-mobile');
+                }
+                
+                // Força viewport nativo sem escala reduzida
+                let vp = document.querySelector('meta[name="viewport"]');
+                if (vp) {
+                    vp.setAttribute('content', 'width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover');
+                }
+            } else {
+                document.documentElement.classList.remove('layout-mobile', 'is-small-mobile');
+                document.documentElement.classList.remove('layout-pc');
+            }
+        }
+
+        // Execução síncrona imediata antes da renderização do body
+        verificarLayoutMobile();
+        window.addEventListener('resize', verificarLayoutMobile);
+        window.addEventListener('orientationchange', verificarLayoutMobile);
+    </script>
     <style>
         :root {
             --bg-body: #090a0f;
@@ -1286,13 +1332,21 @@
                 flex-shrink: 0;
             }
             .btn-cloud-sync {
-                padding: 4px 8px;
-                font-size: 0.74rem;
+                padding: 4px 6px;
+                font-size: 0.72rem;
                 flex-shrink: 0;
-                max-width: 130px;
+                max-width: 110px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
+            }
+            .btn-layout-toggle {
+                padding: 4px 6px;
+                font-size: 0.74rem;
+                flex-shrink: 0;
+            }
+            .btn-layout-toggle #layout-toggle-text {
+                display: none;
             }
             .btn-pwa-install {
                 padding: 4px 8px;
@@ -1500,6 +1554,97 @@
                 max-width: 68px !important;
             }
         }
+
+        /* ==========================================================================
+           MODO MOBILE FORÇADO (CLASSE .layout-mobile)
+           Garante visualização mobile perfeita independente de alternância desktop no navegador
+           ========================================================================== */
+        html.layout-mobile .hide-mobile { display: none !important; }
+        html.layout-mobile .topbar { padding: 6px 10px; position: sticky; top: 0; }
+        html.layout-mobile .topbar-main-row { flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; }
+        html.layout-mobile .topbar-brand { order: 1; gap: 8px; }
+        html.layout-mobile .topbar-logo { width: 34px; height: 34px; border-radius: 10px; }
+        html.layout-mobile .topbar-logo-badge { font-size: 0.95rem; }
+        html.layout-mobile .topbar-title h1 { font-size: 0.84rem; margin: 0; }
+        html.layout-mobile .topbar-title p { display: none; }
+        html.layout-mobile .topbar-cycle-group { order: 2; display: flex; align-items: center; gap: 6px; margin: 0; }
+        html.layout-mobile .topbar-progress-wrap { padding: 3px 8px; gap: 6px; }
+        html.layout-mobile .topbar-progress-text { font-size: 0.70rem; }
+        html.layout-mobile .topbar-progress-bar { width: 50px; height: 5px; }
+        html.layout-mobile .btn-next-cycle { padding: 5px 10px; font-size: 0.74rem; border-radius: 16px; }
+        html.layout-mobile .btn-next-cycle span { white-space: nowrap; }
+        html.layout-mobile .topbar-tabs { order: 3; width: 100%; display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; flex-wrap: nowrap; gap: 4px; padding: 3px; margin-top: 3px; }
+        html.layout-mobile .topbar-tabs::-webkit-scrollbar { display: none; }
+        html.layout-mobile .topbar-tab-btn { flex: 1 0 auto; white-space: nowrap; padding: 6px 10px; font-size: 0.78rem; font-weight: 700; text-align: center; border-radius: 7px; }
+        html.layout-mobile .topbar-subrow { flex-direction: column; align-items: stretch; gap: 6px; padding-top: 5px; margin-top: 4px; }
+        html.layout-mobile .topbar-tools { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; }
+        html.layout-mobile .topbar-tools::-webkit-scrollbar { display: none; }
+        html.layout-mobile .pomo-badge { padding: 4px 8px; font-size: 0.76rem; gap: 4px; flex-shrink: 0; }
+        html.layout-mobile .pomo-badge .btn-tool { padding: 3px 6px; font-size: 0.72rem; }
+        html.layout-mobile .theme-select { padding: 4px 6px; font-size: 0.74rem; flex-shrink: 0; }
+        html.layout-mobile .btn-layout-toggle { padding: 4px 6px; font-size: 0.74rem; flex-shrink: 0; }
+        html.layout-mobile .btn-layout-toggle #layout-toggle-text { display: none; }
+        html.layout-mobile .btn-cloud-sync { padding: 4px 6px; font-size: 0.72rem; flex-shrink: 0; max-width: 110px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        html.layout-mobile .topbar-search-container { width: 100% !important; max-width: 100% !important; min-width: 0 !important; margin: 0; }
+        html.layout-mobile .search-input-box { height: 34px; }
+        html.layout-mobile .topbar-subrow-spacer { display: none !important; }
+        html.layout-mobile .search-dropdown-results { width: 100%; left: 0; right: 0; max-width: 100%; }
+        html.layout-mobile .main-container { padding: 8px 8px 50px 8px; }
+        html.layout-mobile .quadro-header-banner { padding: 8px 10px; flex-direction: column; align-items: stretch; gap: 8px; }
+        html.layout-mobile .quadro-header-info { display: flex; justify-content: space-between; align-items: center; }
+        html.layout-mobile .quadro-banner-controls { width: 100%; }
+        html.layout-mobile .quadro-filtros { display: flex; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; flex-wrap: nowrap; gap: 6px; }
+        html.layout-mobile .quadro-filtros::-webkit-scrollbar { display: none; }
+        html.layout-mobile .filtro-btn { flex: 0 0 auto; padding: 5px 12px; font-size: 0.74rem; white-space: nowrap; }
+        html.layout-mobile .matriz-container { padding: 0; border-radius: var(--radius-sm); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        html.layout-mobile .matriz-table { border-spacing: 0; border-collapse: separate; min-width: 820px; }
+        html.layout-mobile .matriz-row-header { position: sticky; left: 0; z-index: 20; background-color: var(--bg-card) !important; width: 86px; min-width: 86px; max-width: 90px; padding: 8px 6px; box-shadow: 4px 0 10px rgba(0, 0, 0, 0.55); border-right: 2px solid var(--border); border-bottom: 2px solid var(--bg-body); }
+        html.layout-mobile .matriz-disc-name { font-size: 0.58rem !important; max-width: 76px !important; line-height: 1.1; margin-top: 2px; color: var(--text-muted); }
+        html.layout-mobile .matriz-cell { min-width: 44px; height: 42px; font-size: 0.74rem; padding: 4px 2px; border: 1px solid var(--border); border-bottom: 2px solid var(--bg-body); border-right: 2px solid var(--bg-body); box-sizing: border-box; }
+        html.layout-mobile .meta-view-header { padding: 12px 14px; }
+        html.layout-mobile .meta-breadcrumbs { flex-wrap: wrap; font-size: 0.76rem; gap: 4px; }
+        html.layout-mobile .meta-header-row { flex-direction: column; align-items: stretch; gap: 12px; }
+        html.layout-mobile .meta-header-titles h2 { font-size: 1.15rem; flex-wrap: wrap; }
+        html.layout-mobile .btn-toggle-meta { width: 100%; justify-content: center; padding: 12px 18px; font-size: 0.92rem; }
+        html.layout-mobile .meta-control-grid { grid-template-columns: 1fr; gap: 12px; }
+        html.layout-mobile .meta-pdf-assuntos-card { padding: 12px 14px; }
+        html.layout-mobile .meta-item-label { padding: 10px 12px; font-size: 0.84rem; }
+        html.layout-mobile .questoes-inputs-row { flex-wrap: wrap; }
+        html.layout-mobile .subtopicos-pills-container { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; flex-wrap: nowrap; padding-bottom: 4px; }
+        html.layout-mobile .subtopicos-pills-container::-webkit-scrollbar { display: none; }
+        html.layout-mobile .subtopico-pill { flex: 0 0 auto; white-space: nowrap; padding: 8px 12px; font-size: 0.80rem; }
+        html.layout-mobile .disc-header-card { padding: 12px 14px; }
+        html.layout-mobile .disc-filtro-pills { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; flex-wrap: nowrap; padding-bottom: 4px; }
+        html.layout-mobile .disc-filtro-pills::-webkit-scrollbar { display: none; }
+        html.layout-mobile .disc-filtro-pill { flex: 0 0 auto; white-space: nowrap; }
+        html.layout-mobile .disc-metas-cards-grid { grid-template-columns: 1fr !important; }
+
+        html.layout-mobile.is-small-mobile .topbar-progress-bar { display: none; }
+        html.layout-mobile.is-small-mobile .topbar-title h1 { font-size: 0.80rem; }
+        html.layout-mobile.is-small-mobile .topbar-tab-btn { padding: 5px 8px; font-size: 0.74rem; }
+        html.layout-mobile.is-small-mobile .matriz-row-header { width: 78px; min-width: 78px; max-width: 82px; padding: 4px 4px; }
+        html.layout-mobile.is-small-mobile .matriz-disc-name { font-size: 0.55rem !important; max-width: 68px !important; }
+
+        /* ESTILO DO BOTÃO DE ALTERNÂNCIA DE LAYOUT */
+        .btn-layout-toggle {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            color: #93c5fd;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-layout-toggle:hover {
+            background: rgba(59, 130, 246, 0.25);
+            border-color: #60a5fa;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body class="theme-dark">
@@ -1564,6 +1709,12 @@
                 <button class="btn-cloud-sync" id="btn-cloud-sync" onclick="tratarCliqueNuvem()" title="Sincronização em Nuvem (Google Firebase)">
                     <span id="cloud-sync-icon">☁️</span>
                     <span id="cloud-sync-text">Conectar Google</span>
+                </button>
+
+                <!-- ALTERNADOR DE MODO VISUAL (CELULAR / COMPUTADOR) -->
+                <button class="btn-tool btn-layout-toggle" id="btn-layout-toggle" onclick="alternarModoVisual()" title="Alternar Modo de Visualização (Celular / Computador)">
+                    <span id="layout-toggle-icon">📱</span>
+                    <span id="layout-toggle-text">Celular</span>
                 </button>
 
                 <button class="btn-tool btn-pwa-install" id="btn-pwa-install" onclick="instalarPwa()" style="display:none;" title="Instalar Aplicativo no Celular ou Computador">📲 Instalar App</button>
@@ -2705,6 +2856,45 @@
             localStorage.setItem('trt4_tema', tema);
         }
 
+        // CONTROLE DE MODO DE VISUALIZAÇÃO (CELULAR / COMPUTADOR) INDEPENDENTE DO NAVEGADOR
+        function alternarModoVisual() {
+            const modoAtual = localStorage.getItem('trt4_layout_modo') || 'auto';
+            let novoModo = 'celular';
+            if (modoAtual === 'celular') novoModo = 'pc';
+            else if (modoAtual === 'pc') novoModo = 'auto';
+            else novoModo = 'celular';
+            
+            localStorage.setItem('trt4_layout_modo', novoModo);
+            atualizarBotaoLayout(novoModo);
+            if (typeof verificarLayoutMobile === 'function') {
+                verificarLayoutMobile();
+            }
+            
+            const avisos = {
+                'celular': '📱 Modo Celular Ativo (Visualização Fixa para Smartphone)',
+                'pc': '💻 Modo Computador Ativo (Visualização Completa de Desktop)',
+                'auto': '🔄 Modo Automático (Detecta dispositivo)'
+            };
+            mostrarToast(avisos[novoModo] || novoModo);
+        }
+
+        function atualizarBotaoLayout(modo) {
+            const btnIcon = document.getElementById('layout-toggle-icon');
+            const btnText = document.getElementById('layout-toggle-text');
+            if (!btnIcon || !btnText) return;
+            
+            if (modo === 'pc') {
+                btnIcon.textContent = '💻';
+                btnText.textContent = 'PC';
+            } else if (modo === 'celular') {
+                btnIcon.textContent = '📱';
+                btnText.textContent = 'Celular';
+            } else {
+                btnIcon.textContent = '🔄';
+                btnText.textContent = 'Auto';
+            }
+        }
+
         // POMODORO
         let pomoInterval = null;
         let pomoSegundos = 25 * 60;
@@ -3116,11 +3306,15 @@ Escolha uma opção:
         mudarTema(temaSalvo);
         document.querySelector('.theme-select').value = temaSalvo;
 
+        const layoutSalvo = localStorage.getItem('trt4_layout_modo') || 'auto';
+        atualizarBotaoLayout(layoutSalvo);
+        if (typeof verificarLayoutMobile === 'function') verificarLayoutMobile();
+
         atualizarProgressoGlobal();
         renderizarMatriz();
         abrirVisaoQuadro();
         inicializarFirebase();
-            verificarHashMeta();
+        verificarHashMeta();
         window.addEventListener('hashchange', verificarHashMeta);
     </script>
 </body>
