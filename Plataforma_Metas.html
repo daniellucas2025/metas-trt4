@@ -1294,9 +1294,6 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            #btn-open-pip {
-                display: none; /* PiP de desktop não é usado em smartphones */
-            }
             .btn-pwa-install {
                 padding: 4px 8px;
                 font-size: 0.74rem;
@@ -1569,7 +1566,6 @@
                     <span id="cloud-sync-text">Conectar Google</span>
                 </button>
 
-                                <button class="btn-tool" id="btn-open-pip" onclick="abrirJanelaFlutuantePiP()" title="Destacar Janela Flutuante Always-on-Top (sobreposta a PDFs e Vídeos)">📌 Flutuar PiP</button>
                 <button class="btn-tool btn-pwa-install" id="btn-pwa-install" onclick="instalarPwa()" style="display:none;" title="Instalar Aplicativo no Celular ou Computador">📲 Instalar App</button>
             </div>
 
@@ -3060,59 +3056,6 @@ Escolha uma opção:
                 btnInstalarPwa.style.display = 'inline-flex';
             }
         });
-
-                // ABRIR JANELA FLUTUANTE PICTURE-IN-PICTURE (ALWAYS ON TOP)
-        async function abrirJanelaFlutuantePiP() {
-            const largura = 370;
-            const altura = 380;
-
-            if ('documentPictureInPicture' in window) {
-                try {
-                    const pipWindow = await window.documentPictureInPicture.requestWindow({
-                        width: largura,
-                        height: altura
-                    });
-                    
-                    pipWindow.document.documentElement.style.width = '100%';
-                    pipWindow.document.documentElement.style.height = '100%';
-                    pipWindow.document.documentElement.style.margin = '0';
-                    pipWindow.document.documentElement.style.padding = '0';
-                    pipWindow.document.documentElement.style.overflow = 'hidden';
-                    pipWindow.document.documentElement.style.background = 'transparent';
-
-                    pipWindow.document.body.style.width = '100%';
-                    pipWindow.document.body.style.height = '100%';
-                    pipWindow.document.body.style.margin = '0';
-                    pipWindow.document.body.style.padding = '0';
-                    pipWindow.document.body.style.overflow = 'hidden';
-                    pipWindow.document.body.style.background = 'transparent';
-
-                    const widgetFrame = document.createElement('iframe');
-                    widgetFrame.src = 'widget.html';
-                    widgetFrame.style.width = '100%';
-                    widgetFrame.style.height = '100%';
-                    widgetFrame.style.border = 'none';
-                    widgetFrame.style.display = 'block';
-                    widgetFrame.style.position = 'absolute';
-                    widgetFrame.style.top = '0';
-                    widgetFrame.style.left = '0';
-
-                    pipWindow.document.body.appendChild(widgetFrame);
-                    return;
-                } catch (err) {
-                    console.log('PiP nativo indisponível ou cancelado, usando popup:', err);
-                }
-            }
-
-            // Fallback para Popup
-            const left = window.screen.width - largura - 20;
-            const top = window.screen.height - altura - 60;
-            window.open(
-                'widget.html',
-                'WidgetMetasTRT4',
-                `width=${largura},height=${altura},left=${left},top=${top},resizable=yes,scrollbars=no`
-            );
-        }
 
         // SUPORTE A ABRIR META DIRETA VIA HASH (ex: index.html#meta=dc-meta-2)
         function verificarHashMeta() {
