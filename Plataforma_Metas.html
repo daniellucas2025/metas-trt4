@@ -2190,6 +2190,118 @@
         html.layout-mobile .edital-status-tag { align-self: flex-start; }
         html.layout-mobile .comp-card-grid { grid-template-columns: 1fr; }
 
+
+        /* BARRA DE ROLAGEM E NAVEGAÇÃO DA MATRIZ */
+        .matriz-scroll-hint-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 12px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.76rem;
+            color: var(--text-muted);
+        }
+        .matriz-hint-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+        .matriz-nav-arrows {
+            display: flex;
+            gap: 6px;
+        }
+        .btn-scroll-arrow {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            color: #93c5fd;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-scroll-arrow:hover {
+            background: rgba(59, 130, 246, 0.28);
+            color: #ffffff;
+            border-color: #60a5fa;
+        }
+
+        /* SCROLLBAR VISÍVEL E TOUCH NATIVO NA MATRIZ */
+        .matriz-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 8px 12px;
+            box-shadow: var(--shadow);
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            touch-action: pan-x pan-y !important;
+            overscroll-behavior-x: contain !important;
+            cursor: grab;
+            position: relative;
+        }
+        .matriz-container.is-dragging {
+            cursor: grabbing;
+            user-select: none;
+        }
+        .matriz-container::-webkit-scrollbar {
+            height: 8px;
+            display: block !important;
+        }
+        .matriz-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 999px;
+            margin: 0 10px;
+        }
+        .matriz-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #2563eb, #38bdf8);
+            border-radius: 999px;
+        }
+        .matriz-container::-webkit-scrollbar-thumb:hover {
+            background: #60a5fa;
+        }
+
+        html.layout-mobile .matriz-scroll-hint-bar {
+            padding: 5px 8px;
+            font-size: 0.72rem;
+            margin-bottom: 6px;
+        }
+        html.layout-mobile .matriz-container {
+            padding: 0;
+            border-radius: var(--radius-sm);
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            touch-action: pan-x pan-y !important;
+            overscroll-behavior-x: contain !important;
+        }
+        html.layout-mobile .matriz-table {
+            border-spacing: 0;
+            border-collapse: separate;
+            min-width: 860px;
+            touch-action: pan-x pan-y !important;
+        }
+        html.layout-mobile .matriz-row-header {
+            position: sticky !important;
+            left: 0 !important;
+            z-index: 25 !important;
+            background-color: var(--bg-card) !important;
+            width: 86px;
+            min-width: 86px;
+            max-width: 90px;
+            padding: 8px 6px;
+            box-shadow: 4px 0 14px rgba(0, 0, 0, 0.75) !important;
+            border-right: 2px solid var(--border) !important;
+            border-bottom: 2px solid var(--bg-body) !important;
+        }
+        html.layout-mobile .matriz-cell {
+            touch-action: pan-x pan-y !important;
+        }
+    
     </style>
 </head>
 <body class="theme-dark">
@@ -2304,7 +2416,16 @@
                 </div>
             </div>
 
-            <div class="matriz-container">
+            <!-- BARRA DE ROLAGEM HORIZONTAL DAS METAS (DISCIPLINAS FIXAS) -->
+            <div class="matriz-scroll-hint-bar">
+                <span class="matriz-hint-text">↔️ Deslize para ver as 24 metas (disciplinas fixas à esquerda)</span>
+                <div class="matriz-nav-arrows">
+                    <button class="btn-scroll-arrow" onclick="rolarMatrizQuadro(-240)" title="Rolar para metas anteriores">◀ Metas</button>
+                    <button class="btn-scroll-arrow" onclick="rolarMatrizQuadro(240)" title="Rolar para próximas metas">Metas ▶</button>
+                </div>
+            </div>
+
+            <div class="matriz-container" id="matriz-container-el">
                 <table class="matriz-table" id="matriz-metas-table">
                     <!-- Gerado via JavaScript -->
                 </table>
@@ -4419,8 +4540,65 @@ Escolha uma opção:
         }
 
 
+
+        // ROLAGEM HORIZONTAL DA MATRIZ DO QUADRO DE METAS
+        function rolarMatrizQuadro(delta) {
+            const el = document.getElementById('matriz-container-el') || document.querySelector('.matriz-container');
+            if (el) {
+                el.scrollBy({ left: delta, behavior: 'smooth' });
+            }
+        }
+
+        // Habilitar arrasto com mouse (Drag-to-scroll) para simuladores e computadores
+        function inicializarArrastoMatriz() {
+            const container = document.getElementById('matriz-container-el') || document.querySelector('.matriz-container');
+            if (!container) return;
+
+            let isDown = false;
+            let startX = 0;
+            let scrollLeft = 0;
+            let hasMoved = false;
+
+            container.addEventListener('mousedown', (e) => {
+                if (e.button !== 0) return;
+                isDown = true;
+                hasMoved = false;
+                container.classList.add('is-dragging');
+                startX = e.pageX - container.offsetLeft;
+                scrollLeft = container.scrollLeft;
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isDown) {
+                    isDown = false;
+                    container.classList.remove('is-dragging');
+                    setTimeout(() => { hasMoved = false; }, 60);
+                }
+            });
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX - container.offsetLeft;
+                const walk = (x - startX) * 1.5;
+                if (Math.abs(walk) > 4) {
+                    hasMoved = true;
+                }
+                container.scrollLeft = scrollLeft - walk;
+            });
+
+            container.addEventListener('click', (e) => {
+                if (hasMoved) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, true);
+        }
+    
+
         atualizarProgressoGlobal();
         renderizarMatriz();
+        inicializarArrastoMatriz();
         abrirVisaoQuadro();
         inicializarFirebase();
         verificarHashMeta();
