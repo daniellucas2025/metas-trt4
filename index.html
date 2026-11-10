@@ -2303,23 +2303,619 @@
         html.layout-mobile .matriz-cell {
             touch-action: pan-x pan-y !important;
         }
+
+        /* ==========================================================================
+           SIDEBAR DE TRIBUNAIS (TRTs)
+           ========================================================================== */
+        .btn-trt-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.70rem;
+            font-weight: 700;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            padding: 3px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            vertical-align: middle;
+            text-decoration: none;
+            line-height: 1.2;
+            margin-left: 6px;
+        }
+        .btn-trt-pill:hover {
+            background: rgba(56, 189, 248, 0.22);
+            border-color: #38bdf8;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(56, 189, 248, 0.25);
+        }
+        .btn-trt-pill .trt-arrow {
+            font-size: 0.6rem;
+            opacity: 0.8;
+            transition: transform 0.2s ease;
+        }
+        .btn-trt-pill:hover .trt-arrow {
+            transform: translateY(1px);
+        }
+
+        .sidebar-trt-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 9998;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+        .sidebar-trt-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar-trt {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 360px;
+            max-width: 88vw;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            box-shadow: 8px 0 32px rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            transform: translateX(-100%);
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .sidebar-trt.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-trt-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-surface);
+        }
+        .sidebar-trt-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar-trt-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        .sidebar-trt-title-group h2 {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text-heading);
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+        .sidebar-trt-title-group p {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            margin: 2px 0 0 0;
+        }
+        .sidebar-trt-close {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.15s ease;
+        }
+        .sidebar-trt-close:hover {
+            color: var(--text-heading);
+            background: rgba(239, 68, 68, 0.15);
+            border-color: #ef4444;
+        }
+
+        .sidebar-trt-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* CARD ATUAL */
+        .sidebar-trt-current-card {
+            background: linear-gradient(145deg, rgba(56, 189, 248, 0.1), rgba(129, 140, 248, 0.05));
+            border: 1.5px solid rgba(56, 189, 248, 0.35);
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 4px 16px rgba(56, 189, 248, 0.1);
+        }
+        .current-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .current-pill {
+            font-size: 0.62rem;
+            font-weight: 800;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 2px 7px;
+            border-radius: 12px;
+            letter-spacing: 0.04em;
+        }
+        .current-badge {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+        .sidebar-trt-current-card h3 {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin: 0 0 8px 0;
+        }
+        .current-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .current-details strong {
+            color: var(--text-heading);
+        }
+        .current-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-sidebar-quick {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-surface);
+            color: var(--text-heading);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+        .btn-sidebar-quick:hover {
+            background: var(--border);
+            border-color: #38bdf8;
+        }
+
+        /* SEÇÃO LISTA */
+        .sidebar-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            padding: 0 2px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 6px;
+        }
+        .sidebar-trt-count {
+            background: var(--bg-surface);
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-size: 0.62rem;
+            border: 1px solid var(--border);
+        }
+        .sidebar-trt-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .sidebar-trt-item {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+        .sidebar-trt-item:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar-trt-item.is-active {
+            border-color: rgba(16, 185, 129, 0.5);
+            background: rgba(16, 185, 129, 0.04);
+        }
+        .trt-item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+        }
+        .trt-item-badge {
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 6px;
+            white-space: nowrap;
+            letter-spacing: -0.02em;
+        }
+        .badge-trt-blue {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+        .badge-trt-purple {
+            background: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        .badge-trt-amber {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .badge-trt-emerald {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .trt-item-info {
+            min-width: 0;
+        }
+        .trt-item-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 2px;
+        }
+        .trt-item-sub {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .trt-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .btn-trt-action {
+            padding: 4px 8px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-heading);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-trt-action:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+        }
+        .btn-trt-action.btn-trt-current {
+            border-color: rgba(16, 185, 129, 0.4);
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.08);
+            cursor: default;
+        }
+        .btn-trt-delete {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            transition: color 0.15s;
+        }
+        .btn-trt-delete:hover {
+            color: #ef4444;
+        }
+
+        /* FORM NOVO TRT */
+        .sidebar-add-container {
+            margin-top: 4px;
+        }
+        .btn-add-trt-toggle {
+            width: 100%;
+            padding: 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border-radius: 8px;
+            border: 1.5px dashed rgba(56, 189, 248, 0.4);
+            background: rgba(56, 189, 248, 0.05);
+            color: #38bdf8;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-add-trt-toggle:hover {
+            background: rgba(56, 189, 248, 0.12);
+            border-color: #38bdf8;
+            transform: translateY(-1px);
+        }
+        .form-novo-trt {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            animation: fadeIn 0.2s ease;
+        }
+        .form-novo-trt h4 {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-heading);
+            margin: 0;
+        }
+        .form-row {
+            display: flex;
+            gap: 8px;
+        }
+        .form-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-novo-trt label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+        .form-novo-trt input, .form-novo-trt select {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 6px 8px;
+            font-size: 0.75rem;
+            color: var(--text-heading);
+            outline: none;
+            transition: border-color 0.15s;
+        }
+        .form-novo-trt input:focus, .form-novo-trt select:focus {
+            border-color: #38bdf8;
+        }
+        .form-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .btn-save-trt {
+            flex: 1;
+            padding: 7px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: #0284c7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-save-trt:hover {
+            background: #0369a1;
+        }
+        .btn-cancel-trt {
+            padding: 7px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--bg-card);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-cancel-trt:hover {
+            color: var(--text-heading);
+            border-color: var(--text-muted);
+        }
+
+        .sidebar-trt-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            background: var(--bg-surface);
+        }
+        .sidebar-repo-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            text-decoration: none;
+            padding: 8px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .sidebar-repo-link:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
+        }
     
     </style>
 </head>
 <body class="theme-dark">
+
+    <!-- OVERLAY E SIDEBAR DE TRIBUNAIS (TRTs) -->
+    <div id="sidebar-trt-overlay" class="sidebar-trt-overlay" onclick="fecharSidebarTRT()"></div>
+    
+    <aside id="sidebar-trt" class="sidebar-trt" aria-label="Painel de Tribunais TRT">
+        <div class="sidebar-trt-header">
+            <div class="sidebar-trt-title-group">
+                <span class="sidebar-trt-icon">🏛️</span>
+                <div>
+                    <h2>Tribunais (TRTs)</h2>
+                    <p>Caderno do TRT • Plataformas & Editais</p>
+                </div>
+            </div>
+            <button class="sidebar-trt-close" onclick="fecharSidebarTRT()" title="Fechar Menu (Esc)">✕</button>
+        </div>
+
+        <div class="sidebar-trt-body">
+            <!-- CARD DO TRIBUNAL ATUALMENTE ATIVO -->
+            <div class="sidebar-trt-current-card">
+                <div class="current-card-header">
+                    <span class="current-pill">● TRIBUNAL ATIVO</span>
+                    <span class="current-badge">TRT-4 (RS)</span>
+                </div>
+                <h3>Tribunal Regional do Trabalho da 4ª Região</h3>
+                <div class="current-details">
+                    <span>🏢 Banca: <strong>FCC</strong></span>
+                    <span>🎯 Metas: <strong>177</strong></span>
+                    <span>📚 Cadernos: <strong>10 Matérias</strong></span>
+                </div>
+                <div class="current-actions">
+                    <button class="btn-sidebar-quick" onclick="abrirVisaoQuadro(); fecharSidebarTRT();">📊 Ir ao Quadro</button>
+                    <button class="btn-sidebar-quick" onclick="abrirVisaoEdital(); fecharSidebarTRT();">📑 Ver Edital</button>
+                </div>
+            </div>
+
+            <!-- SEÇÃO DE OUTROS TRTS -->
+            <div class="sidebar-section-header">
+                <span>MEUS TRIBUNAIS & EDITAIS</span>
+                <span class="sidebar-trt-count" id="sidebar-trt-count">6 disponíveis</span>
+            </div>
+
+            <div class="sidebar-trt-list" id="sidebar-trt-list">
+                <!-- Renderizado dinamicamente via JavaScript -->
+            </div>
+
+            <!-- BOTÃO ADICIONAR NOVO TRT -->
+            <div class="sidebar-add-container">
+                <button class="btn-add-trt-toggle" id="btn-add-trt-toggle" onclick="toggleFormNovoTRT()">
+                    <span>➕ Adicionar Novo TRT</span>
+                </button>
+                
+                <form id="form-novo-trt" class="form-novo-trt" onsubmit="salvarNovoTRT(event)" style="display: none;">
+                    <h4>Cadastrar Novo Tribunal</h4>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Região (Número)</label>
+                            <input type="text" id="novo-trt-num" placeholder="Ex: 5, 6, 8" required>
+                        </div>
+                        <div class="form-col">
+                            <label>UF / Estado</label>
+                            <input type="text" id="novo-trt-uf" placeholder="Ex: BA, PE, PA" required maxlength="10">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nome do Tribunal / Região</label>
+                        <input type="text" id="novo-trt-regiao" placeholder="Ex: Bahia" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Banca</label>
+                            <select id="novo-trt-banca">
+                                <option value="FCC">FCC</option>
+                                <option value="Cebraspe">Cebraspe</option>
+                                <option value="FGV">FGV</option>
+                                <option value="Vunesp">Vunesp</option>
+                                <option value="Outra">Outra</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <label>Status</label>
+                            <select id="novo-trt-status">
+                                <option value="Disponível">Disponível</option>
+                                <option value="Em Estudo">Em Estudo</option>
+                                <option value="Planejamento">Planejamento</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Link da Plataforma / Pasta (Opcional)</label>
+                        <input type="url" id="novo-trt-url" placeholder="https://... ou caminho local">
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn-save-trt">Salvar Tribunal</button>
+                        <button type="button" class="btn-cancel-trt" onclick="toggleFormNovoTRT(false)">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- RODAPÉ DA SIDEBAR -->
+        <div class="sidebar-trt-footer">
+            <a href="https://github.com/daniellucas2025/caderno-do-trt" target="_blank" rel="noopener noreferrer" class="sidebar-repo-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                <span>Repositório Oficial CADERNO DO TRT ↗</span>
+            </a>
+        </div>
+    </aside>
 
     <!-- TOPBAR -->
     <header class="topbar">
         <!-- LINHA 1 DA TOPBAR: MARCA, NAVEGAÇÃO E CICLO -->
         <div class="topbar-main-row">
             <!-- MARCA ESTUDOS DL -->
-            <div class="topbar-brand" onclick="abrirVisaoQuadro()" title="Estudos DL • Retornar ao Quadro de Metas">
-                <div class="topbar-logo">
+            <div class="topbar-brand" title="Estudos DL • Quadro de Metas">
+                <div class="topbar-logo" onclick="abrirVisaoQuadro()" style="cursor: pointer;">
                     <span class="topbar-logo-badge">DL</span>
                 </div>
                 <div class="topbar-title">
-                    <h1>Estudos DL <span style="font-size: 0.68rem; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); padding: 1px 6px; border-radius: 5px; margin-left: 6px; vertical-align: middle;">TRT-4</span></h1>
-                    <p>Metas de Estudos • Caderno do Aprovado</p>
+                    <div style="display: flex; align-items: center; gap: 4px;">
+                        <h1 onclick="abrirVisaoQuadro()" style="cursor: pointer; margin: 0;">Estudos DL</h1>
+                        <button class="btn-trt-pill" id="btn-trt-pill" onclick="toggleSidebarTRT(event)" title="Abrir Menu de Tribunais (TRTs)">
+                            <span class="trt-icon">🏛️</span>
+                            <span class="trt-text">TRT-4</span>
+                            <span class="trt-arrow">▾</span>
+                        </button>
+                    </div>
+                    <p onclick="abrirVisaoQuadro()" style="cursor: pointer; margin: 0;">Metas de Estudos • Caderno do Aprovado</p>
                 </div>
             </div>
 
@@ -4633,12 +5229,271 @@ Escolha uma opção:
         }
     
 
+        // ==========================================================================
+        // GERENCIAMENTO DA SIDEBAR DE TRIBUNAIS (TRTs)
+        // ==========================================================================
+        const TRTS_PREDEFINIDOS = [
+            {
+                id: "trt-4",
+                numero: "04",
+                sigla: "TRT-4",
+                uf: "RS",
+                regiao: "Rio Grande do Sul",
+                banca: "FCC",
+                status: "Ativo",
+                metas_qtd: 177,
+                materias_qtd: 10,
+                url: "./index.html",
+                is_current: true
+            },
+            {
+                id: "trt-5",
+                numero: "05",
+                sigla: "TRT-5",
+                uf: "BA",
+                regiao: "Bahia",
+                banca: "FCC",
+                status: "Disponível",
+                metas_qtd: 177,
+                materias_qtd: 10,
+                url: "https://github.com/daniellucas2025/caderno-do-trt/tree/main/TRT-05-BA",
+                is_current: false
+            },
+            {
+                id: "trt-6",
+                numero: "06",
+                sigla: "TRT-6",
+                uf: "PE",
+                regiao: "Pernambuco",
+                banca: "FCC",
+                status: "Planejamento",
+                metas_qtd: 177,
+                materias_qtd: 10,
+                url: "https://github.com/daniellucas2025/caderno-do-trt/tree/main/TRT-06-PE",
+                is_current: false
+            },
+            {
+                id: "trt-8",
+                numero: "08",
+                sigla: "TRT-8",
+                uf: "PA/AP",
+                regiao: "Pará e Amapá",
+                banca: "Cebraspe",
+                status: "Planejamento",
+                metas_qtd: 177,
+                materias_qtd: 10,
+                url: "https://github.com/daniellucas2025/caderno-do-trt/tree/main/TRT-08-PA",
+                is_current: false
+            },
+            {
+                id: "trt-12",
+                numero: "12",
+                sigla: "TRT-12",
+                uf: "SC",
+                regiao: "Santa Catarina",
+                banca: "FCC",
+                status: "Planejamento",
+                metas_qtd: 177,
+                materias_qtd: 10,
+                url: "https://github.com/daniellucas2025/caderno-do-trt/tree/main/TRT-12-SC",
+                is_current: false
+            },
+            {
+                id: "trt-15",
+                numero: "15",
+                sigla: "TRT-15",
+                uf: "SP Interior",
+                regiao: "Campinas",
+                banca: "FCC",
+                status: "Planejamento",
+                metas_qtd: 177,
+                materias_qtd: 10,
+                url: "https://github.com/daniellucas2025/caderno-do-trt/tree/main/TRT-15-SP",
+                is_current: false
+            }
+        ];
+
+        function obterListaTRTs() {
+            try {
+                const salvo = localStorage.getItem('estudos_dl_trts_lista');
+                if (salvo) {
+                    const parsed = JSON.parse(salvo);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                }
+            } catch (e) {
+                console.error("Erro ao carregar lista de TRTs:", e);
+            }
+            return TRTS_PREDEFINIDOS;
+        }
+
+        function salvarListaTRTs(lista) {
+            try {
+                localStorage.setItem('estudos_dl_trts_lista', JSON.stringify(lista));
+            } catch (e) {
+                console.error("Erro ao salvar lista de TRTs:", e);
+            }
+        }
+
+        function toggleSidebarTRT(e) {
+            if (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            const el = document.getElementById('sidebar-trt');
+            if (el && el.classList.contains('open')) {
+                fecharSidebarTRT();
+            } else {
+                abrirSidebarTRT();
+            }
+        }
+
+        function abrirSidebarTRT() {
+            const sidebar = document.getElementById('sidebar-trt');
+            const overlay = document.getElementById('sidebar-trt-overlay');
+            if (sidebar && overlay) {
+                sidebar.classList.add('open');
+                overlay.classList.add('open');
+                renderizarListaTRTsSidebar();
+            }
+        }
+
+        function fecharSidebarTRT() {
+            const sidebar = document.getElementById('sidebar-trt');
+            const overlay = document.getElementById('sidebar-trt-overlay');
+            if (sidebar && overlay) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('open');
+            }
+        }
+
+        function renderizarListaTRTsSidebar() {
+            const lista = obterListaTRTs();
+            const container = document.getElementById('sidebar-trt-list');
+            const countEl = document.getElementById('sidebar-trt-count');
+            if (!container) return;
+
+            if (countEl) countEl.textContent = `${lista.length} disponíveis`;
+
+            const badgesCores = ['badge-trt-blue', 'badge-trt-purple', 'badge-trt-amber', 'badge-trt-emerald'];
+
+            container.innerHTML = lista.map((trt, idx) => {
+                const corBadge = badgesCores[idx % badgesCores.length];
+                const isActive = trt.is_current || trt.id === 'trt-4';
+                const isCustom = trt.is_custom === true;
+                const urlDestino = trt.url || 'https://github.com/daniellucas2025/caderno-do-trt';
+
+                return `
+                    <div class="sidebar-trt-item ${isActive ? 'is-active' : ''}">
+                        <div class="trt-item-left">
+                            <span class="trt-item-badge ${corBadge}">${trt.sigla || 'TRT'}</span>
+                            <div class="trt-item-info">
+                                <div class="trt-item-title">${trt.regiao} (${trt.uf})</div>
+                                <div class="trt-item-sub">Banca ${trt.banca || 'FCC'} • ${trt.status || 'Planejamento'}</div>
+                            </div>
+                        </div>
+                        <div class="trt-item-actions">
+                            ${isActive ? `
+                                <span class="btn-trt-action btn-trt-current">✓ Ativo</span>
+                            ` : `
+                                <a href="${urlDestino}" target="${urlDestino.startsWith('http') ? '_blank' : '_self'}" rel="noopener noreferrer" class="btn-trt-action" title="Acessar ${trt.sigla}">
+                                    <span>Acessar</span> ↗
+                                </a>
+                            `}
+                            ${isCustom ? `
+                                <button class="btn-trt-delete" onclick="removerTRTCustomizado('${trt.id}')" title="Remover este TRT">✕</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleFormNovoTRT(forcar) {
+            const form = document.getElementById('form-novo-trt');
+            const btn = document.getElementById('btn-add-trt-toggle');
+            if (!form) return;
+
+            const deveExibir = forcar !== undefined ? forcar : (form.style.display === 'none' || form.style.display === '');
+            form.style.display = deveExibir ? 'flex' : 'none';
+            if (btn) btn.style.display = deveExibir ? 'none' : 'flex';
+
+            if (deveExibir) {
+                const numInput = document.getElementById('novo-trt-num');
+                if (numInput) numInput.focus();
+            }
+        }
+
+        function salvarNovoTRT(e) {
+            e.preventDefault();
+            const num = document.getElementById('novo-trt-num').value.trim();
+            const uf = document.getElementById('novo-trt-uf').value.trim().toUpperCase();
+            const regiao = document.getElementById('novo-trt-regiao').value.trim();
+            const banca = document.getElementById('novo-trt-banca').value;
+            const status = document.getElementById('novo-trt-status').value;
+            const url = document.getElementById('novo-trt-url').value.trim();
+
+            if (!num || !uf || !regiao) {
+                alert("Por favor, preencha todos os campos obrigatórios.");
+                return;
+            }
+
+            const numFmt = num.length === 1 ? `0${num}` : num;
+            const sigla = `TRT-${num}`;
+            const novoId = `trt-custom-${num}-${uf.toLowerCase()}`;
+
+            const lista = obterListaTRTs();
+            const jaExiste = lista.some(t => t.id === novoId || (t.numero === numFmt && t.uf === uf));
+            if (jaExiste) {
+                alert(`O TRT-${num} (${uf}) já está cadastrado na sua lista.`);
+                return;
+            }
+
+            const novoObj = {
+                id: novoId,
+                numero: numFmt,
+                sigla: sigla,
+                uf: uf,
+                regiao: regiao,
+                banca: banca,
+                status: status,
+                metas_qtd: 177,
+                materias_qtd: 10,
+                url: url || `https://github.com/daniellucas2025/caderno-do-trt/tree/main/TRT-${numFmt}-${uf}`,
+                is_current: false,
+                is_custom: true
+            };
+
+            lista.push(novoObj);
+            salvarListaTRTs(lista);
+
+            document.getElementById('form-novo-trt').reset();
+            toggleFormNovoTRT(false);
+            renderizarListaTRTsSidebar();
+        }
+
+        function removerTRTCustomizado(id) {
+            if (!confirm("Deseja remover este tribunal da sua lista?")) return;
+            let lista = obterListaTRTs();
+            lista = lista.filter(t => t.id !== id);
+            salvarListaTRTs(lista);
+            renderizarListaTRTsSidebar();
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') fecharSidebarTRT();
+            if (e.altKey && (e.key === 't' || e.key === 'T')) {
+                e.preventDefault();
+                toggleSidebarTRT();
+            }
+        });
+
         atualizarProgressoGlobal();
         renderizarMatriz();
         inicializarArrastoMatriz();
         abrirVisaoQuadro();
         inicializarFirebase();
         verificarHashMeta();
+        renderizarListaTRTsSidebar();
         window.addEventListener('hashchange', verificarHashMeta);
     </script>
 </body>
