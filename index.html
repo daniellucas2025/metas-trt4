@@ -1571,18 +1571,21 @@
         html.layout-mobile .topbar-progress-bar { width: 50px; height: 5px; }
         html.layout-mobile .btn-next-cycle { padding: 5px 10px; font-size: 0.74rem; border-radius: 16px; }
         html.layout-mobile .btn-next-cycle span { white-space: nowrap; }
-        html.layout-mobile .topbar-tabs { order: 3; width: 100%; display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; flex-wrap: nowrap; gap: 4px; padding: 3px; margin-top: 3px; }
+        .show-mobile-only { display: none; }
+        html.layout-mobile .show-mobile-only { display: inline !important; }
+        html.layout-mobile .hide-mobile { display: none !important; }
+        html.layout-mobile .topbar-tabs { order: 3; width: 100%; display: flex; justify-content: space-between; align-items: stretch; gap: 3px; padding: 3px 0; margin-top: 4px; overflow-x: visible; }
         html.layout-mobile .topbar-tabs::-webkit-scrollbar { display: none; }
-        html.layout-mobile .topbar-tab-btn { flex: 1 0 auto; white-space: nowrap; padding: 6px 10px; font-size: 0.78rem; font-weight: 700; text-align: center; border-radius: 7px; }
+        html.layout-mobile .topbar-tab-btn { flex: 1 1 0; min-width: 0; white-space: nowrap; padding: 6px 2px; font-size: 0.72rem; font-weight: 700; text-align: center; border-radius: 7px; display: flex; align-items: center; justify-content: center; gap: 2px; }
         html.layout-mobile .topbar-subrow { flex-direction: column; align-items: stretch; gap: 6px; padding-top: 5px; margin-top: 4px; }
-        html.layout-mobile .topbar-tools { display: flex; align-items: center; justify-content: flex-start; width: 100%; gap: 5px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; }
+        html.layout-mobile .topbar-tools { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 4px; overflow-x: visible; padding-bottom: 2px; }
         html.layout-mobile .topbar-tools::-webkit-scrollbar { display: none; }
-        html.layout-mobile .pomo-badge { padding: 3px 6px; font-size: 0.74rem; gap: 3px; flex-shrink: 0; }
-        html.layout-mobile .pomo-badge .btn-tool { padding: 2px 5px; font-size: 0.70rem; }
-        html.layout-mobile .theme-select { padding: 3px 5px; font-size: 0.72rem; flex-shrink: 0; }
-        html.layout-mobile .btn-layout-toggle { padding: 3px 6px; font-size: 0.72rem; flex-shrink: 0; }
+        html.layout-mobile .pomo-badge { padding: 3px 5px; font-size: 0.72rem; gap: 3px; flex-shrink: 0; }
+        html.layout-mobile .pomo-badge .btn-tool { padding: 2px 4px; font-size: 0.68rem; }
+        html.layout-mobile .theme-select { padding: 3px 4px; font-size: 0.70rem; flex-shrink: 0; }
+        html.layout-mobile .btn-layout-toggle { padding: 3px 6px; font-size: 0.72rem; flex-shrink: 0; display: inline-flex !important; align-items: center; }
         html.layout-mobile .btn-layout-toggle #layout-toggle-text { display: none; }
-        html.layout-mobile .btn-cloud-sync { padding: 3px 8px; font-size: 0.74rem; font-weight: 700; flex-shrink: 0; white-space: nowrap; max-width: none !important; overflow: visible !important; }
+        html.layout-mobile .btn-cloud-sync { padding: 3px 7px; font-size: 0.72rem; font-weight: 700; flex-shrink: 0; white-space: nowrap; max-width: none !important; overflow: visible !important; display: inline-flex !important; align-items: center; gap: 4px; }
         html.layout-mobile .topbar-search-container { width: 100% !important; max-width: 100% !important; min-width: 0 !important; margin: 0; }
         html.layout-mobile .search-input-box { height: 34px; }
         html.layout-mobile .topbar-subrow-spacer { display: none !important; }
@@ -2210,9 +2213,9 @@
             <nav class="topbar-tabs">
                 <button class="topbar-tab-btn active" id="tab-btn-quadro" onclick="abrirVisaoQuadro()">📊 Quadro <span class="hide-mobile">de Metas</span></button>
                 <button class="topbar-tab-btn" id="tab-btn-estudo" onclick="abrirVisaoEstudo()">🎯 Estudo <span class="hide-mobile">da Meta</span></button>
-                <button class="topbar-tab-btn" id="tab-btn-disciplinas" onclick="abrirVisaoDisciplinas()">📚 Disciplinas</button>
-                <button class="topbar-tab-btn" id="tab-btn-diag" onclick="abrirVisaoDiagnostico()">📋 O que Falta?</button>
-                <button class="topbar-tab-btn" id="tab-btn-edital" onclick="abrirVisaoEdital()">📑 Meu Edital</button>
+                <button class="topbar-tab-btn" id="tab-btn-disciplinas" onclick="abrirVisaoDisciplinas()">📚 <span class="hide-mobile">Disciplinas</span><span class="show-mobile-only">Matérias</span></button>
+                <button class="topbar-tab-btn" id="tab-btn-diag" onclick="abrirVisaoDiagnostico()">📋 <span class="hide-mobile">O que Falta?</span><span class="show-mobile-only">Faltas</span></button>
+                <button class="topbar-tab-btn" id="tab-btn-edital" onclick="abrirVisaoEdital()">📑 <span class="hide-mobile">Meu </span>Edital</button>
             </nav>
 
             <!-- CICLO & PROGRESSO -->
@@ -3694,7 +3697,7 @@
         let unsubscribeDocNuvem = null;
         let timerSincNuvem = null;
 
-        function atualizarStatusNuvem(estado, texto) {
+        function atualizarStatusNuvem(estado, textoCompleto, textoCurto) {
             const btn = document.getElementById('btn-cloud-sync');
             const txt = document.getElementById('cloud-sync-text');
             const ico = document.getElementById('cloud-sync-icon');
@@ -3713,7 +3716,10 @@
             } else {
                 ico.textContent = '☁️';
             }
-            txt.textContent = texto;
+
+            const curto = textoCurto || textoCompleto;
+            txt.innerHTML = `<span class="hide-mobile">${textoCompleto}</span><span class="show-mobile-only">${curto}</span>`;
+            btn.title = `${textoCompleto} (Sincronização Nuvem Google)`;
         }
 
         function inicializarFirebase() {
@@ -3736,21 +3742,21 @@
                     usuarioFirebase = user;
                     if (user) {
                         const primeiroNome = user.displayName ? user.displayName.split(' ')[0] : 'Conectado';
-                        atualizarStatusNuvem('synced', `${primeiroNome} • Sincronizado`);
+                        atualizarStatusNuvem('synced', `${primeiroNome} • Sincronizado`, `${primeiroNome} ✓`);
                         ouvirAlteracoesNuvem(user.uid);
                     } else {
                         if (unsubscribeDocNuvem) {
                             unsubscribeDocNuvem();
                             unsubscribeDocNuvem = null;
                         }
-                        atualizarStatusNuvem('disconnected', 'Conectar Google');
+                        atualizarStatusNuvem('disconnected', 'Conectar Google', 'Conectar Google');
                     }
                 });
 
                 window.addEventListener('online', () => {
                     if (usuarioFirebase) {
                         const primeiroNome = usuarioFirebase.displayName ? usuarioFirebase.displayName.split(' ')[0] : 'Conectado';
-                        atualizarStatusNuvem('synced', `${primeiroNome} • Sincronizado`);
+                        atualizarStatusNuvem('synced', `${primeiroNome} • Sincronizado`, `${primeiroNome} ✓`);
                         salvarDadosNuvem();
                     }
                 });
@@ -3858,7 +3864,7 @@
                 };
                 await docRef.set(payload, { merge: true });
                 const primeiroNome = usuarioFirebase.displayName ? usuarioFirebase.displayName.split(' ')[0] : 'Conectado';
-                atualizarStatusNuvem('synced', `${primeiroNome} • Sincronizado`);
+                atualizarStatusNuvem('synced', `${primeiroNome} • Sincronizado`, `${primeiroNome} ✓`);
             } catch (err) {
                 console.warn('[Firestore Save Error]', err);
                 if (!navigator.onLine) {
@@ -3882,7 +3888,7 @@
                         firebase.auth().signInWithRedirect(provider);
                     } else {
                         alert('Erro ao conectar com Google: ' + (err.message || 'Verifique as permissões'));
-                        atualizarStatusNuvem('disconnected', 'Conectar Google');
+                        atualizarStatusNuvem('disconnected', 'Conectar Google', 'Conectar Google');
                     }
                 }
             } else {
